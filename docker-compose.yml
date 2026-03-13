@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: cuba
+      POSTGRES_USER: cuba
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-cuba_dev_123}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cuba"]
+      interval: 3s
+      retries: 10
+
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://cuba:${DB_PASSWORD:-cuba_dev_123}@postgres:5432/cuba
+      - DATABASE_URL_SYNC=postgresql://cuba:${DB_PASSWORD:-cuba_dev_123}@postgres:5432/cuba
+      - JWT_SECRET=${JWT_SECRET:-cuba-jwt-secret-change-in-prod-abc123}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
