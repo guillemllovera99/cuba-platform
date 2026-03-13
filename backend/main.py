@@ -48,13 +48,20 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Cuba E-Commerce MVP", lifespan=lifespan)
 
+from config import CORS_ORIGINS
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/health")
+async def health_check():
+    return {"status": "ok"}
 
 
 # ════════════════════════════════════════════════════════════════

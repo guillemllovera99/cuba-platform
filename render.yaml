@@ -1,0 +1,31 @@
+databases:
+  - name: cuba-db
+    plan: free
+    databaseName: cuba
+    user: cuba
+
+services:
+  - type: web
+    name: cuba-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cuba-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://cuba-shop.onrender.com,capacitor://localhost,http://localhost
+    healthCheckPath: /health
+
+  - type: web
+    name: cuba-frontend
+    runtime: docker
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    envVars:
+      - key: BACKEND_URL
+        value: https://cuba-backend.onrender.com

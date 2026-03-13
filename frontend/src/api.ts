@@ -1,4 +1,11 @@
-const BASE = '' // proxied via vite in dev, nginx in prod
+// Detect if running as native app (Capacitor) or web
+const isNative = typeof (window as any).Capacitor !== 'undefined';
+
+// In native app: hit the cloud backend directly
+// In web: use relative URLs (nginx proxies to backend)
+const BASE = isNative
+  ? 'https://cuba-backend.onrender.com'  // ← UPDATE with your actual Render backend URL
+  : '';
 
 function getToken(): string | null {
   const raw = localStorage.getItem('cuba-auth')
