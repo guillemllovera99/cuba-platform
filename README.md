@@ -15,7 +15,7 @@ The backend auto-creates database tables and seeds 10 demo products + 1 admin us
 
 ## Demo Credentials
 
-- **Admin:** admin@cuba.com / admin123
+- **Admin:** 
 - **Customer:** Register any email at /login
 
 ## Run Without Docker (Development)
