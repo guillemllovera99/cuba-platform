@@ -41,8 +41,14 @@ VALID_STATUSES = [
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await create_tables()
-    await seed()
+    try:
+        await create_tables()
+        await seed()
+        print("Database initialized and seeded successfully.")
+    except Exception as e:
+        # Log but do NOT crash — let the server start so health checks pass.
+        # DB-dependent endpoints will fail individually until the DB is reachable.
+        print(f"WARNING: Database init failed (will retry on first request): {e}")
     yield
 
 

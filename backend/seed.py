@@ -103,8 +103,7 @@ PRODUCTS = [
 
 
 async def seed():
-    await create_tables()
-
+    # Note: create_tables() is called in lifespan before seed(), no need to duplicate
     async with async_session() as session:
         # Check if admin exists
         result = await session.execute(select(User).where(User.email == ADMIN_EMAIL))
