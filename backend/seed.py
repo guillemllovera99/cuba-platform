@@ -1,7 +1,7 @@
 """Seed script: creates admin user + demo products. Run with: python seed.py"""
 import asyncio
 from sqlalchemy import select
-from database import async_session, create_tables
+from database import _get_session_factory, create_tables
 from models import User, Product
 from auth import hash_password
 
@@ -104,7 +104,7 @@ PRODUCTS = [
 
 async def seed():
     # Note: create_tables() is called in lifespan before seed(), no need to duplicate
-    async with async_session() as session:
+    async with _get_session_factory()() as session:
         # Check if admin exists
         result = await session.execute(select(User).where(User.email == ADMIN_EMAIL))
         if result.scalar_one_or_none() is None:
@@ -133,4 +133,7 @@ async def seed():
 
 
 if __name__ == "__main__":
-    asyncio.run(seed())
+    async def _run():
+        await create_tables()
+        await seed()
+    asyncio.run(_run())
