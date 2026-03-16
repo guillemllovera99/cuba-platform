@@ -78,3 +78,61 @@ class OrderItem(Base):
     subtotal_usd: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
 
     order: Mapped["Order"] = relationship(back_populates="items")
+
+
+# ════════════════════════════════════════════════════════════════
+# INVENTORY — Added in Phase 2 (inventory foundation)
+# These tables exist alongside products.stock_quantity for now.
+# Checkout still uses stock_quantity directly; a future task will
+# wire checkout to use inventory + atomic reservations instead.
+# ════════════════════════════════════════════════════════════════
+
+class Inventory(Base):
+    """
+    One row per product. Tracks available vs reserved stock separately.
+    The `version` column supports optimistic concurrency control:
+    every UPDATE bumps it, so concurrent writes can be detected.
+    """
+    __tablename__ = "inventory"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    product_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("products.id"), unique=True, nullable=False
+    )
+    available_qty: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    reserved_qty: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
+    low_stock_threshold: Mapped[int] = mapped_column(Integer, default=5)
+    version: Mapped[int] = mapped_column(Integer, default=1, nullable=False)
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utcnow, onupdate=utcnow
+    )
+
+    product: Mapped["Product"] = relationship()
+
+
+class StockMovement(Base):
+    """
+    Immutable audit log of every inventory change.
+    Every reserve, release, sale confirmation, restock, or manual
+    adjustment creates one row here. Never updated or deleted.
+    """
+    __tablename__ = "stock_movements"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    product_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("products.id"), nullable=False
+    )
+    movement_type: Mapped[str] = mapped_column(String(30), nullable=False)
+    # Valid types: reservation, release, sale_confirmed, restock, adjustment
+    quantity: Mapped[int] = mapped_column(Integer, nullable=False)
+    # Positive = stock increase, negative = stock decrease
+    reference_type: Mapped[str] = mapped_column(String(30), nullable=True)
+    # e.g. "order", "manual", "return"
+    reference_id: Mapped[str] = mapped_column(String(36), nullable=True)
+    # FK to orders.id or other entity (not enforced to stay flexible)
+    notes: Mapped[str] = mapped_column(Text, nullable=True)
+    created_by: Mapped[str] = mapped_column(String(36), nullable=True)
+    # FK to users.id (nullable for system-initiated movements)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utcnow
+    )

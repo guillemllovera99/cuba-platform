@@ -1,10 +1,9 @@
-// Detect if running as native app (Capacitor) or web
+// In web mode: use relative URLs (nginx proxies /api/ and /auth/ to backend)
+// In native (Capacitor) mode: hit the cloud backend directly
 const isNative = typeof (window as any).Capacitor !== 'undefined';
 
-// In native app: hit the cloud backend directly
-// In web: use relative URLs (nginx proxies to backend)
 const BASE = isNative
-  ? 'https://cuba-backend.onrender.com'  // ← UPDATE with your actual Render backend URL
+  ? (import.meta as any).env?.VITE_BACKEND_URL || ''
   : '';
 
 function getToken(): string | null {
