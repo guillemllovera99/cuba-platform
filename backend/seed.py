@@ -2,102 +2,125 @@
 import asyncio
 from sqlalchemy import select
 from database import _get_session_factory, create_tables
-from models import User, Product
+from models import User, Product, Inventory
 from auth import hash_password
 
 ADMIN_EMAIL = "admin@cuba.com"
 ADMIN_PASSWORD = "admin123"
 
 PRODUCTS = [
+    # ── Food Staples ──
     {
-        "sku": "EB-HAV-001",
-        "name": "Havana Classic E-Bike",
-        "description": "Reliable electric bicycle for urban commuting. 48V 13Ah battery, 50km range, 25km/h max speed. Includes front basket and rear rack.",
-        "category": "E-bikes",
-        "price_usd": 899.00,
-        "stock_quantity": 15,
-        "image_url": "https://images.unsplash.com/photo-1571068316344-75bc76f77890?w=600",
+        "sku": "FS-RIC-001",
+        "name": "Arroz Premium 5kg",
+        "description": "Long-grain white rice, 5kg bag. Cuban kitchen staple, ideal for congri, arroz con pollo, and everyday meals.",
+        "category": "Food Staples",
+        "price_usd": 6.50,
+        "stock_quantity": 120,
+        "image_url": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600",
     },
     {
-        "sku": "EB-TRN-002",
-        "name": "Trinidad Cargo E-Bike",
-        "description": "Heavy-duty electric cargo bike. 60V 20Ah battery, 70km range, front cargo platform rated for 50kg. Perfect for small business deliveries.",
-        "category": "E-bikes",
-        "price_usd": 1299.00,
-        "stock_quantity": 8,
-        "image_url": "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600",
+        "sku": "FS-BEA-002",
+        "name": "Frijoles Negros Secos 1kg",
+        "description": "Dried black beans, 1kg. Essential for frijoles negros and congri. High protein, long shelf life.",
+        "category": "Food Staples",
+        "price_usd": 3.25,
+        "stock_quantity": 200,
+        "image_url": "https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=600",
     },
     {
-        "sku": "ES-CIT-001",
-        "name": "Havana Scooter Model 2025",
-        "description": "Compact electric scooter for city use. 36V 10Ah, 35km range, foldable design, weighs only 14kg. LED headlight included.",
-        "category": "E-scooters",
-        "price_usd": 459.00,
-        "stock_quantity": 25,
-        "image_url": "https://images.unsplash.com/photo-1622185135505-2d795003994a?w=600",
+        "sku": "FS-OIL-003",
+        "name": "Aceite de Cocina 1L",
+        "description": "Refined vegetable cooking oil, 1 liter bottle. All-purpose for frying, sauteing, and dressings.",
+        "category": "Food Staples",
+        "price_usd": 4.00,
+        "stock_quantity": 150,
+        "image_url": "https://images.unsplash.com/photo-1474979266404-7eadf1420113?w=600",
     },
     {
-        "sku": "ES-PRO-002",
-        "name": "Varadero Pro E-Scooter",
-        "description": "High-performance electric scooter. 48V 15Ah dual battery, 60km range, dual suspension, disc brakes, max speed 35km/h.",
-        "category": "E-scooters",
-        "price_usd": 759.00,
-        "stock_quantity": 12,
-        "image_url": "https://images.unsplash.com/photo-1604868432396-25d63e48e0de?w=600",
+        "sku": "FS-FLR-004",
+        "name": "Harina de Trigo 2kg",
+        "description": "All-purpose wheat flour, 2kg. For bread, croquetas, empanadas, and baking.",
+        "category": "Food Staples",
+        "price_usd": 3.75,
+        "stock_quantity": 100,
+        "image_url": "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600",
+    },
+    # ── Pantry & Canned Goods ──
+    {
+        "sku": "PT-TOM-001",
+        "name": "Salsa de Tomate 400g",
+        "description": "Canned tomato sauce, 400g. Ready base for ropa vieja, picadillo, and pasta sauces.",
+        "category": "Pantry",
+        "price_usd": 2.50,
+        "stock_quantity": 180,
+        "image_url": "https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=600",
     },
     {
-        "sku": "SL-PNL-001",
-        "name": "100W Portable Solar Panel",
-        "description": "Monocrystalline foldable solar panel, 100W output. USB-A and USB-C ports for direct device charging. Water-resistant IP65.",
-        "category": "Solar / Energy",
-        "price_usd": 189.00,
-        "stock_quantity": 40,
-        "image_url": "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=600",
+        "sku": "PT-MLK-002",
+        "name": "Leche en Polvo 800g",
+        "description": "Powdered whole milk, 800g tin. Long shelf life, essential for families. Makes approximately 6 liters.",
+        "category": "Pantry",
+        "price_usd": 8.50,
+        "stock_quantity": 75,
+        "image_url": "https://images.unsplash.com/photo-1550583724-b2692b85b150?w=600",
+    },
+    # ── Beverages ──
+    {
+        "sku": "BV-COF-001",
+        "name": "Cafe Cubano Molido 250g",
+        "description": "Ground Cuban-style dark roast coffee, 250g. Rich, bold flavor for espresso and cafetera preparation.",
+        "category": "Beverages",
+        "price_usd": 5.75,
+        "stock_quantity": 90,
+        "image_url": "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=600",
     },
     {
-        "sku": "SL-KIT-002",
-        "name": "Home Solar Kit 300W",
-        "description": "Complete off-grid solar kit: 3x100W panels, 30A charge controller, 1000Wh LiFePO4 battery, 1500W inverter. Powers lights, fans, phone charging.",
-        "category": "Solar / Energy",
-        "price_usd": 1149.00,
-        "stock_quantity": 6,
-        "image_url": "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=600",
+        "sku": "BV-WAT-002",
+        "name": "Agua Purificada 6-Pack (1.5L)",
+        "description": "Purified drinking water, 6 bottles x 1.5L. Clean, safe hydration for the whole family.",
+        "category": "Beverages",
+        "price_usd": 4.50,
+        "stock_quantity": 60,
+        "image_url": "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?w=600",
+    },
+    # ── Household Essentials ──
+    {
+        "sku": "HH-SOP-001",
+        "name": "Jabon Multiuso 3-Pack",
+        "description": "Multi-purpose soap bars, pack of 3. For hand washing, laundry, and general household cleaning.",
+        "category": "Household",
+        "price_usd": 3.00,
+        "stock_quantity": 200,
+        "image_url": "https://images.unsplash.com/photo-1600857062241-98e5dba7f214?w=600",
     },
     {
-        "sku": "SP-BAT-001",
-        "name": "48V 13Ah E-Bike Battery",
-        "description": "Replacement lithium-ion battery pack for most 48V e-bikes. Samsung cells, BMS included, 1000 cycle life.",
-        "category": "Spare Parts",
-        "price_usd": 299.00,
-        "stock_quantity": 20,
-        "image_url": "https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=600",
+        "sku": "HH-DET-002",
+        "name": "Detergente en Polvo 1kg",
+        "description": "Laundry detergent powder, 1kg. Effective cleaning for hand wash and machine wash.",
+        "category": "Household",
+        "price_usd": 4.25,
+        "stock_quantity": 130,
+        "image_url": "https://images.unsplash.com/photo-1585441695325-21557ef77f68?w=600",
+    },
+    # ── Personal Care ──
+    {
+        "sku": "PC-TPT-001",
+        "name": "Pasta de Dientes 100ml",
+        "description": "Fluoride toothpaste, 100ml tube. Minty fresh, cavity protection for the whole family.",
+        "category": "Personal Care",
+        "price_usd": 2.75,
+        "stock_quantity": 160,
+        "image_url": "https://images.unsplash.com/photo-1559304822-9eb2813c9844?w=600",
     },
     {
-        "sku": "SP-TIR-002",
-        "name": "E-Scooter Tire Set (2 pcs)",
-        "description": "Solid rubber tires for electric scooters. 8.5 inch, puncture-proof, fits most standard scooter models.",
-        "category": "Spare Parts",
-        "price_usd": 39.00,
-        "stock_quantity": 50,
-        "image_url": "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600",
-    },
-    {
-        "sku": "AC-HLM-001",
-        "name": "Urban E-Bike Helmet",
-        "description": "Lightweight ventilated helmet with integrated LED rear light and visor. One-size adjustable fit.",
-        "category": "Accessories",
-        "price_usd": 49.00,
-        "stock_quantity": 35,
-        "image_url": "https://images.unsplash.com/photo-1557803175-2f0acf9a3731?w=600",
-    },
-    {
-        "sku": "AC-LCK-002",
-        "name": "Heavy-Duty Chain Lock",
-        "description": "10mm hardened steel chain lock with pick-resistant padlock. 120cm length. Includes mounting bracket.",
-        "category": "Accessories",
-        "price_usd": 29.00,
-        "stock_quantity": 45,
-        "image_url": "https://images.unsplash.com/photo-1582639510509-1e5307f2a5b5?w=600",
+        "sku": "PC-SHP-002",
+        "name": "Champu Familiar 500ml",
+        "description": "All-hair-types shampoo, 500ml. Gentle daily formula suitable for adults and children.",
+        "category": "Personal Care",
+        "price_usd": 5.00,
+        "stock_quantity": 110,
+        "image_url": "https://images.unsplash.com/photo-1631729371254-42c2892f0e6e?w=600",
     },
 ]
 
@@ -122,9 +145,19 @@ async def seed():
         # Check if products exist
         result = await session.execute(select(Product).limit(1))
         if result.scalar_one_or_none() is None:
-            for p in PRODUCTS:
-                session.add(Product(**p))
-            print(f"Created {len(PRODUCTS)} demo products")
+            products = []
+            for p_data in PRODUCTS:
+                product = Product(**p_data)
+                session.add(product)
+                products.append((product, p_data["stock_quantity"]))
+            # Flush so Product.id defaults are generated before we reference them
+            await session.flush()
+            for product, qty in products:
+                session.add(Inventory(
+                    product_id=product.id,
+                    available_qty=qty,
+                ))
+            print(f"Created {len(PRODUCTS)} demo products + inventory records")
         else:
             print("Products already exist")
 
