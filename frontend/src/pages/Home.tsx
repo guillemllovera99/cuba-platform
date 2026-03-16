@@ -16,7 +16,7 @@ export default function Home() {
       <div className="bg-green-700 text-white rounded-lg p-8 mb-8">
         <h1 className="text-3xl font-bold mb-2">Asymmetrica Cuba</h1>
         <p className="text-green-100 mb-4">
-          Food, household essentials, and practical goods delivered to Cuba.
+          Cuban food rations and grocery essentials, delivered to your door.
         </p>
         <Link to="/catalog" className="inline-block bg-white text-green-700 font-semibold px-5 py-2 rounded hover:bg-green-50">
           Browse Catalog
