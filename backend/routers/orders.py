@@ -12,6 +12,7 @@ from database import get_db
 from models import Product, Order, OrderItem
 from schemas import CheckoutRequest, OrderOut, OrderItemOut
 from auth import require_auth
+from services.inventory_service import reserve_stock, confirm_sale
 
 router = APIRouter(prefix="/api/v1/orders", tags=["orders"])
 
@@ -68,13 +69,30 @@ async def checkout(
 
     order_items = []
     subtotal = 0.0
+    # Track which products we reserved so we can roll back on failure
+    reserved = []
+
+    # Pre-generate an order ID for the stock movement references
+    order_code = generate_order_code()
+    temp_order_id = f"pending-{order_code}"
 
     for item in req.items:
         product = products.get(item.product_id)
         if not product:
             raise HTTPException(400, f"Product {item.product_id} not found")
-        if product.stock_quantity < item.quantity:
-            raise HTTPException(400, f"Insufficient stock for {product.name}")
+
+        # Use atomic inventory reservation instead of direct stock_quantity check
+        success = await reserve_stock(db, product.id, item.quantity, temp_order_id)
+        if not success:
+            # Rollback: this will discard all unflushed changes including
+            # any previous reserve_stock calls in this transaction
+            await db.rollback()
+            raise HTTPException(
+                400,
+                f"Insufficient stock for '{product.name}'. "
+                f"Please reduce quantity or remove from cart."
+            )
+        reserved.append((product.id, item.quantity))
 
         line_total = float(product.price_usd) * item.quantity
         subtotal += line_total
@@ -85,12 +103,12 @@ async def checkout(
             unit_price_usd=float(product.price_usd),
             subtotal_usd=line_total,
         ))
-        # Decrement stock
+        # Also decrement legacy stock_quantity to keep it in sync
         product.stock_quantity -= item.quantity
 
     # Create order — MOCK PAYMENT: auto-set to "paid"
     order = Order(
-        order_code=generate_order_code(),
+        order_code=order_code,
         client_user_id=user["sub"],
         status="paid",
         recipient_name=req.recipient_name,
@@ -104,10 +122,16 @@ async def checkout(
     )
     order.items = order_items
     db.add(order)
+    await db.flush()
+
+    # Confirm the sale (moves stock from reserved to sold)
+    for product_id, qty in reserved:
+        await confirm_sale(db, product_id, qty, order.id)
+
     await db.commit()
     await db.refresh(order, attribute_names=["items"])
 
-    print(f"EMAIL: Order {order.order_code} confirmed for user {user['sub']}")
+    print(f"ORDER: {order.order_code} confirmed — {len(reserved)} items, ${subtotal:.2f}")
 
     return _order_to_out(order)
 
