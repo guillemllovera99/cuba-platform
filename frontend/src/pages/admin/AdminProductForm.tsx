@@ -3,7 +3,14 @@ import { useParams, useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../store'
 import { api } from '../../api'
 
-const CATEGORIES = ['Grains & Staples', 'Cooking Essentials', 'Dairy & Proteins', 'Beverages', 'Snacks & Extras']
+const CATEGORIES = [
+  'Grains & Carbohydrates', 'Beans & Legumes', 'Cooking Essentials',
+  'Canned & Preserved Foods', 'Fresh Produce', 'Coffee & Beverages',
+  'Personal Care', 'Cleaning Products', 'Prepared Food Bundles',
+  'Appliances', 'Medicine & Pharmacy', 'Baby Products',
+  'Solar Energy', 'Diesel & Fuel Supply', 'Battery & Energy Storage',
+  'Micro-grid & Home Energy',
+]
 
 export default function AdminProductForm() {
   const { id } = useParams()
