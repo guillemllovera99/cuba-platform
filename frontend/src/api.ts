@@ -67,6 +67,17 @@ export const api = {
   // admin stats
   adminStats: () => apiFetch('/api/v1/admin/stats'),
 
+  // shipments / delivery
+  adminShipments: (status?: string) =>
+    apiFetch(`/api/v1/shipments/admin/all${status ? '?status=' + status : ''}`),
+  adminGetShipment: (id: string) => apiFetch(`/api/v1/shipments/admin/${id}`),
+  adminUpdateShipment: (id: string, data: any) =>
+    apiFetch(`/api/v1/shipments/admin/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  adminAddShipmentEvent: (id: string, data: any) =>
+    apiFetch(`/api/v1/shipments/admin/${id}/events`, { method: 'POST', body: JSON.stringify(data) }),
+  getShipmentByOrderCode: (code: string) =>
+    apiFetch(`/api/v1/shipments/by-order-code/${code}`),
+
   // payments
   paymentConfig: () => apiFetch('/api/v1/payments/config'),
   stripeCreateSession: (orderId: string) =>

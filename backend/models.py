@@ -136,3 +136,56 @@ class StockMovement(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utcnow
     )
+
+
+# ════════════════════════════════════════════════════════════════
+# SHIPMENTS — Added in Phase 3 (delivery coordination / US-12)
+# Tracks the fulfillment lifecycle: packing → in-transit → delivered
+# ════════════════════════════════════════════════════════════════
+
+class Shipment(Base):
+    """
+    One shipment per order (1:1 in MVP; could become 1:N for split shipments later).
+    Created when admin moves an order to 'processing'.
+    """
+    __tablename__ = "shipments"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    order_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("orders.id", ondelete="CASCADE"), unique=True, nullable=False
+    )
+    carrier: Mapped[str] = mapped_column(String(100), nullable=True)
+    tracking_number: Mapped[str] = mapped_column(String(200), nullable=True)
+    estimated_delivery: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    actual_delivery: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    status: Mapped[str] = mapped_column(String(30), default="preparing")
+    # Valid statuses: preparing, packed, in_transit, customs, out_for_delivery, delivered, failed
+    notes: Mapped[str] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+    order: Mapped["Order"] = relationship()
+    events: Mapped[list["ShipmentEvent"]] = relationship(
+        back_populates="shipment", cascade="all, delete-orphan",
+        order_by="ShipmentEvent.created_at"
+    )
+
+
+class ShipmentEvent(Base):
+    """
+    Immutable timeline of shipment milestones.
+    Each status change or location update creates one row.
+    """
+    __tablename__ = "shipment_events"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    shipment_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("shipments.id", ondelete="CASCADE"), nullable=False
+    )
+    status: Mapped[str] = mapped_column(String(30), nullable=False)
+    location: Mapped[str] = mapped_column(String(255), nullable=True)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+    created_by: Mapped[str] = mapped_column(String(36), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+    shipment: Mapped["Shipment"] = relationship(back_populates="events")

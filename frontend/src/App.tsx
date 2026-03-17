@@ -15,6 +15,7 @@ import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminProducts from './pages/admin/AdminProducts'
 import AdminProductForm from './pages/admin/AdminProductForm'
 import AdminOrders from './pages/admin/AdminOrders'
+import AdminShipments from './pages/admin/AdminShipments'
 
 function Logo({ className = '' }: { className?: string }) {
   return (
@@ -188,6 +189,7 @@ export default function App() {
           <Route path="/admin/products/new" element={<AdminProductForm />} />
           <Route path="/admin/products/:id/edit" element={<AdminProductForm />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
+          <Route path="/admin/shipments" element={<AdminShipments />} />
         </Routes>
       </main>
       <Footer />

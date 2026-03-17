@@ -12,6 +12,7 @@ from schemas import OrderOut, StatusUpdate
 from auth import require_admin
 from routers.orders import _order_to_out  # reuse the shared helper
 from services.inventory_service import release_stock, confirm_sale
+from routers.shipments import ensure_shipment_for_order
 
 router = APIRouter(prefix="/api/v1/orders/admin", tags=["admin-orders"])
 
@@ -85,6 +86,10 @@ async def admin_update_status(
         order.paid_at = datetime.now(timezone.utc)
         for item in order.items:
             await confirm_sale(db, item.product_id, item.quantity, order.id)
+
+    # Auto-create shipment when order moves to processing
+    if new_status == "processing":
+        await ensure_shipment_for_order(db, order)
 
     order.status = new_status
     await db.commit()
