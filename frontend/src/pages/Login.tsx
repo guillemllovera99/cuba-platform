@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../store'
 import { api } from '../api'
+import { useI18n } from '../i18n'
 
 export default function Login() {
   const [isRegister, setIsRegister] = useState(false)
@@ -9,6 +10,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const setAuth = useAuth(s => s.setAuth)
   const navigate = useNavigate()
+  const t = useI18n(s => s.t)
 
   const [form, setForm] = useState({ email: '', password: '', full_name: '', phone: '' })
   const set = (f: string) => (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -39,13 +41,13 @@ export default function Login() {
             onClick={() => { setIsRegister(false); setError('') }}
             className={`flex-1 pb-3 text-sm font-medium ${!isRegister ? 'border-b-2 border-green-600 text-green-700' : 'text-gray-500'}`}
           >
-            Login
+            {t('login.login')}
           </button>
           <button
             onClick={() => { setIsRegister(true); setError('') }}
             className={`flex-1 pb-3 text-sm font-medium ${isRegister ? 'border-b-2 border-green-600 text-green-700' : 'text-gray-500'}`}
           >
-            Register
+            {t('login.register')}
           </button>
         </div>
 
@@ -53,24 +55,24 @@ export default function Login() {
           {isRegister && (
             <>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('login.fullName')}</label>
                 <input value={form.full_name} onChange={set('full_name')} required
                   className="w-full border rounded px-3 py-2" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('login.phone')}</label>
                 <input value={form.phone} onChange={set('phone')}
                   className="w-full border rounded px-3 py-2" />
               </div>
             </>
           )}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('login.email')}</label>
             <input type="email" value={form.email} onChange={set('email')} required
               className="w-full border rounded px-3 py-2" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('login.password')}</label>
             <input type="password" value={form.password} onChange={set('password')} required
               className="w-full border rounded px-3 py-2" />
           </div>
@@ -79,14 +81,12 @@ export default function Login() {
 
           <button type="submit" disabled={loading}
             className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 font-semibold disabled:bg-gray-400">
-            {loading ? 'Please wait...' : isRegister ? 'Create Account' : 'Login'}
+            {loading ? t('login.pleaseWait') : isRegister ? t('login.createAccount') : t('login.login')}
           </button>
         </form>
 
         <div className="mt-4 text-center">
-          <p className="text-xs text-gray-400">
-            Demo admin: admin@cuba.com / admin123
-          </p>
+          <p className="text-xs text-gray-400">{t('login.demo')}</p>
         </div>
       </div>
     </div>
