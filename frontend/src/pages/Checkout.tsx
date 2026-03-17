@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart, useAuth } from '../store'
 import { api } from '../api'
+import { useI18n } from '../i18n'
 
 export default function Checkout() {
   const { items, total, clearCart } = useCart()
@@ -9,6 +10,7 @@ export default function Checkout() {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const t = useI18n(s => s.t)
   const [form, setForm] = useState({
     recipient_name: '',
     recipient_phone: '',
@@ -26,7 +28,7 @@ export default function Checkout() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.recipient_name || !form.recipient_phone || !form.recipient_city) {
-      setError('Please fill in all required fields'); return
+      setError(t('checkout.fillRequired')); return
     }
     setLoading(true)
     setError('')
@@ -46,10 +48,10 @@ export default function Checkout() {
 
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">Checkout</h1>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">{t('checkout.title')}</h1>
 
       <div className="bg-white border rounded-lg p-6 mb-6">
-        <h2 className="font-semibold text-gray-700 mb-3">Order Summary</h2>
+        <h2 className="font-semibold text-gray-700 mb-3">{t('checkout.summary')}</h2>
         {items.map(i => (
           <div key={i.product_id} className="flex justify-between text-sm py-1">
             <span className="text-gray-600">{i.name} x{i.quantity}</span>
@@ -57,51 +59,51 @@ export default function Checkout() {
           </div>
         ))}
         <div className="border-t mt-3 pt-3 flex justify-between font-bold">
-          <span>Total</span>
+          <span>{t('checkout.total')}</span>
           <span>${total().toFixed(2)} USD</span>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white border rounded-lg p-6">
-        <h2 className="font-semibold text-gray-700 mb-4">Recipient in Cuba</h2>
+        <h2 className="font-semibold text-gray-700 mb-4">{t('checkout.recipient')}</h2>
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('checkout.name')} *</label>
             <input value={form.recipient_name} onChange={set('recipient_name')} required
-              className="w-full border rounded px-3 py-2" placeholder="Juan Garcia" />
+              className="w-full border rounded px-3 py-2" placeholder={t('checkout.namePlaceholder')} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('checkout.phone')} *</label>
             <input value={form.recipient_phone} onChange={set('recipient_phone')} required
-              className="w-full border rounded px-3 py-2" placeholder="+53 5 1234567" />
+              className="w-full border rounded px-3 py-2" placeholder={t('checkout.phonePlaceholder')} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">City *</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('checkout.city')} *</label>
             <input value={form.recipient_city} onChange={set('recipient_city')} required
-              className="w-full border rounded px-3 py-2" placeholder="Havana" />
+              className="w-full border rounded px-3 py-2" placeholder={t('checkout.cityPlaceholder')} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('checkout.address')}</label>
             <input value={form.recipient_address} onChange={set('recipient_address')}
-              className="w-full border rounded px-3 py-2" placeholder="Calle 23 #456, Vedado" />
+              className="w-full border rounded px-3 py-2" placeholder={t('checkout.addressPlaceholder')} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t('checkout.notes')}</label>
             <textarea value={form.notes} onChange={set('notes')} rows={2}
-              className="w-full border rounded px-3 py-2" placeholder="Delivery instructions..." />
+              className="w-full border rounded px-3 py-2" placeholder={t('checkout.notesPlaceholder')} />
           </div>
         </div>
 
         {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
 
         <div className="bg-yellow-50 border border-yellow-200 rounded p-3 mt-4">
-          <p className="text-sm text-yellow-800">Payment is simulated for this prototype. Your order will be confirmed immediately.</p>
+          <p className="text-sm text-yellow-800">{t('checkout.simulated')}</p>
         </div>
 
         <button type="submit" disabled={loading}
           className="w-full mt-6 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 font-semibold disabled:bg-gray-400">
-          {loading ? 'Processing...' : `Place Order — $${total().toFixed(2)} USD`}
+          {loading ? t('checkout.processing') : `${t('checkout.placeOrder')} — $${total().toFixed(2)} USD`}
         </button>
       </form>
     </div>

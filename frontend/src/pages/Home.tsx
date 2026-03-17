@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../api'
+import { useI18n } from '../i18n'
 
 export default function Home() {
   const [products, setProducts] = useState<any[]>([])
   const [categories, setCategories] = useState<string[]>([])
+  const t = useI18n(s => s.t)
 
   useEffect(() => {
     api.getProducts('in_stock=true').then(setProducts).catch(() => {})
@@ -14,12 +16,10 @@ export default function Home() {
   return (
     <div>
       <div className="bg-green-700 text-white rounded-lg p-8 mb-8">
-        <h1 className="text-3xl font-bold mb-2">Asymmetrica Cuba</h1>
-        <p className="text-green-100 mb-4">
-          Cuban food rations and grocery essentials, delivered to your door.
-        </p>
+        <h1 className="text-3xl font-bold mb-2">{t('home.hero.title')}</h1>
+        <p className="text-green-100 mb-4">{t('home.hero.subtitle')}</p>
         <Link to="/catalog" className="inline-block bg-white text-green-700 font-semibold px-5 py-2 rounded hover:bg-green-50">
-          Browse Catalog
+          {t('home.hero.cta')}
         </Link>
       </div>
 
@@ -35,7 +35,7 @@ export default function Home() {
         ))}
       </div>
 
-      <h2 className="text-xl font-bold text-gray-800 mb-4">Featured Products</h2>
+      <h2 className="text-xl font-bold text-gray-800 mb-4">{t('home.featured')}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {products.slice(0, 6).map(p => (
           <Link key={p.id} to={`/product/${p.id}`} className="bg-white border rounded-lg overflow-hidden hover:shadow-md transition">
@@ -47,9 +47,9 @@ export default function Home() {
               <h3 className="font-semibold text-gray-800 mt-1">{p.name}</h3>
               <p className="text-lg font-bold text-gray-900 mt-2">${p.price_usd.toFixed(2)}</p>
               {p.stock_quantity > 0 ? (
-                <span className="text-xs text-green-600">In stock</span>
+                <span className="text-xs text-green-600">{t('home.inStock')}</span>
               ) : (
-                <span className="text-xs text-red-500">Out of stock</span>
+                <span className="text-xs text-red-500">{t('home.outOfStock')}</span>
               )}
             </div>
           </Link>

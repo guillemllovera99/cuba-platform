@@ -1,19 +1,15 @@
 import { useState } from 'react'
 import { api } from '../api'
+import { useI18n } from '../i18n'
 
 const STATUS_STEPS = ['paid', 'processing', 'shipped', 'delivered']
-const STATUS_LABELS: Record<string, string> = {
-  paid: 'Payment Received',
-  processing: 'Order Processing',
-  shipped: 'Shipped to Cuba',
-  delivered: 'Delivered',
-}
 
 export default function TrackOrder() {
   const [code, setCode] = useState('')
   const [order, setOrder] = useState<any>(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const t = useI18n(s => s.t)
 
   const handleTrack = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -35,18 +31,17 @@ export default function TrackOrder() {
 
   return (
     <div className="max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold text-gray-800 mb-2">Track Your Order</h1>
-      <p className="text-gray-500 mb-6">Enter your order code to see delivery status. No account needed.</p>
+      <h1 className="text-2xl font-bold text-gray-800 mb-6">{t('track.title')}</h1>
 
       <form onSubmit={handleTrack} className="flex gap-2 mb-8">
         <input
           value={code} onChange={e => setCode(e.target.value)}
-          placeholder="CUB-XXXXXX"
+          placeholder={t('track.placeholder')}
           className="flex-1 border rounded-lg px-4 py-3 font-mono text-lg uppercase tracking-wider"
         />
         <button type="submit" disabled={loading}
           className="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-semibold disabled:bg-gray-400">
-          {loading ? '...' : 'Track'}
+          {loading ? t('track.searching') : t('track.button')}
         </button>
       </form>
 
@@ -61,7 +56,7 @@ export default function TrackOrder() {
 
           {order.status === 'cancelled' ? (
             <div className="bg-red-50 border border-red-200 rounded p-4 text-center">
-              <p className="text-red-700 font-medium">This order has been cancelled.</p>
+              <p className="text-red-700 font-medium">{t('track.cancelled')}</p>
             </div>
           ) : (
             <div className="flex items-center justify-between mb-6">
@@ -72,11 +67,8 @@ export default function TrackOrder() {
                     {idx <= currentStep ? '\u2713' : idx + 1}
                   </div>
                   <span className={`text-xs mt-1 text-center ${idx <= currentStep ? 'text-green-700 font-medium' : 'text-gray-400'}`}>
-                    {STATUS_LABELS[step]}
+                    {t(`status.${step}`)}
                   </span>
-                  {idx < STATUS_STEPS.length - 1 && (
-                    <div className={`h-0.5 w-full mt-[-20px] mb-0 ${idx < currentStep ? 'bg-green-600' : 'bg-gray-200'}`} />
-                  )}
                 </div>
               ))}
             </div>
@@ -84,21 +76,21 @@ export default function TrackOrder() {
 
           <div className="border-t pt-4 space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Recipient</span>
+              <span className="text-gray-500">{t('track.recipient')}</span>
               <span className="font-medium">{order.recipient_name}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">City</span>
+              <span className="text-gray-500">{t('track.city')}</span>
               <span className="font-medium">{order.recipient_city}</span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Total</span>
+              <span className="text-gray-500">{t('track.total')}</span>
               <span className="font-bold">${order.total_usd?.toFixed(2)} USD</span>
             </div>
           </div>
 
           <div className="border-t mt-4 pt-4">
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">Items</h3>
+            <h3 className="text-sm font-semibold text-gray-700 mb-2">{t('track.items')}</h3>
             {order.items?.map((i: any) => (
               <div key={i.id} className="flex justify-between text-sm py-1">
                 <span className="text-gray-600">{i.product_name} x{i.quantity}</span>

@@ -4,12 +4,10 @@ import { useAuth } from '../../store'
 import { api } from '../../api'
 
 const CATEGORIES = [
-  'Grains & Carbohydrates', 'Beans & Legumes', 'Cooking Essentials',
-  'Canned & Preserved Foods', 'Fresh Produce', 'Coffee & Beverages',
-  'Personal Care', 'Cleaning Products', 'Prepared Food Bundles',
-  'Appliances', 'Medicine & Pharmacy', 'Baby Products',
-  'Solar Energy', 'Diesel & Fuel Supply', 'Battery & Energy Storage',
-  'Micro-grid & Home Energy',
+  'Grains & Carbohydrates', 'Beans & Legumes', 'Canned & Preserved Foods',
+  'Fresh Produce', 'Coffee & Beverages', 'Dairy & Milk', 'Juice Packs',
+  'Appliances & Energy', 'Solar Energy', 'Diesel & Fuel Supply',
+  'Battery & Energy Storage', 'Micro-grid & Home Energy',
 ]
 
 export default function AdminProductForm() {
