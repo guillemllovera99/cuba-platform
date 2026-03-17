@@ -100,7 +100,7 @@ export default function Checkout() {
       <h1 className="text-2xl font-bold text-[#0B1628] mb-6">{t('checkout.title')}</h1>
 
       {/* Order Summary */}
-      <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+      <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
         <h2 className="font-semibold text-[#0B1628] mb-3">{t('checkout.summary')}</h2>
         {items.map(i => (
           <div key={i.product_id} className="flex justify-between text-sm py-1">
@@ -114,34 +114,34 @@ export default function Checkout() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-lg p-6">
+      <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6">
         {/* Recipient */}
         <h2 className="font-semibold text-[#0B1628] mb-4">{t('checkout.recipient')}</h2>
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">{t('checkout.name')} *</label>
             <input value={form.recipient_name} onChange={set('recipient_name')} required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" placeholder={t('checkout.namePlaceholder')} />
+              className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" placeholder={t('checkout.namePlaceholder')} />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">{t('checkout.phone')} *</label>
             <input value={form.recipient_phone} onChange={set('recipient_phone')} required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" placeholder={t('checkout.phonePlaceholder')} />
+              className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" placeholder={t('checkout.phonePlaceholder')} />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">{t('checkout.city')} *</label>
             <input value={form.recipient_city} onChange={set('recipient_city')} required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" placeholder={t('checkout.cityPlaceholder')} />
+              className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" placeholder={t('checkout.cityPlaceholder')} />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">{t('checkout.address')}</label>
             <input value={form.recipient_address} onChange={set('recipient_address')}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" placeholder={t('checkout.addressPlaceholder')} />
+              className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" placeholder={t('checkout.addressPlaceholder')} />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">{t('checkout.notes')}</label>
             <textarea value={form.notes} onChange={set('notes')} rows={2}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" placeholder={t('checkout.notesPlaceholder')} />
+              className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" placeholder={t('checkout.notesPlaceholder')} />
           </div>
         </div>
 
@@ -195,7 +195,7 @@ export default function Checkout() {
         )}
 
         <button type="submit" disabled={loading}
-          className="w-full mt-6 bg-[#0B1628] text-white py-3 rounded-lg hover:bg-[#0B1628]/90 font-semibold disabled:bg-gray-400 transition-colors">
+          className="w-full mt-6 bg-[#0B1628] text-white py-3 rounded-lg hover:bg-[#0B1628]/90 font-semibold disabled:bg-gray-400 transition-colors min-h-[48px] text-base">
           {loading ? t('checkout.processing') : `${t('checkout.placeOrder')} — $${total().toFixed(2)} USD`}
         </button>
       </form>

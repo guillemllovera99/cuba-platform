@@ -32,7 +32,7 @@ export default function Product() {
         {product.image_url && (
           <img src={product.image_url} alt={product.name} className="w-full md:w-1/2 h-72 md:h-auto object-cover" />
         )}
-        <div className="p-6 flex-1">
+        <div className="p-4 sm:p-6 flex-1">
           <span className="text-sm text-[#0B1628]/60 font-medium">{tCat(lang, product.category)}</span>
           <h1 className="text-2xl font-bold text-[#0B1628] mt-1">{product.name}</h1>
           {product.sku && <p className="text-xs text-gray-400 mt-1">{t('product.sku')}: {product.sku}</p>}
@@ -49,15 +49,15 @@ export default function Product() {
           </div>
 
           {product.stock_quantity > 0 && (
-            <div className="mt-4 flex items-center gap-3">
-              <div className="flex items-center border border-gray-300 rounded-lg">
-                <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-l-lg">-</button>
-                <span className="px-3 py-2 font-medium">{qty}</span>
-                <button onClick={() => setQty(Math.min(product.stock_quantity, qty + 1))} className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-r-lg">+</button>
+            <div className="mt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <div className="flex items-center border border-gray-300 rounded-lg self-start">
+                <button onClick={() => setQty(Math.max(1, qty - 1))} className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-l-lg min-w-[44px] min-h-[44px] flex items-center justify-center">-</button>
+                <span className="px-4 py-2 font-medium">{qty}</span>
+                <button onClick={() => setQty(Math.min(product.stock_quantity, qty + 1))} className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-r-lg min-w-[44px] min-h-[44px] flex items-center justify-center">+</button>
               </div>
               <button
                 onClick={handleAdd}
-                className="bg-[#0B1628] text-white px-6 py-2 rounded-lg hover:bg-[#0B1628]/90 font-medium transition-colors"
+                className="bg-[#0B1628] text-white px-6 py-3 rounded-lg hover:bg-[#0B1628]/90 font-semibold transition-colors min-h-[48px] w-full sm:w-auto"
               >
                 {added ? t('product.added') : t('product.addToCart')}
               </button>

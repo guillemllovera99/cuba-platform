@@ -40,13 +40,13 @@ export default function Login() {
         <div className="flex mb-6 border-b">
           <button
             onClick={() => { setIsRegister(false); setError('') }}
-            className={`flex-1 pb-3 text-sm font-medium transition-colors ${!isRegister ? 'border-b-2 border-[#0B1628] text-[#0B1628]' : 'text-gray-500'}`}
+            className={`flex-1 pb-3 text-sm font-medium transition-colors min-h-[44px] ${!isRegister ? 'border-b-2 border-[#0B1628] text-[#0B1628]' : 'text-gray-500'}`}
           >
             {t('login.login')}
           </button>
           <button
             onClick={() => { setIsRegister(true); setError('') }}
-            className={`flex-1 pb-3 text-sm font-medium transition-colors ${isRegister ? 'border-b-2 border-[#0B1628] text-[#0B1628]' : 'text-gray-500'}`}
+            className={`flex-1 pb-3 text-sm font-medium transition-colors min-h-[44px] ${isRegister ? 'border-b-2 border-[#0B1628] text-[#0B1628]' : 'text-gray-500'}`}
           >
             {t('login.register')}
           </button>
@@ -58,30 +58,30 @@ export default function Login() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('login.fullName')}</label>
                 <input value={form.full_name} onChange={set('full_name')} required
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" />
+                  className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('login.phone')}</label>
                 <input value={form.phone} onChange={set('phone')}
-                  className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" />
+                  className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" />
               </div>
             </>
           )}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">{t('login.email')}</label>
             <input type="email" value={form.email} onChange={set('email')} required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" />
+              className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">{t('login.password')}</label>
             <input type="password" value={form.password} onChange={set('password')} required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" />
+              className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" />
           </div>
 
           {error && <p className="text-red-600 text-sm">{error}</p>}
 
           <button type="submit" disabled={loading}
-            className="w-full bg-[#0B1628] text-white py-2.5 rounded-lg hover:bg-[#0B1628]/90 font-semibold disabled:bg-gray-400 transition-colors">
+            className="w-full bg-[#0B1628] text-white py-3 rounded-lg hover:bg-[#0B1628]/90 font-semibold disabled:bg-gray-400 transition-colors min-h-[48px] text-base">
             {loading ? t('login.pleaseWait') : isRegister ? t('login.createAccount') : t('login.login')}
           </button>
         </form>
