@@ -104,3 +104,47 @@ class OrderOut(BaseModel):
 
 class StatusUpdate(BaseModel):
     status: str
+
+
+# ── Shipments / Delivery (US-12) ──
+class ShipmentEventOut(BaseModel):
+    id: str
+    status: str
+    location: Optional[str]
+    description: Optional[str]
+    created_by: Optional[str]
+    created_at: str
+
+
+class ShipmentOut(BaseModel):
+    id: str
+    order_id: str
+    order_code: Optional[str] = None
+    carrier: Optional[str]
+    tracking_number: Optional[str]
+    estimated_delivery: Optional[str]
+    actual_delivery: Optional[str]
+    status: str
+    notes: Optional[str]
+    created_at: str
+    updated_at: str
+    events: list[ShipmentEventOut] = []
+    # Denormalized recipient info for the logistics view
+    recipient_name: Optional[str] = None
+    recipient_city: Optional[str] = None
+    recipient_phone: Optional[str] = None
+    recipient_address: Optional[str] = None
+    total_usd: Optional[float] = None
+
+
+class ShipmentUpdate(BaseModel):
+    carrier: Optional[str] = None
+    tracking_number: Optional[str] = None
+    estimated_delivery: Optional[str] = None
+    notes: Optional[str] = None
+
+
+class ShipmentEventCreate(BaseModel):
+    status: str
+    location: Optional[str] = None
+    description: Optional[str] = None
