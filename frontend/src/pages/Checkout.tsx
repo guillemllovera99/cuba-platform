@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart, useAuth } from '../store'
 import { api } from '../api'
 import { useI18n, translate } from '../i18n'
+
+type PaymentMethod = 'stripe' | 'paypal' | 'mock'
 
 export default function Checkout() {
   const { items, total, clearCart } = useCart()
@@ -12,6 +14,10 @@ export default function Checkout() {
   const [error, setError] = useState('')
   const lang = useI18n(s => s.lang)
   const t = (key: string) => translate(lang, key)
+
+  const [paymentConfig, setPaymentConfig] = useState<any>(null)
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('mock')
+
   const [form, setForm] = useState({
     recipient_name: '',
     recipient_phone: '',
@@ -19,6 +25,18 @@ export default function Checkout() {
     recipient_address: '',
     notes: '',
   })
+
+  useEffect(() => {
+    api.paymentConfig().then(cfg => {
+      setPaymentConfig(cfg)
+      if (cfg.stripe_enabled) setPaymentMethod('stripe')
+      else if (cfg.paypal_enabled) setPaymentMethod('paypal')
+      else setPaymentMethod('mock')
+    }).catch(() => {
+      setPaymentConfig({ stripe_enabled: false, paypal_enabled: false, payments_enabled: false })
+      setPaymentMethod('mock')
+    })
+  }, [])
 
   if (!isLoggedIn) { navigate('/login'); return null }
   if (items.length === 0) { navigate('/cart'); return null }
@@ -33,11 +51,37 @@ export default function Checkout() {
     }
     setLoading(true)
     setError('')
+
     try {
+      // Step 1: Create order (pending_payment or auto-paid depending on backend config)
       const order = await api.checkout({
         items: items.map(i => ({ product_id: i.product_id, quantity: i.quantity })),
         ...form,
       })
+
+      // Step 2: If already paid (mock mode), go to confirmation
+      if (order.status === 'paid') {
+        clearCart()
+        navigate(`/order/${order.id}/confirmed`)
+        return
+      }
+
+      // Step 3: Redirect to payment provider
+      if (paymentMethod === 'stripe') {
+        const session = await api.stripeCreateSession(order.id)
+        clearCart()
+        window.location.href = session.url
+        return
+      }
+
+      if (paymentMethod === 'paypal') {
+        const paypalOrder = await api.paypalCreateOrder(order.id)
+        clearCart()
+        window.location.href = paypalOrder.approve_url
+        return
+      }
+
+      // Fallback
       clearCart()
       navigate(`/order/${order.id}/confirmed`)
     } catch (err: any) {
@@ -47,10 +91,15 @@ export default function Checkout() {
     }
   }
 
+  const isMock = !paymentConfig?.payments_enabled
+  const stripeAvailable = paymentConfig?.stripe_enabled
+  const paypalAvailable = paymentConfig?.paypal_enabled
+
   return (
     <div className="max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold text-[#0B1628] mb-6">{t('checkout.title')}</h1>
 
+      {/* Order Summary */}
       <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
         <h2 className="font-semibold text-[#0B1628] mb-3">{t('checkout.summary')}</h2>
         {items.map(i => (
@@ -66,8 +115,8 @@ export default function Checkout() {
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white border border-gray-200 rounded-lg p-6">
+        {/* Recipient */}
         <h2 className="font-semibold text-[#0B1628] mb-4">{t('checkout.recipient')}</h2>
-
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">{t('checkout.name')} *</label>
@@ -96,11 +145,54 @@ export default function Checkout() {
           </div>
         </div>
 
+        {/* Payment Method Selection — only shown when real providers are configured */}
+        {!isMock && (
+          <div className="mt-6">
+            <h2 className="font-semibold text-[#0B1628] mb-3">{t('checkout.paymentMethod')}</h2>
+            <div className="space-y-2">
+              {stripeAvailable && (
+                <label className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'stripe' ? 'border-[#0B1628] bg-[#0B1628]/5' : 'border-gray-200 hover:border-gray-300'}`}>
+                  <input type="radio" name="payment" checked={paymentMethod === 'stripe'}
+                    onChange={() => setPaymentMethod('stripe')} className="accent-[#0B1628]" />
+                  <div className="flex items-center gap-2 flex-1">
+                    <svg viewBox="0 0 28 12" className="h-4 w-7" aria-label="Stripe">
+                      <rect width="28" height="12" rx="2" fill="#635BFF"/>
+                      <text x="14" y="9" textAnchor="middle" fill="white" fontSize="7" fontWeight="bold" fontFamily="sans-serif">S</text>
+                    </svg>
+                    <span className="text-sm font-medium text-gray-800">{t('checkout.creditCard')}</span>
+                  </div>
+                </label>
+              )}
+              {paypalAvailable && (
+                <label className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'paypal' ? 'border-[#0B1628] bg-[#0B1628]/5' : 'border-gray-200 hover:border-gray-300'}`}>
+                  <input type="radio" name="payment" checked={paymentMethod === 'paypal'}
+                    onChange={() => setPaymentMethod('paypal')} className="accent-[#0B1628]" />
+                  <div className="flex items-center gap-2 flex-1">
+                    <svg viewBox="0 0 28 12" className="h-4 w-7" aria-label="PayPal">
+                      <rect width="28" height="12" rx="2" fill="#003087"/>
+                      <text x="14" y="9" textAnchor="middle" fill="white" fontSize="7" fontWeight="bold" fontFamily="sans-serif">P</text>
+                    </svg>
+                    <span className="text-sm font-medium text-gray-800">PayPal</span>
+                  </div>
+                </label>
+              )}
+            </div>
+          </div>
+        )}
+
         {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
 
-        <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-4">
-          <p className="text-sm text-amber-800">{t('checkout.simulated')}</p>
-        </div>
+        {isMock && (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-4">
+            <p className="text-sm text-amber-800">{t('checkout.simulated')}</p>
+          </div>
+        )}
+
+        {!isMock && (
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
+            <p className="text-sm text-blue-800">{t('checkout.redirectNotice')}</p>
+          </div>
+        )}
 
         <button type="submit" disabled={loading}
           className="w-full mt-6 bg-[#0B1628] text-white py-3 rounded-lg hover:bg-[#0B1628]/90 font-semibold disabled:bg-gray-400 transition-colors">

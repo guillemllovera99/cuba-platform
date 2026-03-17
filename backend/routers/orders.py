@@ -13,6 +13,7 @@ from models import Product, Order, OrderItem
 from schemas import CheckoutRequest, OrderOut, OrderItemOut
 from auth import require_auth
 from services.inventory_service import reserve_stock, confirm_sale
+from config import PAYMENTS_ENABLED
 
 router = APIRouter(prefix="/api/v1/orders", tags=["orders"])
 
@@ -51,7 +52,11 @@ def _order_to_out(order: Order) -> OrderOut:
     )
 
 
-# ── Checkout (mock payment: auto-confirm) ──────────────────────
+# ── Checkout ─────────────────────────────────────────────────────
+# When PAYMENTS_ENABLED (Stripe/PayPal keys configured):
+#   → Order created as "pending_payment", frontend redirects to payment
+# When PAYMENTS_ENABLED is False (no keys = mock mode):
+#   → Order auto-confirmed as "paid" (existing demo behavior)
 
 @router.post("/checkout", response_model=OrderOut)
 async def checkout(
@@ -69,10 +74,8 @@ async def checkout(
 
     order_items = []
     subtotal = 0.0
-    # Track which products we reserved so we can roll back on failure
     reserved = []
 
-    # Pre-generate an order ID for the stock movement references
     order_code = generate_order_code()
     temp_order_id = f"pending-{order_code}"
 
@@ -81,11 +84,8 @@ async def checkout(
         if not product:
             raise HTTPException(400, f"Product {item.product_id} not found")
 
-        # Use atomic inventory reservation instead of direct stock_quantity check
         success = await reserve_stock(db, product.id, item.quantity, temp_order_id)
         if not success:
-            # Rollback: this will discard all unflushed changes including
-            # any previous reserve_stock calls in this transaction
             await db.rollback()
             raise HTTPException(
                 400,
@@ -103,35 +103,52 @@ async def checkout(
             unit_price_usd=float(product.price_usd),
             subtotal_usd=line_total,
         ))
-        # Also decrement legacy stock_quantity to keep it in sync
         product.stock_quantity -= item.quantity
 
-    # Create order — MOCK PAYMENT: auto-set to "paid"
-    order = Order(
-        order_code=order_code,
-        client_user_id=user["sub"],
-        status="paid",
-        recipient_name=req.recipient_name,
-        recipient_phone=req.recipient_phone,
-        recipient_city=req.recipient_city,
-        recipient_address=req.recipient_address,
-        subtotal_usd=subtotal,
-        total_usd=subtotal,  # no shipping fee in MVP
-        notes=req.notes,
-        paid_at=datetime.now(timezone.utc),
-    )
+    if PAYMENTS_ENABLED:
+        # Real payment mode: order stays pending until Stripe/PayPal confirms
+        order = Order(
+            order_code=order_code,
+            client_user_id=user["sub"],
+            status="pending_payment",
+            recipient_name=req.recipient_name,
+            recipient_phone=req.recipient_phone,
+            recipient_city=req.recipient_city,
+            recipient_address=req.recipient_address,
+            subtotal_usd=subtotal,
+            total_usd=subtotal,
+            notes=req.notes,
+        )
+    else:
+        # Mock mode: auto-confirm payment (demo/dev behavior)
+        order = Order(
+            order_code=order_code,
+            client_user_id=user["sub"],
+            status="paid",
+            recipient_name=req.recipient_name,
+            recipient_phone=req.recipient_phone,
+            recipient_city=req.recipient_city,
+            recipient_address=req.recipient_address,
+            subtotal_usd=subtotal,
+            total_usd=subtotal,
+            notes=req.notes,
+            paid_at=datetime.now(timezone.utc),
+        )
+
     order.items = order_items
     db.add(order)
     await db.flush()
 
-    # Confirm the sale (moves stock from reserved to sold)
-    for product_id, qty in reserved:
-        await confirm_sale(db, product_id, qty, order.id)
+    if not PAYMENTS_ENABLED:
+        # Mock mode: confirm sale immediately
+        for product_id, qty in reserved:
+            await confirm_sale(db, product_id, qty, order.id)
 
     await db.commit()
     await db.refresh(order, attribute_names=["items"])
 
-    print(f"ORDER: {order.order_code} confirmed — {len(reserved)} items, ${subtotal:.2f}")
+    mode = "MOCK" if not PAYMENTS_ENABLED else "PENDING"
+    print(f"ORDER [{mode}]: {order.order_code} — {len(reserved)} items, ${subtotal:.2f}")
 
     return _order_to_out(order)
 
