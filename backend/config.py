@@ -60,3 +60,30 @@ JWT_ALGORITHM = "HS256"
 JWT_EXPIRE_MINUTES = 1440  # 24 hours
 
 CORS_ORIGINS = (_get_env("CORS_ORIGINS") or "*").split(",")
+
+# ---------------------------------------------------------------------------
+# Payment settings (Stripe + PayPal)
+# ---------------------------------------------------------------------------
+# Stripe — free to set up, only pay per transaction (2.9% + $0.30)
+STRIPE_SECRET_KEY = _get_env("STRIPE_SECRET_KEY") or ""
+STRIPE_WEBHOOK_SECRET = _get_env("STRIPE_WEBHOOK_SECRET") or ""
+
+# PayPal — free to set up, only pay per transaction (2.9% + $0.30)
+PAYPAL_CLIENT_ID = _get_env("PAYPAL_CLIENT_ID") or ""
+PAYPAL_CLIENT_SECRET = _get_env("PAYPAL_CLIENT_SECRET") or ""
+PAYPAL_MODE = _get_env("PAYPAL_MODE") or "sandbox"  # "sandbox" or "live"
+
+# Frontend URL for redirects after payment
+FRONTEND_URL = _get_env("FRONTEND_URL") or "http://localhost:5173"
+
+# Are real payment providers configured?
+STRIPE_ENABLED = bool(STRIPE_SECRET_KEY)
+PAYPAL_ENABLED = bool(PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET)
+PAYMENTS_ENABLED = STRIPE_ENABLED or PAYPAL_ENABLED
+
+if STRIPE_ENABLED:
+    print(f"Payments: Stripe enabled (key starts with {STRIPE_SECRET_KEY[:7]}...)")
+if PAYPAL_ENABLED:
+    print(f"Payments: PayPal enabled ({PAYPAL_MODE} mode)")
+if not PAYMENTS_ENABLED:
+    print("Payments: MOCK mode (no Stripe/PayPal keys configured)")

@@ -66,4 +66,13 @@ export const api = {
 
   // admin stats
   adminStats: () => apiFetch('/api/v1/admin/stats'),
+
+  // payments
+  paymentConfig: () => apiFetch('/api/v1/payments/config'),
+  stripeCreateSession: (orderId: string) =>
+    apiFetch(`/api/v1/payments/stripe/create-session?order_id=${orderId}`, { method: 'POST' }),
+  paypalCreateOrder: (orderId: string) =>
+    apiFetch(`/api/v1/payments/paypal/create-order?order_id=${orderId}`, { method: 'POST' }),
+  paypalCapture: (paypalOrderId: string, orderId: string) =>
+    apiFetch(`/api/v1/payments/paypal/capture?paypal_order_id=${paypalOrderId}&order_id=${orderId}`, { method: 'POST' }),
 }
