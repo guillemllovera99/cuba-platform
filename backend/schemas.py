@@ -8,6 +8,7 @@ class RegisterRequest(BaseModel):
     password: str
     full_name: str
     phone: Optional[str] = None
+    account_type: Optional[str] = "buyer"  # buyer | seller | both
 
 
 class LoginRequest(BaseModel):
@@ -19,6 +20,7 @@ class UserOut(BaseModel):
     id: str
     email: str
     role: str
+    account_type: Optional[str] = "buyer"
     full_name: Optional[str]
     phone: Optional[str]
 

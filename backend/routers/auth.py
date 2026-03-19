@@ -17,11 +17,13 @@ async def register(req: RegisterRequest, db: AsyncSession = Depends(get_db)):
     if existing.scalar_one_or_none():
         raise HTTPException(400, "Email already registered")
 
+    acct = req.account_type if req.account_type in ("buyer", "seller", "both") else "buyer"
     user = User(
         email=req.email,
         password_hash=hash_password(req.password),
         full_name=req.full_name,
         phone=req.phone,
+        account_type=acct,
     )
     db.add(user)
     await db.commit()
@@ -31,6 +33,7 @@ async def register(req: RegisterRequest, db: AsyncSession = Depends(get_db)):
     return TokenOut(
         access_token=token,
         user=UserOut(id=user.id, email=user.email, role=user.role,
+                     account_type=user.account_type,
                      full_name=user.full_name, phone=user.phone),
     )
 
@@ -46,6 +49,7 @@ async def login(req: LoginRequest, db: AsyncSession = Depends(get_db)):
     return TokenOut(
         access_token=token,
         user=UserOut(id=user.id, email=user.email, role=user.role,
+                     account_type=user.account_type,
                      full_name=user.full_name, phone=user.phone),
     )
 
@@ -57,4 +61,5 @@ async def me(user: dict = Depends(require_auth), db: AsyncSession = Depends(get_
     if not u:
         raise HTTPException(404, "User not found")
     return UserOut(id=u.id, email=u.email, role=u.role,
+                   account_type=u.account_type,
                    full_name=u.full_name, phone=u.phone)

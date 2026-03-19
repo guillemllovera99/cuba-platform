@@ -4,6 +4,8 @@ import { useAuth } from '../store'
 import { api } from '../api'
 import { useI18n, translate } from '../i18n'
 
+const ACCOUNT_TYPES = ['buyer', 'seller', 'both'] as const
+
 export default function Login() {
   const [isRegister, setIsRegister] = useState(false)
   const [error, setError] = useState('')
@@ -13,7 +15,7 @@ export default function Login() {
   const lang = useI18n(s => s.lang)
   const t = (key: string) => translate(lang, key)
 
-  const [form, setForm] = useState({ email: '', password: '', full_name: '', phone: '' })
+  const [form, setForm] = useState({ email: '', password: '', full_name: '', phone: '', account_type: 'buyer' })
   const set = (f: string) => (e: React.ChangeEvent<HTMLInputElement>) =>
     setForm(prev => ({ ...prev, [f]: e.target.value }))
 
@@ -55,6 +57,27 @@ export default function Login() {
         <form onSubmit={handleSubmit} className="space-y-4">
           {isRegister && (
             <>
+              {/* Account type selector */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t('login.accountType')}</label>
+                <div className="grid grid-cols-3 gap-2">
+                  {ACCOUNT_TYPES.map(at => (
+                    <button
+                      key={at}
+                      type="button"
+                      onClick={() => setForm(prev => ({ ...prev, account_type: at }))}
+                      className={`p-3 rounded-lg border text-center transition-all min-h-[44px] ${
+                        form.account_type === at
+                          ? 'border-green-600 bg-green-50 ring-1 ring-green-600'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                    >
+                      <span className="block text-sm font-semibold text-[#0B1628]">{t(`login.${at}`)}</span>
+                      <span className="block text-xs text-gray-500 mt-0.5">{t(`login.${at}Desc`)}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">{t('login.fullName')}</label>
                 <input value={form.full_name} onChange={set('full_name')} required

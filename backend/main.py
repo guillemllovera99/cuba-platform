@@ -46,6 +46,7 @@ from routers.orders import router as orders_router
 from routers.admin_stats import router as admin_stats_router
 from routers.payments import router as payments_router
 from routers.shipments import router as shipments_router
+from routers.analytics import router as analytics_router
 
 app.include_router(health_router)
 app.include_router(auth_router)
@@ -55,6 +56,7 @@ app.include_router(orders_router)
 app.include_router(admin_stats_router)
 app.include_router(payments_router)
 app.include_router(shipments_router)
+app.include_router(analytics_router)
 
 
 if __name__ == "__main__":

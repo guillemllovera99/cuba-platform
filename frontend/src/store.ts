@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware'
 
 // ── Auth Store ──
 interface User {
-  id: string; email: string; role: string; full_name: string | null
+  id: string; email: string; role: string; account_type?: string; full_name: string | null
 }
 
 interface AuthState {
@@ -13,6 +13,8 @@ interface AuthState {
   logout: () => void
   isAdmin: () => boolean
   isLoggedIn: () => boolean
+  isSeller: () => boolean
+  isBuyer: () => boolean
 }
 
 export const useAuth = create<AuthState>()(
@@ -24,6 +26,8 @@ export const useAuth = create<AuthState>()(
       logout: () => set({ token: null, user: null }),
       isAdmin: () => get().user?.role === 'admin',
       isLoggedIn: () => !!get().token,
+      isSeller: () => { const a = get().user?.account_type; return a === 'seller' || a === 'both' },
+      isBuyer: () => { const a = get().user?.account_type; return !a || a === 'buyer' || a === 'both' },
     }),
     { name: 'cuba-auth' }
   )

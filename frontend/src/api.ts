@@ -86,4 +86,10 @@ export const api = {
     apiFetch(`/api/v1/payments/paypal/create-order?order_id=${orderId}`, { method: 'POST' }),
   paypalCapture: (paypalOrderId: string, orderId: string) =>
     apiFetch(`/api/v1/payments/paypal/capture?paypal_order_id=${paypalOrderId}&order_id=${orderId}`, { method: 'POST' }),
+
+  // analytics (US-13)
+  analyticsOverview: () => apiFetch('/api/v1/admin/analytics/overview'),
+  analyticsTopProducts: (limit = 10) => apiFetch(`/api/v1/admin/analytics/top-products?limit=${limit}`),
+  analyticsRevenueOverTime: (days = 30) => apiFetch(`/api/v1/admin/analytics/revenue-over-time?days=${days}`),
+  analyticsAccountTypes: () => apiFetch('/api/v1/admin/analytics/account-types'),
 }
