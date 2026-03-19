@@ -48,3 +48,19 @@ async def create_tables():
     engine = _get_engine()
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+
+    # Auto-add missing columns (safe for existing deployments)
+    await _ensure_columns(engine)
+
+
+async def _ensure_columns(engine):
+    """Add columns that may be missing from earlier schema versions."""
+    from sqlalchemy import text
+    async with engine.begin() as conn:
+        # account_type on users (added in migration 004)
+        try:
+            await conn.execute(text(
+                "ALTER TABLE users ADD COLUMN IF NOT EXISTS account_type VARCHAR(20) DEFAULT 'buyer'"
+            ))
+        except Exception:
+            pass  # Column already exists or DB doesn't support IF NOT EXISTS
