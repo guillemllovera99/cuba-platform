@@ -138,11 +138,11 @@ function Footer() {
 
   return (
     <footer>
-      {/* Forest image band */}
+      {/* Agriculture image band */}
       <div className="relative h-48 overflow-hidden">
         <img
           src="/coffee.jpg"
-          alt="Caribbean agriculture"
+          alt="Caribbean coffee plantation"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#F5F5F0]/80 to-[#0B1628]/90" />

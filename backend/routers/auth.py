@@ -33,7 +33,7 @@ async def register(req: RegisterRequest, db: AsyncSession = Depends(get_db)):
     return TokenOut(
         access_token=token,
         user=UserOut(id=user.id, email=user.email, role=user.role,
-                     account_type=user.account_type,
+                     account_type=getattr(user, 'account_type', None) or "buyer",
                      full_name=user.full_name, phone=user.phone),
     )
 
@@ -49,7 +49,7 @@ async def login(req: LoginRequest, db: AsyncSession = Depends(get_db)):
     return TokenOut(
         access_token=token,
         user=UserOut(id=user.id, email=user.email, role=user.role,
-                     account_type=user.account_type,
+                     account_type=getattr(user, 'account_type', None) or "buyer",
                      full_name=user.full_name, phone=user.phone),
     )
 
@@ -61,5 +61,5 @@ async def me(user: dict = Depends(require_auth), db: AsyncSession = Depends(get_
     if not u:
         raise HTTPException(404, "User not found")
     return UserOut(id=u.id, email=u.email, role=u.role,
-                   account_type=u.account_type,
+                   account_type=getattr(u, 'account_type', None) or "buyer",
                    full_name=u.full_name, phone=u.phone)
