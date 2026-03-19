@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../store'
+import { useAuth, useCart } from '../store'
 import { api } from '../api'
 import { useI18n, translate } from '../i18n'
 
@@ -15,7 +15,9 @@ const STATUS_COLORS: Record<string, string> = {
 
 export default function Orders() {
   const [orders, setOrders] = useState<any[]>([])
+  const [reorderedId, setReorderedId] = useState<string | null>(null)
   const isLoggedIn = useAuth(s => s.isLoggedIn())
+  const addItem = useCart(s => s.addItem)
   const navigate = useNavigate()
   const lang = useI18n(s => s.lang)
   const t = (key: string) => translate(lang, key)
@@ -24,6 +26,19 @@ export default function Orders() {
     if (!isLoggedIn) { navigate('/login'); return }
     api.myOrders().then(setOrders).catch(() => {})
   }, [isLoggedIn])
+
+  const handleReorder = async (order: any) => {
+    for (const item of order.items || []) {
+      try {
+        const product = await api.getProduct(item.product_id)
+        if (product && product.stock_quantity > 0) {
+          addItem({ id: product.id, name: product.name, price_usd: product.price_usd, image_url: product.image_url }, item.quantity)
+        }
+      } catch { /* product may have been removed */ }
+    }
+    setReorderedId(order.id)
+    setTimeout(() => setReorderedId(null), 2000)
+  }
 
   return (
     <div>
@@ -56,6 +71,21 @@ export default function Orders() {
                 {order.items?.map((i: any) => (
                   <span key={i.id} className="mr-3">{i.product_name} x{i.quantity}</span>
                 ))}
+              </div>
+              {/* Reorder button (US-14) */}
+              <div className="mt-3 flex items-center gap-3">
+                <button
+                  onClick={() => handleReorder(order)}
+                  className="text-sm bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors min-h-[44px] font-medium"
+                >
+                  {reorderedId === order.id ? t('orders.reordered') : t('orders.reorder')}
+                </button>
+                <Link
+                  to={`/track`}
+                  className="text-sm text-gray-500 hover:text-[#0B1628] transition-colors"
+                >
+                  {t('nav.track')}
+                </Link>
               </div>
             </div>
           ))}

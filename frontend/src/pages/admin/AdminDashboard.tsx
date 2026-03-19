@@ -39,6 +39,9 @@ export default function AdminDashboard() {
           <Link to="/admin/shipments" className="bg-[#0B1628] text-white px-4 py-2 rounded text-sm hover:bg-[#0B1628]/90 font-medium">
             Shipments
           </Link>
+          <Link to="/admin/analytics" className="bg-purple-600 text-white px-4 py-2 rounded text-sm hover:bg-purple-700 font-medium">
+            Analytics
+          </Link>
         </div>
       </div>
 

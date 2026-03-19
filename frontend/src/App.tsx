@@ -16,6 +16,7 @@ import AdminProducts from './pages/admin/AdminProducts'
 import AdminProductForm from './pages/admin/AdminProductForm'
 import AdminOrders from './pages/admin/AdminOrders'
 import AdminShipments from './pages/admin/AdminShipments'
+import AdminAnalytics from './pages/admin/AdminAnalytics'
 
 function Logo({ className = '' }: { className?: string }) {
   return (
@@ -140,8 +141,8 @@ function Footer() {
       {/* Forest image band */}
       <div className="relative h-48 overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1511497584788-876760111969?w=1200&q=80"
-          alt="Forest"
+          src="/coffee.jpg"
+          alt="Caribbean agriculture"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#F5F5F0]/80 to-[#0B1628]/90" />
@@ -190,6 +191,7 @@ export default function App() {
           <Route path="/admin/products/:id/edit" element={<AdminProductForm />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
           <Route path="/admin/shipments" element={<AdminShipments />} />
+          <Route path="/admin/analytics" element={<AdminAnalytics />} />
         </Routes>
       </main>
       <Footer />
