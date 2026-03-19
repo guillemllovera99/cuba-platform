@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { api } from '../api'
 import { useCart } from '../store'
 import { useI18n, translate, tCat } from '../i18n'
+import { tProductName } from '../productNames'
 
 export default function Product() {
   const { id } = useParams()
@@ -34,7 +35,7 @@ export default function Product() {
         )}
         <div className="p-4 sm:p-6 flex-1">
           <span className="text-sm text-[#0B1628]/60 font-medium">{tCat(lang, product.category)}</span>
-          <h1 className="text-2xl font-bold text-[#0B1628] mt-1">{product.name}</h1>
+          <h1 className="text-2xl font-bold text-[#0B1628] mt-1">{tProductName(lang, product.sku, product.name)}</h1>
           {product.sku && <p className="text-xs text-gray-400 mt-1">{t('product.sku')}: {product.sku}</p>}
           <p className="text-3xl font-bold text-[#0B1628] mt-4">${product.price_usd.toFixed(2)} <span className="text-base font-normal text-gray-500">USD</span></p>
 
