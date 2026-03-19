@@ -18,15 +18,6 @@ import AdminOrders from './pages/admin/AdminOrders'
 import AdminShipments from './pages/admin/AdminShipments'
 import AdminAnalytics from './pages/admin/AdminAnalytics'
 
-function Logo({ className = '' }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 200 100" fill="none" className={className}>
-      <polyline points="40,65 70,45 90,60 120,25" stroke="currentColor" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round"/>
-      <text x="100" y="90" textAnchor="middle" fontFamily="'Inter','Helvetica Neue',sans-serif" fontSize="22" fontWeight="400" fill="currentColor" letterSpacing="1">Asymmetrica</text>
-    </svg>
-  )
-}
-
 function LangSwitcher() {
   const { lang, setLang } = useI18n()
   return (
@@ -55,9 +46,9 @@ function Navbar() {
   return (
     <nav className="bg-[#0B1628] sticky top-0 z-50 border-b border-white/10">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link to="/" className="text-white shrink-0">
-          <Logo className="h-10 w-auto" />
+        {/* Logo — real company image */}
+        <Link to="/" className="shrink-0">
+          <img src="/white_logo.png" alt="Asymmetrica" className="h-8 sm:h-10 w-auto" />
         </Link>
 
         {/* Desktop links */}
@@ -137,33 +128,26 @@ function Footer() {
   const t = (key: string) => translate(lang, key)
 
   return (
-    <footer>
-      {/* Agriculture image band */}
-      <div className="relative h-48 overflow-hidden">
-        <img
-          src="/coffee.jpg"
-          alt="Caribbean coffee plantation"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#F5F5F0]/80 to-[#0B1628]/90" />
-      </div>
-
-      {/* Footer content */}
-      <div className="bg-[#0B1628] text-white/70 py-8">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-6">
-            <div className="text-center md:text-left max-w-md">
-              <Logo className="h-10 w-auto text-white mb-3 mx-auto md:mx-0" />
-              <p className="text-sm leading-relaxed">{t('footer.tagline')}</p>
-            </div>
-            <div className="text-center md:text-right text-sm space-y-1">
-              <p>info@asymmetrica-investments.com</p>
-              <p>www.asymmetrica-investments.com</p>
-            </div>
+    <footer className="bg-[#0B1628]">
+      <div className="max-w-6xl mx-auto px-4 py-10">
+        <div className="flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
+          {/* Company info */}
+          <div className="text-center md:text-left max-w-sm">
+            <img src="/white_logo.png" alt="Asymmetrica Investments" className="h-10 mx-auto md:mx-0 mb-4" />
+            <p className="text-white/50 text-sm leading-relaxed">{t('footer.tagline')}</p>
           </div>
-          <div className="border-t border-white/10 mt-6 pt-4 text-center text-xs text-white/40">
-            &copy; {new Date().getFullYear()} Asymmetrica Investments. {t('footer.rights')}
+          {/* Contact & links */}
+          <div className="text-center md:text-right text-sm space-y-2">
+            <a href="https://www.asymmetrica-investments.com" target="_blank" rel="noopener noreferrer" className="block text-white/70 hover:text-white transition-colors">
+              www.asymmetrica-investments.com
+            </a>
+            <a href="mailto:info@asymmetrica-investments.com" className="block text-white/70 hover:text-white transition-colors">
+              info@asymmetrica-investments.com
+            </a>
           </div>
+        </div>
+        <div className="border-t border-white/10 mt-8 pt-4 text-center text-xs text-white/30">
+          &copy; {new Date().getFullYear()} Asymmetrica Investments. {t('footer.rights')}
         </div>
       </div>
     </footer>
