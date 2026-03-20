@@ -28,13 +28,13 @@ export default function Catalog() {
   return (
     <div className="-mx-4 -mt-6">
       {/* Catalog hero banner */}
-      <div className="relative h-40 sm:h-52 overflow-hidden mb-6">
-        <img src="/energy_photo.png" alt="Products" className="absolute inset-0 w-full h-full object-cover" />
+      <div className="relative h-44 sm:h-56 overflow-hidden mb-8">
+        <img src="/agriculture_1.jpg" alt="Products" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#0B1628]/80 to-[#0B1628]/40" />
-        <div className="relative z-10 flex items-center h-full px-6 sm:px-8">
+        <div className="relative z-10 flex items-center h-full px-6 sm:px-10">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white">{t('catalog.title')}</h1>
-            <p className="text-white/60 text-sm mt-1">{t('home.hero.subtitle')}</p>
+            <h1 className="text-3xl sm:text-4xl font-bold text-white">{t('catalog.title')}</h1>
+            <p className="text-white/60 text-sm sm:text-base mt-2">{t('home.hero.subtitle')}</p>
           </div>
         </div>
       </div>
@@ -50,10 +50,10 @@ export default function Catalog() {
         />
 
         {/* Category filters */}
-        <div className="flex gap-2 overflow-x-auto pb-3 mb-4 -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap md:overflow-visible scrollbar-hide">
+        <div className="flex gap-2.5 overflow-x-auto pb-3 mb-6 -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap md:overflow-visible scrollbar-hide">
           <button
             onClick={() => setParams({})}
-            className={`shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${!activeCategory ? 'bg-[#0B1628] text-white' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'}`}
+            className={`shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold transition-colors ${!activeCategory ? 'bg-[#0B1628] text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:text-[#0B1628]'}`}
           >
             {t('catalog.all')}
           </button>
@@ -61,7 +61,7 @@ export default function Catalog() {
             <button
               key={cat}
               onClick={() => setParams({ category: cat })}
-              className={`shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${activeCategory === cat ? 'bg-[#0B1628] text-white' : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'}`}
+              className={`shrink-0 px-5 py-2.5 rounded-full text-sm font-semibold transition-colors whitespace-nowrap ${activeCategory === cat ? 'bg-[#0B1628] text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50 hover:text-[#0B1628]'}`}
             >
               {tCat(lang, cat)}
             </button>

@@ -7,180 +7,210 @@ export default function Home() {
 
   return (
     <div className="-mx-4 -mt-6 -mb-6">
-      {/* ───── HERO — full viewport ───── */}
+      {/* ───── HERO — full viewport, energy_photo ───── */}
       <section className="relative h-[calc(100vh-64px)] flex items-center justify-center overflow-hidden">
         <img
-          src="/agriculture_1.jpg"
-          alt="Caribbean agriculture"
+          src="/energy_photo.png"
+          alt="Energy and agriculture solutions for Cuba"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60" />
 
-        <div className="relative z-10 text-center px-6 max-w-2xl mx-auto">
+        <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
           <img
             src="/white_logo.png"
             alt="Asymmetrica Investments"
-            className="h-16 sm:h-24 mx-auto mb-8"
+            className="h-14 sm:h-20 mx-auto mb-8"
           />
-          <p className="text-white/60 text-xs sm:text-sm uppercase tracking-[0.25em] mb-4 font-light">
+          <p className="text-white/50 text-xs sm:text-sm uppercase tracking-[0.3em] mb-5 font-light">
             {t('home.hero.badge')}
           </p>
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold text-white mb-4 leading-tight">
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white mb-5 leading-[1.1]">
             {t('home.hero.title')}
           </h1>
-          <p className="text-white/70 text-sm sm:text-lg leading-relaxed max-w-lg mx-auto mb-10">
+          <p className="text-white/70 text-base sm:text-xl leading-relaxed max-w-2xl mx-auto mb-12">
             {t('home.hero.subtitle')}
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-12">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               to="/catalog"
-              className="bg-green-600 text-white font-semibold px-8 py-3.5 rounded-lg hover:bg-green-700 transition-all shadow-lg shadow-green-600/25 min-h-[48px] text-base w-full sm:w-auto"
+              className="bg-green-600 text-white font-semibold px-10 py-4 rounded-lg hover:bg-green-700 transition-all shadow-lg shadow-green-600/25 text-lg w-full sm:w-auto"
             >
               {t('home.hero.cta')}
             </Link>
             <Link
               to="/track"
-              className="bg-white/10 backdrop-blur-sm text-white font-medium px-8 py-3.5 rounded-lg hover:bg-white/20 transition-all border border-white/20 min-h-[48px] text-base w-full sm:w-auto"
+              className="bg-white/10 backdrop-blur-sm text-white font-medium px-10 py-4 rounded-lg hover:bg-white/20 transition-all border border-white/20 text-lg w-full sm:w-auto"
             >
               {t('home.hero.ctaTrack')}
-            </Link>
-          </div>
-
-          {/* Buyer / Seller / Both */}
-          <div className="grid grid-cols-3 gap-3 max-w-md mx-auto">
-            <Link
-              to="/login"
-              className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg py-3 px-2 text-center hover:bg-white/15 transition-all"
-            >
-              <p className="text-white font-medium text-sm">{t('login.buyer')}</p>
-              <p className="text-white/40 text-[10px] mt-0.5 hidden sm:block">{t('login.buyerDesc')}</p>
-            </Link>
-            <Link
-              to="/login"
-              className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg py-3 px-2 text-center hover:bg-white/15 transition-all"
-            >
-              <p className="text-white font-medium text-sm">{t('login.seller')}</p>
-              <p className="text-white/40 text-[10px] mt-0.5 hidden sm:block">{t('login.sellerDesc')}</p>
-            </Link>
-            <Link
-              to="/login"
-              className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg py-3 px-2 text-center hover:bg-white/15 transition-all"
-            >
-              <p className="text-white font-medium text-sm">{t('login.both')}</p>
-              <p className="text-white/40 text-[10px] mt-0.5 hidden sm:block">{t('login.bothDesc')}</p>
             </Link>
           </div>
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 animate-bounce">
-          <svg className="w-6 h-6 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
+          <svg className="w-6 h-6 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
           </svg>
         </div>
       </section>
 
-      {/* ───── ABOUT SECTION — white, clean ───── */}
+      {/* ───── ABOUT US — white, with brother.jpg ───── */}
       <section className="bg-white py-20 sm:py-28 px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-4xl font-bold text-[#0B1628] mb-6 leading-tight">
-            {t('home.about.title')}
-          </h2>
-          <p className="text-gray-600 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
-            {t('home.about.text')}
-          </p>
+        <div className="max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl sm:text-5xl font-bold text-[#0B1628] mb-6 leading-tight">
+                {t('home.about.title')}
+              </h2>
+              <p className="text-gray-600 text-base sm:text-lg leading-relaxed">
+                {t('home.about.text')}
+              </p>
+              <Link
+                to="/catalog"
+                className="inline-block mt-8 text-[#0B1628] font-semibold text-lg border-b-2 border-[#0B1628] pb-1 hover:opacity-70 transition-opacity"
+              >
+                {t('home.hero.cta')} &rarr;
+              </Link>
+            </div>
+            <div className="rounded-2xl overflow-hidden shadow-lg">
+              <img src="/brother.jpg" alt="Asymmetrica team" className="w-full h-72 sm:h-96 object-cover" />
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ───── SERVICES — light gray background ───── */}
-      <section className="bg-[#F5F5F0] py-20 sm:py-28 px-6">
+      {/* ───── HOW IT WORKS — light gray ───── */}
+      <section className="bg-[#F7F7F3] py-20 sm:py-28 px-6">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl sm:text-4xl font-bold text-[#0B1628] text-center mb-14">
+          <h2 className="text-3xl sm:text-5xl font-bold text-[#0B1628] text-center mb-16">
             {t('home.services.title')}
           </h2>
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-10">
             {[
-              { icon: 'sourcing', title: t('home.services.sourcing'), desc: t('home.services.sourcingDesc') },
-              { icon: 'logistics', title: t('home.services.logistics'), desc: t('home.services.logisticsDesc') },
-              { icon: 'advisory', title: t('home.services.advisory'), desc: t('home.services.advisoryDesc') },
+              {
+                step: '01',
+                title: t('home.services.sourcing'),
+                desc: t('home.services.sourcingDesc'),
+              },
+              {
+                step: '02',
+                title: t('home.services.logistics'),
+                desc: t('home.services.logisticsDesc'),
+              },
+              {
+                step: '03',
+                title: t('home.services.advisory'),
+                desc: t('home.services.advisoryDesc'),
+              },
             ].map(s => (
-              <div key={s.icon} className="bg-white rounded-xl p-8 text-center shadow-sm">
-                <div className="w-14 h-14 bg-[#0B1628] rounded-full flex items-center justify-center mx-auto mb-5">
-                  {s.icon === 'sourcing' && (
-                    <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                  )}
-                  {s.icon === 'logistics' && (
-                    <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
-                  )}
-                  {s.icon === 'advisory' && (
-                    <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
-                  )}
+              <div key={s.step} className="text-center">
+                <div className="text-5xl font-bold text-[#0B1628]/10 mb-4">{s.step}</div>
+                <h3 className="text-xl font-bold text-[#0B1628] mb-3">{s.title}</h3>
+                <p className="text-gray-500 text-base leading-relaxed">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ───── IMAGE BREAK — agriculture_1 ───── */}
+      <section className="relative h-56 sm:h-72 overflow-hidden">
+        <img src="/agriculture_1.jpg" alt="Caribbean agriculture" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-[#0B1628]/30" />
+      </section>
+
+      {/* ───── PRODUCT CATEGORIES PREVIEW ───── */}
+      <section className="bg-white py-20 sm:py-28 px-6">
+        <div className="max-w-5xl mx-auto text-center">
+          <h2 className="text-3xl sm:text-5xl font-bold text-[#0B1628] mb-6">
+            {t('catalog.title')}
+          </h2>
+          <p className="text-gray-500 text-base sm:text-lg max-w-2xl mx-auto mb-12">
+            {lang === 'es' ? 'Desde granos y productos frescos hasta paneles solares y equipos de energía.' : lang === 'fr' ? 'Des céréales et produits frais aux panneaux solaires et équipements énergétiques.' : 'From grains and fresh produce to solar panels and energy equipment.'}
+          </p>
+          <div className="grid grid-cols-3 gap-4 sm:gap-6 max-w-lg mx-auto mb-10">
+            {[
+              { label: t('home.value.agriculture'), img: '/coffee.jpg' },
+              { label: t('home.value.energy'), img: '/energy_photo.png' },
+              { label: t('home.value.logistics'), img: '/agriculture_2.jpeg' },
+            ].map(cat => (
+              <Link to="/catalog" key={cat.label} className="group">
+                <div className="rounded-xl overflow-hidden aspect-square mb-3 shadow-sm">
+                  <img src={cat.img} alt={cat.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                 </div>
-                <h3 className="text-lg font-bold text-[#0B1628] mb-3">{s.title}</h3>
-                <p className="text-gray-600 text-sm leading-relaxed">{s.desc}</p>
-              </div>
+                <p className="text-sm sm:text-base font-semibold text-[#0B1628]">{cat.label}</p>
+              </Link>
             ))}
           </div>
+          <Link
+            to="/catalog"
+            className="inline-block bg-[#0B1628] text-white font-semibold px-10 py-4 rounded-lg hover:bg-[#0B1628]/90 transition-all text-lg"
+          >
+            {t('home.hero.cta')}
+          </Link>
         </div>
       </section>
 
-      {/* ───── IMAGE BREAK — coffee photo ───── */}
-      <section className="relative h-64 sm:h-80 overflow-hidden">
-        <img src="/coffee.jpg" alt="Caribbean coffee" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-[#0B1628]/40" />
-      </section>
-
-      {/* ───── FEATURED IN ───── */}
-      <section className="bg-white py-16 sm:py-24 px-6">
+      {/* ───── FEATURED IN — logos as styled text ───── */}
+      <section className="bg-[#F7F7F3] py-16 sm:py-20 px-6">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-xl sm:text-2xl font-bold text-[#0B1628] text-center mb-12 uppercase tracking-wider">
+          <p className="text-center text-xs sm:text-sm uppercase tracking-[0.3em] text-gray-400 font-medium mb-10">
             {t('home.featured.title')}
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8 items-center justify-items-center opacity-70">
-            {['Forbes', 'CNN', 'Fresh Plaza', 'ImpactAlpha', 'El Financiero', 'Inforural'].map(name => (
-              <div key={name} className="text-center">
-                <span className="text-lg sm:text-xl font-bold text-[#0B1628]/80 tracking-wide">{name}</span>
+          </p>
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-6 sm:gap-8 items-center justify-items-center">
+            {[
+              { name: 'Forbes', style: 'font-serif italic' },
+              { name: 'CNN', style: 'font-sans font-black tracking-wider' },
+              { name: 'Fresh Plaza', style: 'font-sans font-bold' },
+              { name: 'ImpactAlpha', style: 'font-sans font-bold italic' },
+              { name: 'El Financiero', style: 'font-serif font-bold' },
+              { name: 'Inforural', style: 'font-sans font-bold' },
+            ].map(m => (
+              <div key={m.name} className="text-center opacity-50 hover:opacity-80 transition-opacity">
+                <span className={`text-base sm:text-xl text-[#0B1628] ${m.style}`}>{m.name}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ───── MEMBERS OF ───── */}
-      <section className="bg-[#F5F5F0] py-16 sm:py-24 px-6">
+      {/* ───── MEMBERS OF — logos as styled text ───── */}
+      <section className="bg-white py-16 sm:py-20 px-6">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-xl sm:text-2xl font-bold text-[#0B1628] text-center mb-12 uppercase tracking-wider">
+          <p className="text-center text-xs sm:text-sm uppercase tracking-[0.3em] text-gray-400 font-medium mb-10">
             {t('home.members.title')}
-          </h2>
-          <div className="grid sm:grid-cols-2 gap-8 items-center justify-items-center">
-            <div className="bg-white rounded-xl p-6 sm:p-8 text-center shadow-sm w-full max-w-sm">
-              <p className="text-lg font-bold text-[#0B1628] mb-1">Swiss Sustainable Finance</p>
-              <p className="text-sm text-gray-500">Switzerland</p>
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-10 sm:gap-16">
+            <div className="text-center opacity-60 hover:opacity-90 transition-opacity">
+              <p className="text-lg sm:text-2xl font-bold text-[#0B1628] font-serif">Swiss Sustainable</p>
+              <p className="text-lg sm:text-2xl font-bold text-[#0B1628] font-serif">Finance</p>
             </div>
-            <div className="bg-white rounded-xl p-6 sm:p-8 text-center shadow-sm w-full max-w-sm">
-              <p className="text-lg font-bold text-[#0B1628] mb-1">Alianza por la Inversi&oacute;n</p>
-              <p className="text-lg font-bold text-[#0B1628]">de Impacto M&eacute;xico</p>
-              <p className="text-sm text-gray-500 mt-1">Mexico</p>
+            <div className="hidden sm:block w-px h-12 bg-gray-200" />
+            <div className="text-center opacity-60 hover:opacity-90 transition-opacity">
+              <p className="text-lg sm:text-2xl font-bold text-[#0B1628] font-serif">Alianza por la</p>
+              <p className="text-lg sm:text-2xl font-bold text-[#0B1628] font-serif">Inversi&oacute;n de Impacto</p>
+              <p className="text-sm text-gray-400 mt-1">M&eacute;xico</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ───── CTA BAND — before footer ───── */}
-      <section className="relative py-20 sm:py-28 overflow-hidden">
-        <img src="/energy_photo.png" alt="" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-[#0B1628]/80" />
+      {/* ───── FINAL CTA — agriculture photo ───── */}
+      <section className="relative py-24 sm:py-32 overflow-hidden">
+        <img src="/coffee.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-[#0B1628]/75" />
         <div className="relative z-10 text-center px-6">
-          <h2 className="text-2xl sm:text-4xl font-bold text-white mb-4">
-            {lang === 'es' ? 'Comienza a comerciar hoy' : lang === 'fr' ? 'Commencez maintenant' : 'Start Trading Today'}
+          <h2 className="text-3xl sm:text-5xl font-bold text-white mb-5">
+            {lang === 'es' ? 'Explora el Catálogo' : lang === 'fr' ? 'Parcourez le Catalogue' : 'Explore the Catalog'}
           </h2>
-          <p className="text-white/60 mb-8 max-w-lg mx-auto">
-            {lang === 'es' ? 'Accede a productos premium del Caribe.' : lang === 'fr' ? "Accédez aux produits premium des Caraïbes." : 'Access premium Caribbean agricultural products and global logistics.'}
+          <p className="text-white/50 text-base sm:text-lg mb-10 max-w-xl mx-auto">
+            {lang === 'es' ? 'Productos agrícolas, energéticos y esenciales entregados a Cuba.' : lang === 'fr' ? 'Produits agricoles, énergétiques et essentiels livrés à Cuba.' : 'Agricultural, energy, and essential products delivered to Cuba.'}
           </p>
           <Link
             to="/catalog"
-            className="inline-block bg-green-600 text-white font-semibold px-10 py-4 rounded-lg hover:bg-green-700 transition-all text-lg"
+            className="inline-block bg-green-600 text-white font-semibold px-12 py-4 rounded-lg hover:bg-green-700 transition-all text-lg shadow-lg"
           >
             {t('home.hero.cta')}
           </Link>
