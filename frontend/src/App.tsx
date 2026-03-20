@@ -17,6 +17,7 @@ import AdminProductForm from './pages/admin/AdminProductForm'
 import AdminOrders from './pages/admin/AdminOrders'
 import AdminShipments from './pages/admin/AdminShipments'
 import AdminAnalytics from './pages/admin/AdminAnalytics'
+import About from './pages/About'
 
 function LangSwitcher() {
   const { lang, setLang } = useI18n()
@@ -55,6 +56,7 @@ function Navbar() {
         <div className="hidden md:flex items-center gap-8">
           <Link to="/catalog" className="text-base text-gray-600 hover:text-[#0B1628] transition-colors font-medium">{t('nav.catalog')}</Link>
           <Link to="/track" className="text-base text-gray-600 hover:text-[#0B1628] transition-colors font-medium">{t('nav.track')}</Link>
+          <Link to="/about" className="text-base text-gray-600 hover:text-[#0B1628] transition-colors font-medium">{t('nav.about')}</Link>
           {isAdmin() && (
             <Link to="/admin" className="text-base text-blue-600 hover:text-blue-800 font-medium">{t('nav.admin')}</Link>
           )}
@@ -102,6 +104,7 @@ function Navbar() {
         <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-4 shadow-lg">
           <Link to="/catalog" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">{t('nav.catalog')}</Link>
           <Link to="/track" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">{t('nav.track')}</Link>
+          <Link to="/about" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">{t('nav.about')}</Link>
           <Link to="/cart" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">
             {t('nav.cart')} {cartCount > 0 && `(${cartCount})`}
           </Link>
@@ -168,6 +171,7 @@ export default function App() {
           <Route path="/order/:id/confirmed" element={<OrderConfirmation />} />
           <Route path="/orders" element={<Orders />} />
           <Route path="/track" element={<TrackOrder />} />
+          <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/products" element={<AdminProducts />} />
