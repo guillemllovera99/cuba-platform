@@ -27,19 +27,19 @@ export default function AdminDashboard() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
-        <div className="flex gap-2">
-          <Link to="/admin/products" className="bg-white border px-4 py-2 rounded text-sm hover:bg-gray-50 font-medium">
-            Manage Products
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-800 mb-4">Admin Dashboard</h1>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+          <Link to="/admin/products" className="bg-white border px-4 py-2.5 rounded-lg text-sm hover:bg-gray-50 font-medium text-center min-h-[44px] flex items-center justify-center">
+            Products
           </Link>
-          <Link to="/admin/orders" className="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700 font-medium">
-            Manage Orders
+          <Link to="/admin/orders" className="bg-green-600 text-white px-4 py-2.5 rounded-lg text-sm hover:bg-green-700 font-medium text-center min-h-[44px] flex items-center justify-center">
+            Orders
           </Link>
-          <Link to="/admin/shipments" className="bg-[#0B1628] text-white px-4 py-2 rounded text-sm hover:bg-[#0B1628]/90 font-medium">
+          <Link to="/admin/shipments" className="bg-[#0B1628] text-white px-4 py-2.5 rounded-lg text-sm hover:bg-[#0B1628]/90 font-medium text-center min-h-[44px] flex items-center justify-center">
             Shipments
           </Link>
-          <Link to="/admin/analytics" className="bg-purple-600 text-white px-4 py-2 rounded text-sm hover:bg-purple-700 font-medium">
+          <Link to="/admin/analytics" className="bg-purple-600 text-white px-4 py-2.5 rounded-lg text-sm hover:bg-purple-700 font-medium text-center min-h-[44px] flex items-center justify-center">
             Analytics
           </Link>
         </div>

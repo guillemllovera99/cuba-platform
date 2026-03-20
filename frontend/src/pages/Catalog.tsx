@@ -46,7 +46,7 @@ export default function Catalog() {
           placeholder={t('catalog.search')}
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="w-full border border-gray-300 rounded-lg px-4 py-3 mb-4 text-base focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]"
+          className="w-full border border-gray-200 rounded-xl px-5 py-3.5 mb-5 text-base bg-gray-50 focus:bg-white focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628] transition-colors"
         />
 
         {/* Category filters */}
@@ -71,22 +71,22 @@ export default function Catalog() {
         {products.length === 0 ? (
           <p className="text-gray-500 text-center py-12">{t('catalog.noProducts')}</p>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {products.map(p => (
-              <div key={p.id} className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition">
+              <div key={p.id} className="bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
                 <Link to={`/product/${p.id}`}>
-                  {p.image_url && <img src={p.image_url} alt={tProductName(lang, p.sku, p.name)} className="w-full h-32 sm:h-48 object-cover" />}
-                  <div className="p-3 sm:p-4">
-                    <span className="text-xs text-[#0B1628]/60 font-medium">{tCat(lang, p.category)}</span>
-                    <h3 className="font-semibold text-gray-800 mt-1 text-sm sm:text-base line-clamp-2">{tProductName(lang, p.sku, p.name)}</h3>
-                    <p className="text-base sm:text-lg font-bold text-[#0B1628] mt-1 sm:mt-2">${p.price_usd.toFixed(2)}</p>
+                  {p.image_url && <img src={p.image_url} alt={tProductName(lang, p.sku, p.name)} className="w-full h-36 sm:h-52 object-cover" />}
+                  <div className="p-4 sm:p-5">
+                    <span className="text-xs text-[#0B1628]/50 font-medium uppercase tracking-wide">{tCat(lang, p.category)}</span>
+                    <h3 className="font-semibold text-[#0B1628] mt-1.5 text-sm sm:text-base leading-snug line-clamp-2">{tProductName(lang, p.sku, p.name)}</h3>
+                    <p className="text-lg sm:text-xl font-bold text-[#0B1628] mt-2">${p.price_usd.toFixed(2)}</p>
                   </div>
                 </Link>
-                <div className="px-3 pb-3 sm:px-4 sm:pb-4">
+                <div className="px-4 pb-4 sm:px-5 sm:pb-5">
                   <button
                     onClick={() => addItem(p)}
                     disabled={p.stock_quantity <= 0}
-                    className="w-full bg-[#0B1628] text-white py-2.5 rounded-lg hover:bg-[#0B1628]/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm font-medium transition-colors min-h-[44px]"
+                    className="w-full bg-[#0B1628] text-white py-3 rounded-lg hover:bg-[#0B1628]/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm font-medium transition-colors min-h-[48px]"
                   >
                     {p.stock_quantity > 0 ? t('catalog.addToCart') : t('catalog.outOfStock')}
                   </button>
