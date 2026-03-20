@@ -53,13 +53,13 @@ export default function TrackOrder() {
   return (
     <div className="-mx-4 -mt-6">
       {/* Track Order hero banner */}
-      <div className="relative h-40 sm:h-52 overflow-hidden mb-6">
+      <div className="relative h-44 sm:h-56 overflow-hidden mb-8">
         <img src="/coffee.jpg" alt="Track Order" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-[#0B1628]/80 to-[#0B1628]/40" />
-        <div className="relative z-10 flex items-center h-full px-6 sm:px-8">
+        <div className="relative z-10 flex items-center h-full px-6 sm:px-10">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-white">{t('track.title')}</h1>
-            <p className="text-white/60 text-sm mt-1">{t('track.placeholder')}</p>
+            <h1 className="text-3xl sm:text-4xl font-bold text-white">{t('track.title')}</h1>
+            <p className="text-white/60 text-sm sm:text-base mt-2">{t('track.placeholder')}</p>
           </div>
         </div>
       </div>

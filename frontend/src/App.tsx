@@ -21,12 +21,12 @@ import AdminAnalytics from './pages/admin/AdminAnalytics'
 function LangSwitcher() {
   const { lang, setLang } = useI18n()
   return (
-    <div className="flex items-center rounded overflow-hidden text-xs">
+    <div className="flex items-center rounded overflow-hidden text-xs border border-gray-200">
       {LANGS.map(l => (
         <button
           key={l.code}
           onClick={() => setLang(l.code)}
-          className={`px-2 py-1 transition-colors ${lang === l.code ? 'bg-white text-[#0B1628]' : 'bg-white/10 text-white/70 hover:bg-white/20 hover:text-white'}`}
+          className={`px-2.5 py-1 transition-colors ${lang === l.code ? 'bg-[#0B1628] text-white' : 'bg-white text-gray-500 hover:bg-gray-50 hover:text-gray-800'}`}
         >
           {l.label}
         </button>
@@ -44,50 +44,50 @@ function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
 
   return (
-    <nav className="bg-[#0B1628] sticky top-0 z-50 border-b border-white/10">
+    <nav className="bg-white sticky top-0 z-50 border-b border-gray-100 shadow-sm">
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Logo — real company image */}
+        {/* Logo */}
         <Link to="/" className="shrink-0">
-          <img src="/white_logo.png" alt="Asymmetrica" className="h-8 sm:h-10 w-auto" />
+          <img src="/black_logo.png" alt="Asymmetrica" className="h-8 sm:h-10 w-auto" />
         </Link>
 
         {/* Desktop links */}
-        <div className="hidden md:flex items-center gap-6">
-          <Link to="/catalog" className="text-sm text-white/80 hover:text-white transition-colors">{t('nav.catalog')}</Link>
-          <Link to="/track" className="text-sm text-white/80 hover:text-white transition-colors">{t('nav.track')}</Link>
+        <div className="hidden md:flex items-center gap-8">
+          <Link to="/catalog" className="text-base text-gray-600 hover:text-[#0B1628] transition-colors font-medium">{t('nav.catalog')}</Link>
+          <Link to="/track" className="text-base text-gray-600 hover:text-[#0B1628] transition-colors font-medium">{t('nav.track')}</Link>
           {isAdmin() && (
-            <Link to="/admin" className="text-sm text-blue-300 hover:text-blue-200 font-medium">{t('nav.admin')}</Link>
+            <Link to="/admin" className="text-base text-blue-600 hover:text-blue-800 font-medium">{t('nav.admin')}</Link>
           )}
         </div>
 
         {/* Right side */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-5">
           <LangSwitcher />
-          <Link to="/cart" className="text-sm text-white/80 hover:text-white relative transition-colors">
+          <Link to="/cart" className="text-base text-gray-600 hover:text-[#0B1628] relative transition-colors font-medium">
             {t('nav.cart')}
             {cartCount > 0 && (
-              <span className="absolute -top-2 -right-4 bg-green-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+              <span className="absolute -top-2 -right-4 bg-green-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
                 {cartCount}
               </span>
             )}
           </Link>
           {isLoggedIn() ? (
-            <div className="flex items-center gap-3">
-              <Link to="/orders" className="text-sm text-white/80 hover:text-white transition-colors">{t('nav.orders')}</Link>
-              <span className="text-xs text-white/40">{user?.email}</span>
-              <button onClick={() => { logout(); navigate('/') }} className="text-sm text-red-400 hover:text-red-300 transition-colors">
+            <div className="flex items-center gap-4">
+              <Link to="/orders" className="text-base text-gray-600 hover:text-[#0B1628] transition-colors font-medium">{t('nav.orders')}</Link>
+              <span className="text-xs text-gray-400">{user?.email}</span>
+              <button onClick={() => { logout(); navigate('/') }} className="text-sm text-red-500 hover:text-red-700 transition-colors">
                 {t('nav.logout')}
               </button>
             </div>
           ) : (
-            <Link to="/login" className="text-sm bg-white text-[#0B1628] px-4 py-1.5 rounded hover:bg-white/90 font-medium transition-colors">
+            <Link to="/login" className="text-sm bg-[#0B1628] text-white px-5 py-2 rounded-lg hover:bg-[#0B1628]/90 font-medium transition-colors">
               {t('nav.login')}
             </Link>
           )}
         </div>
 
         {/* Mobile hamburger */}
-        <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden text-white p-2">
+        <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden text-[#0B1628] p-2">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             {mobileOpen
               ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -99,22 +99,22 @@ function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-[#0B1628] border-t border-white/10 px-4 py-4 space-y-3">
-          <Link to="/catalog" onClick={() => setMobileOpen(false)} className="block text-sm text-white/80 hover:text-white">{t('nav.catalog')}</Link>
-          <Link to="/track" onClick={() => setMobileOpen(false)} className="block text-sm text-white/80 hover:text-white">{t('nav.track')}</Link>
-          <Link to="/cart" onClick={() => setMobileOpen(false)} className="block text-sm text-white/80 hover:text-white">
+        <div className="md:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-4 shadow-lg">
+          <Link to="/catalog" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">{t('nav.catalog')}</Link>
+          <Link to="/track" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">{t('nav.track')}</Link>
+          <Link to="/cart" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">
             {t('nav.cart')} {cartCount > 0 && `(${cartCount})`}
           </Link>
           {isLoggedIn() ? (
             <>
-              <Link to="/orders" onClick={() => setMobileOpen(false)} className="block text-sm text-white/80 hover:text-white">{t('nav.orders')}</Link>
-              <button onClick={() => { logout(); navigate('/'); setMobileOpen(false) }} className="block text-sm text-red-400">{t('nav.logout')}</button>
+              <Link to="/orders" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">{t('nav.orders')}</Link>
+              <button onClick={() => { logout(); navigate('/'); setMobileOpen(false) }} className="block text-sm text-red-500">{t('nav.logout')}</button>
             </>
           ) : (
-            <Link to="/login" onClick={() => setMobileOpen(false)} className="block text-sm text-white font-medium">{t('nav.login')}</Link>
+            <Link to="/login" onClick={() => setMobileOpen(false)} className="block text-base text-[#0B1628] font-semibold">{t('nav.login')}</Link>
           )}
           {isAdmin() && (
-            <Link to="/admin" onClick={() => setMobileOpen(false)} className="block text-sm text-blue-300">{t('nav.admin')}</Link>
+            <Link to="/admin" onClick={() => setMobileOpen(false)} className="block text-base text-blue-600 font-medium">{t('nav.admin')}</Link>
           )}
           <div className="pt-2"><LangSwitcher /></div>
         </div>
