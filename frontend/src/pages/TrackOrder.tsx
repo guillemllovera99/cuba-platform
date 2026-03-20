@@ -51,8 +51,20 @@ export default function TrackOrder() {
   const currentStep = STATUS_STEPS.indexOf(order?.status ?? '')
 
   return (
-    <div className="max-w-xl mx-auto">
-      <h1 className="text-2xl font-bold text-[#0B1628] mb-6">{t('track.title')}</h1>
+    <div className="-mx-4 -mt-6">
+      {/* Track Order hero banner */}
+      <div className="relative h-40 sm:h-52 overflow-hidden mb-6">
+        <img src="/coffee.jpg" alt="Track Order" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0B1628]/80 to-[#0B1628]/40" />
+        <div className="relative z-10 flex items-center h-full px-6 sm:px-8">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white">{t('track.title')}</h1>
+            <p className="text-white/60 text-sm mt-1">{t('track.placeholder')}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-xl mx-auto px-4">
 
       <form onSubmit={handleTrack} className="flex gap-2 mb-8">
         <input
@@ -179,6 +191,7 @@ export default function TrackOrder() {
           </div>
         </div>
       )}
+      </div>
     </div>
   )
 }

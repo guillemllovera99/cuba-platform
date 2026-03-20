@@ -29,13 +29,13 @@ export default function Product() {
   return (
     <div>
       <Link to="/catalog" className="text-sm text-[#0B1628]/70 hover:text-[#0B1628] hover:underline mb-4 inline-block">&larr; {t('product.back')}</Link>
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden md:flex">
+      <div className="bg-white border border-gray-100 rounded-xl overflow-hidden md:flex shadow-sm">
         {product.image_url && (
           <img src={product.image_url} alt={product.name} className="w-full md:w-1/2 h-72 md:h-auto object-cover" />
         )}
         <div className="p-4 sm:p-6 flex-1">
           <span className="text-sm text-[#0B1628]/60 font-medium">{tCat(lang, product.category)}</span>
-          <h1 className="text-2xl font-bold text-[#0B1628] mt-1">{tProductName(lang, product.sku, product.name)}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#0B1628] mt-1">{tProductName(lang, product.sku, product.name)}</h1>
           {product.sku && <p className="text-xs text-gray-400 mt-1">{t('product.sku')}: {product.sku}</p>}
           <p className="text-3xl font-bold text-[#0B1628] mt-4">${product.price_usd.toFixed(2)} <span className="text-base font-normal text-gray-500">USD</span></p>
 

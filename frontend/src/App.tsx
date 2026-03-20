@@ -156,9 +156,9 @@ function Footer() {
 
 export default function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F5F5F0]">
+    <div className="min-h-screen flex flex-col bg-white">
       <Navbar />
-      <main className="flex-1 max-w-6xl mx-auto px-4 py-6 w-full">
+      <main className="flex-1 max-w-6xl mx-auto px-4 py-6 w-full text-[#0B1628]">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/catalog" element={<Catalog />} />
