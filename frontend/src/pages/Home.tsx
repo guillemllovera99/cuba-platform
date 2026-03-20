@@ -11,7 +11,7 @@ export default function Home() {
       <section className="relative h-[calc(100vh-64px)] flex items-center justify-center overflow-hidden">
         <img
           src="/energy_photo.png"
-          alt="Energy and agriculture solutions for Cuba"
+          alt="Caribbean agriculture and energy marketplace"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60" />
@@ -28,11 +28,11 @@ export default function Home() {
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white mb-5 leading-[1.1]">
             {t('home.hero.title')}
           </h1>
-          <p className="text-white/70 text-base sm:text-xl leading-relaxed max-w-2xl mx-auto mb-12">
+          <p className="text-white/70 text-base sm:text-xl leading-relaxed max-w-2xl mx-auto mb-10">
             {t('home.hero.subtitle')}
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
             <Link
               to="/catalog"
               className="bg-green-600 text-white font-semibold px-10 py-4 rounded-lg hover:bg-green-700 transition-all shadow-lg shadow-green-600/25 text-lg w-full sm:w-auto"
@@ -46,6 +46,31 @@ export default function Home() {
               {t('home.hero.ctaTrack')}
             </Link>
           </div>
+
+          {/* Buyer / Seller / Both */}
+          <div className="grid grid-cols-3 gap-3 max-w-md mx-auto">
+            <Link
+              to="/login"
+              className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg py-3.5 px-2 text-center hover:bg-white/15 transition-all"
+            >
+              <p className="text-white font-semibold text-sm">{t('login.buyer')}</p>
+              <p className="text-white/40 text-[10px] mt-0.5 hidden sm:block">{t('login.buyerDesc')}</p>
+            </Link>
+            <Link
+              to="/login"
+              className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg py-3.5 px-2 text-center hover:bg-white/15 transition-all"
+            >
+              <p className="text-white font-semibold text-sm">{t('login.seller')}</p>
+              <p className="text-white/40 text-[10px] mt-0.5 hidden sm:block">{t('login.sellerDesc')}</p>
+            </Link>
+            <Link
+              to="/login"
+              className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-lg py-3.5 px-2 text-center hover:bg-white/15 transition-all"
+            >
+              <p className="text-white font-semibold text-sm">{t('login.both')}</p>
+              <p className="text-white/40 text-[10px] mt-0.5 hidden sm:block">{t('login.bothDesc')}</p>
+            </Link>
+          </div>
         </div>
 
         {/* Scroll indicator */}
@@ -56,54 +81,17 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ───── ABOUT US — white, with brother.jpg ───── */}
+      {/* ───── HOW IT WORKS ───── */}
       <section className="bg-white py-20 sm:py-28 px-6">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl sm:text-5xl font-bold text-[#0B1628] mb-6 leading-tight">
-                {t('home.about.title')}
-              </h2>
-              <p className="text-gray-600 text-base sm:text-lg leading-relaxed">
-                {t('home.about.text')}
-              </p>
-              <Link
-                to="/catalog"
-                className="inline-block mt-8 text-[#0B1628] font-semibold text-lg border-b-2 border-[#0B1628] pb-1 hover:opacity-70 transition-opacity"
-              >
-                {t('home.hero.cta')} &rarr;
-              </Link>
-            </div>
-            <div className="rounded-2xl overflow-hidden shadow-lg">
-              <img src="/brother.jpg" alt="Asymmetrica team" className="w-full h-72 sm:h-96 object-cover" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ───── HOW IT WORKS — light gray ───── */}
-      <section className="bg-[#F7F7F3] py-20 sm:py-28 px-6">
         <div className="max-w-5xl mx-auto">
           <h2 className="text-3xl sm:text-5xl font-bold text-[#0B1628] text-center mb-16">
             {t('home.services.title')}
           </h2>
           <div className="grid md:grid-cols-3 gap-10">
             {[
-              {
-                step: '01',
-                title: t('home.services.sourcing'),
-                desc: t('home.services.sourcingDesc'),
-              },
-              {
-                step: '02',
-                title: t('home.services.logistics'),
-                desc: t('home.services.logisticsDesc'),
-              },
-              {
-                step: '03',
-                title: t('home.services.advisory'),
-                desc: t('home.services.advisoryDesc'),
-              },
+              { step: '01', title: t('home.services.sourcing'), desc: t('home.services.sourcingDesc') },
+              { step: '02', title: t('home.services.logistics'), desc: t('home.services.logisticsDesc') },
+              { step: '03', title: t('home.services.advisory'), desc: t('home.services.advisoryDesc') },
             ].map(s => (
               <div key={s.step} className="text-center">
                 <div className="text-5xl font-bold text-[#0B1628]/10 mb-4">{s.step}</div>
@@ -115,13 +103,13 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ───── IMAGE BREAK — agriculture_1 ───── */}
+      {/* ───── IMAGE BREAK — agriculture ───── */}
       <section className="relative h-56 sm:h-72 overflow-hidden">
         <img src="/agriculture_1.jpg" alt="Caribbean agriculture" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-[#0B1628]/30" />
       </section>
 
-      {/* ───── PRODUCT CATEGORIES PREVIEW ───── */}
+      {/* ───── PRODUCT CATEGORIES — linked to specific subcategories ───── */}
       <section className="bg-white py-20 sm:py-28 px-6">
         <div className="max-w-5xl mx-auto text-center">
           <h2 className="text-3xl sm:text-5xl font-bold text-[#0B1628] mb-6">
@@ -130,13 +118,13 @@ export default function Home() {
           <p className="text-gray-500 text-base sm:text-lg max-w-2xl mx-auto mb-12">
             {lang === 'es' ? 'Desde granos y productos frescos hasta paneles solares y equipos de energía.' : lang === 'fr' ? 'Des céréales et produits frais aux panneaux solaires et équipements énergétiques.' : 'From grains and fresh produce to solar panels and energy equipment.'}
           </p>
-          <div className="grid grid-cols-3 gap-4 sm:gap-6 max-w-lg mx-auto mb-10">
+          <div className="grid grid-cols-3 gap-4 sm:gap-6 max-w-lg mx-auto">
             {[
-              { label: t('home.value.agriculture'), img: '/coffee.jpg' },
-              { label: t('home.value.energy'), img: '/energy_photo.png' },
-              { label: t('home.value.logistics'), img: '/agriculture_2.jpeg' },
+              { label: t('home.value.agriculture'), img: '/coffee.jpg', category: 'Fresh Produce' },
+              { label: t('home.value.energy'), img: '/energy_photo.png', category: 'Solar Energy' },
+              { label: t('home.value.logistics'), img: '/agriculture_2.jpeg', category: 'Appliances & Energy' },
             ].map(cat => (
-              <Link to="/catalog" key={cat.label} className="group">
+              <Link to={`/catalog?category=${encodeURIComponent(cat.category)}`} key={cat.label} className="group">
                 <div className="rounded-xl overflow-hidden aspect-square mb-3 shadow-sm">
                   <img src={cat.img} alt={cat.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                 </div>
@@ -144,16 +132,10 @@ export default function Home() {
               </Link>
             ))}
           </div>
-          <Link
-            to="/catalog"
-            className="inline-block bg-[#0B1628] text-white font-semibold px-10 py-4 rounded-lg hover:bg-[#0B1628]/90 transition-all text-lg"
-          >
-            {t('home.hero.cta')}
-          </Link>
         </div>
       </section>
 
-      {/* ───── FEATURED IN — logos as styled text ───── */}
+      {/* ───── FEATURED IN ───── */}
       <section className="bg-[#F7F7F3] py-16 sm:py-20 px-6">
         <div className="max-w-5xl mx-auto">
           <p className="text-center text-xs sm:text-sm uppercase tracking-[0.3em] text-gray-400 font-medium mb-10">
@@ -176,7 +158,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ───── MEMBERS OF — logos as styled text ───── */}
+      {/* ───── MEMBERS OF ───── */}
       <section className="bg-white py-16 sm:py-20 px-6">
         <div className="max-w-4xl mx-auto">
           <p className="text-center text-xs sm:text-sm uppercase tracking-[0.3em] text-gray-400 font-medium mb-10">
@@ -194,26 +176,6 @@ export default function Home() {
               <p className="text-sm text-gray-400 mt-1">M&eacute;xico</p>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ───── FINAL CTA — agriculture photo ───── */}
-      <section className="relative py-24 sm:py-32 overflow-hidden">
-        <img src="/coffee.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-[#0B1628]/75" />
-        <div className="relative z-10 text-center px-6">
-          <h2 className="text-3xl sm:text-5xl font-bold text-white mb-5">
-            {lang === 'es' ? 'Explora el Catálogo' : lang === 'fr' ? 'Parcourez le Catalogue' : 'Explore the Catalog'}
-          </h2>
-          <p className="text-white/50 text-base sm:text-lg mb-10 max-w-xl mx-auto">
-            {lang === 'es' ? 'Productos agrícolas, energéticos y esenciales entregados a Cuba.' : lang === 'fr' ? 'Produits agricoles, énergétiques et essentiels livrés à Cuba.' : 'Agricultural, energy, and essential products delivered to Cuba.'}
-          </p>
-          <Link
-            to="/catalog"
-            className="inline-block bg-green-600 text-white font-semibold px-12 py-4 rounded-lg hover:bg-green-700 transition-all text-lg shadow-lg"
-          >
-            {t('home.hero.cta')}
-          </Link>
         </div>
       </section>
     </div>
