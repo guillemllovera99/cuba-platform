@@ -1080,6 +1080,82 @@ PRODUCTS = [
         "stock_quantity": 20,
         "image_url": _img("Caja+Distribucion"),
     },
+
+    # ═══════════════════════════════════════════════════════════════
+    #  13. ESSENTIAL BUNDLES  (8 products)
+    # ═══════════════════════════════════════════════════════════════
+    {
+        "sku": "BX-FAM-001",
+        "name": "Paquete Familiar Esencial",
+        "description": "Essential Family Bundle: Rice 10kg, Black Beans 2.5kg, Spaghetti 500g, Flour 2kg, Cooking Oil 1L, Canned Tuna 3-Pack, Luncheon Meat 340g, Powdered Milk 800g. Feeds a family of 4 for two weeks.",
+        "category": "Essential Bundles",
+        "price_usd": 45.00,
+        "stock_quantity": 100,
+        "image_url": _img("Pack+Familiar"),
+    },
+    {
+        "sku": "BX-PRO-001",
+        "name": "Paquete de Proteinas",
+        "description": "Protein Power Bundle: Canned Tuna 6-Pack, Canned Chicken 350g, Sardines 4-Pack, Luncheon Meat 3-Pack, Black Beans 2.5kg, Lentils 500g, Chickpeas 500g. High-protein essentials for active families.",
+        "category": "Essential Bundles",
+        "price_usd": 38.00,
+        "stock_quantity": 80,
+        "image_url": _img("Pack+Proteinas"),
+    },
+    {
+        "sku": "BX-BEB-001",
+        "name": "Paquete de Bebidas Tropicales",
+        "description": "Tropical Drinks Bundle: Mango Juice 3-Pack, Guava Juice 3-Pack, Coconut Water 6-Pack, Passion Fruit Juice 3-Pack, Soursop Juice 3-Pack. A refreshing Caribbean experience.",
+        "category": "Essential Bundles",
+        "price_usd": 32.00,
+        "stock_quantity": 60,
+        "image_url": _img("Pack+Bebidas"),
+    },
+    {
+        "sku": "BX-CAF-001",
+        "name": "Paquete Cafetalero Cubano",
+        "description": "Cuban Coffee Lovers Bundle: Cubita Dark 500g, Serrano Whole Bean 500g, Turquino Mountain 250g, Espresso Blend 250g. Four legendary Cuban coffees in one pack.",
+        "category": "Essential Bundles",
+        "price_usd": 35.00,
+        "stock_quantity": 70,
+        "image_url": _img("Pack+Cafe"),
+    },
+    {
+        "sku": "BX-FRU-001",
+        "name": "Paquete de Frutas Frescas",
+        "description": "Fresh Tropical Fruits Bundle: Avocados (3), Mangoes (4), Plantains (6), Papaya (1), Guavas (6), Coconuts (2). Farm-fresh Caribbean tropical selection.",
+        "category": "Essential Bundles",
+        "price_usd": 28.00,
+        "stock_quantity": 40,
+        "image_url": _img("Pack+Frutas"),
+    },
+    {
+        "sku": "BX-SOL-001",
+        "name": "Paquete Solar Basico",
+        "description": "Basic Solar Starter Bundle: 100W Portable Solar Panel, Solar Power Bank 20,000mAh, LED Lighting Kit (6 bulbs), Multi-Port USB Charger. Get started with solar energy.",
+        "category": "Essential Bundles",
+        "price_usd": 220.00,
+        "stock_quantity": 15,
+        "image_url": _img("Pack+Solar"),
+    },
+    {
+        "sku": "BX-DES-001",
+        "name": "Paquete Despensa Completa",
+        "description": "Complete Pantry Bundle: Rice 10kg, Black Beans 2.5kg, Red Beans 1kg, Pasta 500g, Flour 5kg, Cornmeal 2.5kg, Oats 500g, Powdered Milk 2.5kg, Condensed Milk 3-Pack, Cooking Oil 2L. Stocks a full pantry.",
+        "category": "Essential Bundles",
+        "price_usd": 65.00,
+        "stock_quantity": 50,
+        "image_url": _img("Pack+Despensa"),
+    },
+    {
+        "sku": "BX-BLK-001",
+        "name": "Mega Paquete Todo Incluido",
+        "description": "All-In-One Mega Bundle: Rice, Beans, Pasta, Flour, Canned Meats, Fresh Fruits, Coffee, Powdered Milk, Juices, and LED Lights. The ultimate care package — everything a household needs.",
+        "category": "Essential Bundles",
+        "price_usd": 120.00,
+        "stock_quantity": 30,
+        "image_url": _img("Mega+Pack"),
+    },
 ]
 
 

@@ -87,6 +87,23 @@ export const api = {
   paypalCapture: (paypalOrderId: string, orderId: string) =>
     apiFetch(`/api/v1/payments/paypal/capture?paypal_order_id=${paypalOrderId}&order_id=${orderId}`, { method: 'POST' }),
 
+  // image upload
+  uploadProductImage: async (file: File): Promise<{ url: string }> => {
+    const token = getToken()
+    const formData = new FormData()
+    formData.append('file', file)
+    const res = await fetch(`${BASE}/api/v1/admin/upload-image`, {
+      method: 'POST',
+      headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+      body: formData,
+    })
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      throw new Error(body.detail || `Upload failed: ${res.status}`)
+    }
+    return res.json()
+  },
+
   // analytics (US-13)
   analyticsOverview: () => apiFetch('/api/v1/admin/analytics/overview'),
   analyticsTopProducts: (limit = 10) => apiFetch(`/api/v1/admin/analytics/top-products?limit=${limit}`),
