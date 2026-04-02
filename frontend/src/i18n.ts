@@ -124,6 +124,7 @@ const translations: Record<Lang, Record<string, string>> = {
     'cat.Diesel & Fuel Supply': 'Diesel & Fuel Supply',
     'cat.Battery & Energy Storage': 'Battery & Energy Storage',
     'cat.Micro-grid & Home Energy': 'Micro-grid & Home Energy',
+    'cat.Essential Bundles': 'Essential Bundles',
     // Delivery / shipment tracking
     'track.notFound': 'Order not found. Check the code and try again.',
     'track.shipmentDetails': 'Shipment Details',
@@ -289,6 +290,7 @@ const translations: Record<Lang, Record<string, string>> = {
     'cat.Diesel & Fuel Supply': 'Diésel y Combustible',
     'cat.Battery & Energy Storage': 'Baterías y Almacenamiento',
     'cat.Micro-grid & Home Energy': 'Micro-red y Energía del Hogar',
+    'cat.Essential Bundles': 'Paquetes Esenciales',
     // Delivery / shipment tracking
     'track.notFound': 'Pedido no encontrado. Verifique el código e intente de nuevo.',
     'track.shipmentDetails': 'Detalles del Envío',
@@ -450,6 +452,7 @@ const translations: Record<Lang, Record<string, string>> = {
     'cat.Diesel & Fuel Supply': 'Diesel et Carburant',
     'cat.Battery & Energy Storage': 'Batteries et Stockage',
     'cat.Micro-grid & Home Energy': 'Micro-réseau et Énergie',
+    'cat.Essential Bundles': 'Packs Essentiels',
     // Delivery / shipment tracking
     'track.notFound': 'Commande introuvable. Vérifiez le code et réessayez.',
     'track.shipmentDetails': "Détails de l'Expédition",

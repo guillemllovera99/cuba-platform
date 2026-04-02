@@ -4,8 +4,10 @@ Routes are defined in the routers/ package.
 """
 from contextlib import asynccontextmanager
 
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from config import CORS_ORIGINS
 from database import create_tables
@@ -47,6 +49,12 @@ from routers.admin_stats import router as admin_stats_router
 from routers.payments import router as payments_router
 from routers.shipments import router as shipments_router
 from routers.analytics import router as analytics_router
+from routers.upload import router as upload_router
+
+# Serve uploaded product images
+UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
+os.makedirs(UPLOAD_DIR, exist_ok=True)
+app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 
 app.include_router(health_router)
 app.include_router(auth_router)
@@ -57,6 +65,7 @@ app.include_router(admin_stats_router)
 app.include_router(payments_router)
 app.include_router(shipments_router)
 app.include_router(analytics_router)
+app.include_router(upload_router)
 
 
 if __name__ == "__main__":

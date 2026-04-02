@@ -109,6 +109,15 @@ export const PRODUCT_NAMES: Record<string, Record<string, string>> = {
   'MG-HYB-002': { en: "Premium Hybrid Solar + Generator System", es: "Sistema Hibrido Solar + Generador Premium", fr: "Systeme Hybride Solaire + Generateur Premium" },
   'MG-CTR-001': { en: "Smart Energy Controller", es: "Controlador Inteligente de Energia", fr: "Controleur d'Energie Intelligent" },
   'MG-PDB-001': { en: "Electrical Power Distribution Box", es: "Caja de Distribucion Electrica", fr: "Boite de Distribution Electrique" },
+  // Essential Bundles
+  'BX-FAM-001': { en: "Essential Family Bundle", es: "Paquete Familiar Esencial", fr: "Pack Familial Essentiel" },
+  'BX-PRO-001': { en: "Protein Power Bundle", es: "Paquete de Proteinas", fr: "Pack Proteines" },
+  'BX-BEB-001': { en: "Tropical Drinks Bundle", es: "Paquete de Bebidas Tropicales", fr: "Pack Boissons Tropicales" },
+  'BX-CAF-001': { en: "Cuban Coffee Lovers Bundle", es: "Paquete Cafetalero Cubano", fr: "Pack Cafe Cubain" },
+  'BX-FRU-001': { en: "Fresh Tropical Fruits Bundle", es: "Paquete de Frutas Frescas", fr: "Pack Fruits Tropicaux Frais" },
+  'BX-SOL-001': { en: "Basic Solar Starter Bundle", es: "Paquete Solar Basico", fr: "Pack Solaire de Base" },
+  'BX-DES-001': { en: "Complete Pantry Bundle", es: "Paquete Despensa Completa", fr: "Pack Garde-Manger Complet" },
+  'BX-BLK-001': { en: "All-In-One Mega Bundle", es: "Mega Paquete Todo Incluido", fr: "Mega Pack Tout Compris" },
 };
 
 /**
