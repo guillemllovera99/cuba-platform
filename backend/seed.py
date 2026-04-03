@@ -1175,24 +1175,27 @@ async def seed():
         else:
             print("Admin user already exists")
 
-        # Check if products exist
-        result = await session.execute(select(Product).limit(1))
-        if result.scalar_one_or_none() is None:
-            products = []
-            for p_data in PRODUCTS:
+        # Upsert products — add any missing ones by SKU
+        result = await session.execute(select(Product.sku))
+        existing_skus = {row[0] for row in result.all() if row[0]}
+
+        new_products = []
+        for p_data in PRODUCTS:
+            if p_data["sku"] not in existing_skus:
                 product = Product(**p_data)
                 session.add(product)
-                products.append((product, p_data["stock_quantity"]))
-            # Flush so Product.id defaults are generated before we reference them
+                new_products.append((product, p_data["stock_quantity"]))
+
+        if new_products:
             await session.flush()
-            for product, qty in products:
+            for product, qty in new_products:
                 session.add(Inventory(
                     product_id=product.id,
                     available_qty=qty,
                 ))
-            print(f"Created {len(PRODUCTS)} demo products + inventory records")
+            print(f"Added {len(new_products)} new products + inventory records")
         else:
-            print("Products already exist")
+            print(f"All {len(PRODUCTS)} products already exist")
 
         await session.commit()
     print("Seed complete.")
