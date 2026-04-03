@@ -302,3 +302,137 @@ class AdminWalletAdjust(BaseModel):
     user_id: str
     amount: float  # Positive = credit, negative = debit
     description: Optional[str] = None
+
+
+# ── Feedback / Recipient (Phase 9) ──
+class FeedbackCreate(BaseModel):
+    order_code: str
+    rating: str  # ok | problem
+    comment: Optional[str] = None
+    category: Optional[str] = None  # delivery | quality | missing_items | damaged | other
+
+
+class FeedbackOut(BaseModel):
+    id: str
+    order_id: str
+    order_code: str
+    rating: str
+    comment: Optional[str]
+    category: Optional[str]
+    photo_url: Optional[str]
+    created_at: str
+
+
+class RecipientTrackingOut(BaseModel):
+    order_code: str
+    status: str
+    recipient_name: Optional[str]
+    recipient_city: Optional[str]
+    pickup_point_name: Optional[str] = None
+    pickup_point_address: Optional[str] = None
+    estimated_delivery: Optional[str] = None
+    shipment_status: Optional[str] = None
+    shipment_events: list[ShipmentEventOut] = []
+    delivery_confirmed: bool = False
+    pickup_code: Optional[str] = None
+    has_feedback: bool = False
+
+
+class DeliveryConfirmationCreate(BaseModel):
+    order_id: str
+    pickup_code: Optional[str] = None
+    recipient_id_check: bool = False
+    notes: Optional[str] = None
+
+
+class DeliveryConfirmationOut(BaseModel):
+    id: str
+    order_id: str
+    confirmed_by: Optional[str]
+    pickup_code: Optional[str]
+    recipient_id_check: bool
+    photo_url: Optional[str]
+    notes: Optional[str]
+    confirmed_at: str
+
+
+# ── Partner (Phase 10) ──
+class PartnerProfileCreate(BaseModel):
+    company_name: str
+    region: Optional[str] = None
+    contact_phone: Optional[str] = None
+    contact_name: Optional[str] = None
+
+
+class PartnerProfileOut(BaseModel):
+    id: str
+    user_id: str
+    company_name: str
+    region: Optional[str]
+    contact_phone: Optional[str]
+    contact_name: Optional[str]
+    status: str
+    approved_at: Optional[str]
+    notes: Optional[str]
+    created_at: str
+    user_email: Optional[str] = None
+    user_name: Optional[str] = None
+
+
+# ── Supplier (Phase 10) ──
+class SupplierProfileCreate(BaseModel):
+    company_name: str
+    country: Optional[str] = None
+    contact_name: Optional[str] = None
+    contact_email: Optional[str] = None
+    contact_phone: Optional[str] = None
+    product_categories: Optional[str] = None
+
+
+class SupplierProfileOut(BaseModel):
+    id: str
+    user_id: str
+    company_name: str
+    country: Optional[str]
+    contact_name: Optional[str]
+    contact_email: Optional[str]
+    contact_phone: Optional[str]
+    product_categories: Optional[str]
+    status: str
+    approved_at: Optional[str]
+    notes: Optional[str]
+    created_at: str
+    user_email: Optional[str] = None
+    user_name: Optional[str] = None
+
+
+class PurchaseOrderCreate(BaseModel):
+    supplier_id: str
+    items: list[dict]  # [{description, quantity, unit_cost_usd, product_id?}]
+    notes: Optional[str] = None
+
+
+class PurchaseOrderItemOut(BaseModel):
+    id: str
+    product_id: Optional[str]
+    description: str
+    quantity: int
+    unit_cost_usd: float
+    subtotal_usd: float
+
+
+class PurchaseOrderOut(BaseModel):
+    id: str
+    po_number: str
+    supplier_id: str
+    status: str
+    total_usd: Optional[float]
+    notes: Optional[str]
+    sent_at: Optional[str]
+    confirmed_at: Optional[str]
+    shipped_at: Optional[str]
+    created_by: Optional[str]
+    created_at: str
+    updated_at: str
+    items: list[PurchaseOrderItemOut] = []
+    supplier_name: Optional[str] = None

@@ -25,6 +25,12 @@ import CorporatePortal from './pages/CorporatePortal'
 import WalletPage from './pages/Wallet'
 import AdminCorporate from './pages/admin/AdminCorporate'
 import AdminWallets from './pages/admin/AdminWallets'
+import RecipientView from './pages/RecipientView'
+import PartnerPortal from './pages/PartnerPortal'
+import SupplierPortal from './pages/SupplierPortal'
+import AdminFeedback from './pages/admin/AdminFeedback'
+import AdminPartners from './pages/admin/AdminPartners'
+import AdminSuppliers from './pages/admin/AdminSuppliers'
 
 function LangSwitcher() {
   const { lang, setLang } = useI18n()
@@ -197,6 +203,9 @@ export default function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/corporate" element={<CorporatePortal />} />
           <Route path="/wallet" element={<WalletPage />} />
+          <Route path="/recipient" element={<RecipientView />} />
+          <Route path="/partner" element={<PartnerPortal />} />
+          <Route path="/supplier" element={<SupplierPortal />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/products" element={<AdminProducts />} />
@@ -209,6 +218,9 @@ export default function App() {
           <Route path="/admin/pickup-points" element={<AdminPickupPoints />} />
           <Route path="/admin/corporate" element={<AdminCorporate />} />
           <Route path="/admin/wallets" element={<AdminWallets />} />
+          <Route path="/admin/feedback" element={<AdminFeedback />} />
+          <Route path="/admin/partners" element={<AdminPartners />} />
+          <Route path="/admin/suppliers" element={<AdminSuppliers />} />
         </Routes>
       </main>
       <Footer />

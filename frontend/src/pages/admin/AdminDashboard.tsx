@@ -54,6 +54,15 @@ export default function AdminDashboard() {
           <Link to="/admin/wallets" className="bg-amber-600 text-white px-4 py-2.5 rounded-lg text-sm hover:bg-amber-700 font-medium text-center min-h-[44px] flex items-center justify-center">
             Wallets
           </Link>
+          <Link to="/admin/feedback" className="bg-pink-600 text-white px-4 py-2.5 rounded-lg text-sm hover:bg-pink-700 font-medium text-center min-h-[44px] flex items-center justify-center">
+            Feedback
+          </Link>
+          <Link to="/admin/partners" className="bg-cyan-600 text-white px-4 py-2.5 rounded-lg text-sm hover:bg-cyan-700 font-medium text-center min-h-[44px] flex items-center justify-center">
+            Partners
+          </Link>
+          <Link to="/admin/suppliers" className="bg-indigo-600 text-white px-4 py-2.5 rounded-lg text-sm hover:bg-indigo-700 font-medium text-center min-h-[44px] flex items-center justify-center">
+            Suppliers & POs
+          </Link>
         </div>
       </div>
 

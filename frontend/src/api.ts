@@ -176,6 +176,52 @@ export const api = {
   adminWalletGet: (userId: string) => apiFetch(`/api/v1/wallet/admin/${userId}`),
   adminWalletTransactions: (userId: string) => apiFetch(`/api/v1/wallet/admin/${userId}/transactions`),
 
+  // feedback / recipient (Phase 9)
+  recipientTracking: (orderCode: string) =>
+    apiFetch(`/api/v1/feedback/recipient/${orderCode}`),
+  submitFeedback: (data: any) =>
+    apiFetch('/api/v1/feedback/submit', { method: 'POST', body: JSON.stringify(data) }),
+  adminFeedbackList: (rating?: string) =>
+    apiFetch(`/api/v1/feedback/admin/all${rating ? '?rating=' + rating : ''}`),
+  adminFeedbackStats: () => apiFetch('/api/v1/feedback/admin/stats'),
+  confirmDelivery: (data: any) =>
+    apiFetch('/api/v1/feedback/delivery/confirm', { method: 'POST', body: JSON.stringify(data) }),
+  getDeliveryConfirmation: (orderId: string) =>
+    apiFetch(`/api/v1/feedback/delivery/${orderId}`),
+
+  // partner (Phase 10)
+  partnerRegister: (data: any) =>
+    apiFetch('/api/v1/partner/register', { method: 'POST', body: JSON.stringify(data) }),
+  partnerProfile: () => apiFetch('/api/v1/partner/profile'),
+  partnerOrders: (status?: string) =>
+    apiFetch(`/api/v1/partner/orders${status ? '?status=' + status : ''}`),
+  partnerStats: () => apiFetch('/api/v1/partner/stats'),
+  adminPartnerList: (status?: string) =>
+    apiFetch(`/api/v1/partner/admin/all${status ? '?status=' + status : ''}`),
+  adminApprovePartner: (profileId: string, status: string, notes?: string) =>
+    apiFetch(`/api/v1/partner/admin/${profileId}/approve?status=${status}${notes ? '&notes=' + encodeURIComponent(notes) : ''}`, { method: 'PUT' }),
+
+  // supplier (Phase 10)
+  supplierRegister: (data: any) =>
+    apiFetch('/api/v1/supplier/register', { method: 'POST', body: JSON.stringify(data) }),
+  supplierProfile: () => apiFetch('/api/v1/supplier/profile'),
+  supplierPurchaseOrders: (status?: string) =>
+    apiFetch(`/api/v1/supplier/purchase-orders${status ? '?status=' + status : ''}`),
+  supplierConfirmPO: (poId: string) =>
+    apiFetch(`/api/v1/supplier/purchase-orders/${poId}/confirm`, { method: 'PUT' }),
+  supplierShipPO: (poId: string) =>
+    apiFetch(`/api/v1/supplier/purchase-orders/${poId}/ship`, { method: 'PUT' }),
+  adminSupplierList: (status?: string) =>
+    apiFetch(`/api/v1/supplier/admin/all${status ? '?status=' + status : ''}`),
+  adminApproveSupplier: (profileId: string, status: string, notes?: string) =>
+    apiFetch(`/api/v1/supplier/admin/${profileId}/approve?status=${status}${notes ? '&notes=' + encodeURIComponent(notes) : ''}`, { method: 'PUT' }),
+  adminCreatePO: (data: any) =>
+    apiFetch('/api/v1/supplier/admin/purchase-orders', { method: 'POST', body: JSON.stringify(data) }),
+  adminSendPO: (poId: string) =>
+    apiFetch(`/api/v1/supplier/admin/purchase-orders/${poId}/send`, { method: 'PUT' }),
+  adminListPOs: (status?: string) =>
+    apiFetch(`/api/v1/supplier/admin/purchase-orders${status ? '?status=' + status : ''}`),
+
   // analytics (US-13)
   analyticsOverview: () => apiFetch('/api/v1/admin/analytics/overview'),
   analyticsTopProducts: (limit = 10) => apiFetch(`/api/v1/admin/analytics/top-products?limit=${limit}`),
