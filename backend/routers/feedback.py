@@ -12,7 +12,7 @@ from schemas import (
     FeedbackCreate, FeedbackOut, RecipientTrackingOut,
     DeliveryConfirmationCreate, DeliveryConfirmationOut, ShipmentEventOut,
 )
-from routers.auth import get_current_user, require_admin
+from auth import require_auth, require_admin
 
 router = APIRouter(prefix="/api/v1/feedback", tags=["feedback"])
 
@@ -124,7 +124,7 @@ async def submit_feedback(data: FeedbackCreate, db: AsyncSession = Depends(get_d
 async def admin_list_feedback(
     rating: str | None = None,
     db: AsyncSession = Depends(get_db),
-    user=Depends(require_admin),
+    admin=Depends(require_admin),
 ):
     q = select(OrderFeedback).order_by(OrderFeedback.created_at.desc())
     if rating:
@@ -144,7 +144,7 @@ async def admin_list_feedback(
 @router.get("/admin/stats")
 async def admin_feedback_stats(
     db: AsyncSession = Depends(get_db),
-    user=Depends(require_admin),
+    admin=Depends(require_admin),
 ):
     total = await db.execute(select(func.count()).select_from(OrderFeedback))
     ok_count = await db.execute(
@@ -165,7 +165,7 @@ async def admin_feedback_stats(
 async def confirm_delivery(
     data: DeliveryConfirmationCreate,
     db: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_auth),
 ):
     """Partner or admin confirms delivery with pickup code verification."""
     result = await db.execute(select(Order).where(Order.id == data.order_id))
@@ -207,7 +207,7 @@ async def confirm_delivery(
 async def get_delivery_confirmation(
     order_id: str,
     db: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_auth),
 ):
     result = await db.execute(
         select(DeliveryConfirmation).where(DeliveryConfirmation.order_id == order_id)

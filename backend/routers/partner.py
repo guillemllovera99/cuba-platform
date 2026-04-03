@@ -13,7 +13,7 @@ from models import (
     DeliveryConfirmation, OrderFeedback, User,
 )
 from schemas import PartnerProfileCreate, PartnerProfileOut
-from routers.auth import get_current_user, require_admin
+from auth import require_auth, require_admin
 
 router = APIRouter(prefix="/api/v1/partner", tags=["partner"])
 
@@ -23,7 +23,7 @@ router = APIRouter(prefix="/api/v1/partner", tags=["partner"])
 async def register_partner(
     data: PartnerProfileCreate,
     db: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_auth),
 ):
     existing = await db.execute(
         select(PartnerProfile).where(PartnerProfile.user_id == user["id"])
@@ -61,7 +61,7 @@ async def register_partner(
 @router.get("/profile", response_model=PartnerProfileOut)
 async def get_partner_profile(
     db: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_auth),
 ):
     result = await db.execute(
         select(PartnerProfile).where(PartnerProfile.user_id == user["id"])
@@ -83,7 +83,7 @@ async def get_partner_profile(
 async def partner_orders(
     status: str | None = None,
     db: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_auth),
 ):
     # Get partner profile
     p_result = await db.execute(
@@ -131,7 +131,7 @@ async def partner_orders(
 @router.get("/stats")
 async def partner_stats(
     db: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_auth),
 ):
     p_result = await db.execute(
         select(PartnerProfile).where(PartnerProfile.user_id == user["id"])
@@ -165,7 +165,7 @@ async def partner_stats(
 async def admin_list_partners(
     status: str | None = None,
     db: AsyncSession = Depends(get_db),
-    user=Depends(require_admin),
+    admin=Depends(require_admin),
 ):
     q = select(PartnerProfile).order_by(PartnerProfile.created_at.desc())
     if status:
@@ -196,7 +196,7 @@ async def admin_approve_partner(
     status: str,  # approved | suspended
     notes: str | None = None,
     db: AsyncSession = Depends(get_db),
-    user=Depends(require_admin),
+    admin=Depends(require_admin),
 ):
     result = await db.execute(select(PartnerProfile).where(PartnerProfile.id == profile_id))
     profile = result.scalar_one_or_none()
