@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from database import get_db
 from models import User
-from schemas import RegisterRequest, LoginRequest, TokenOut, UserOut
+from schemas import RegisterRequest, LoginRequest, TokenOut, UserOut, ProfileUpdate
 from auth import hash_password, verify_password, create_token, require_auth
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -60,6 +60,24 @@ async def me(user: dict = Depends(require_auth), db: AsyncSession = Depends(get_
     u = result.scalar_one_or_none()
     if not u:
         raise HTTPException(404, "User not found")
+    return UserOut(id=u.id, email=u.email, role=u.role,
+                   account_type=getattr(u, 'account_type', None) or "buyer",
+                   full_name=u.full_name, phone=u.phone)
+
+
+@router.put("/profile", response_model=UserOut)
+async def update_profile(req: ProfileUpdate, user: dict = Depends(require_auth), db: AsyncSession = Depends(get_db)):
+    result = await db.execute(select(User).where(User.id == user["sub"]))
+    u = result.scalar_one_or_none()
+    if not u:
+        raise HTTPException(404, "User not found")
+
+    update_data = req.model_dump(exclude_unset=True)
+    for key, val in update_data.items():
+        if hasattr(u, key):
+            setattr(u, key, val)
+    await db.commit()
+    await db.refresh(u)
     return UserOut(id=u.id, email=u.email, role=u.role,
                    account_type=getattr(u, 'account_type', None) or "buyer",
                    full_name=u.full_name, phone=u.phone)
