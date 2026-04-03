@@ -52,6 +52,8 @@ from routers.analytics import router as analytics_router
 from routers.upload import router as upload_router
 from routers.shipment_windows import router as shipment_windows_router
 from routers.pickup_points import router as pickup_points_router
+from routers.corporate import router as corporate_router
+from routers.wallet import router as wallet_router
 
 # Serve uploaded product images
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
@@ -70,6 +72,8 @@ app.include_router(analytics_router)
 app.include_router(upload_router)
 app.include_router(shipment_windows_router)
 app.include_router(pickup_points_router)
+app.include_router(corporate_router)
+app.include_router(wallet_router)
 
 
 if __name__ == "__main__":

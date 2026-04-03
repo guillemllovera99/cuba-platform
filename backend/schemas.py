@@ -208,3 +208,97 @@ class ShipmentWindowOut(BaseModel):
     estimated_arrival: Optional[str]
     is_active: bool
     created_at: str
+
+
+# ── Corporate / B2B (Phase 7) ──
+class CorporateProfileCreate(BaseModel):
+    company_name: str
+    tax_id: Optional[str] = None
+    industry: Optional[str] = None
+    billing_address: Optional[str] = None
+    billing_city: Optional[str] = None
+    billing_country: Optional[str] = None
+    contact_name: Optional[str] = None
+    contact_phone: Optional[str] = None
+
+
+class CorporateProfileUpdate(BaseModel):
+    company_name: Optional[str] = None
+    tax_id: Optional[str] = None
+    industry: Optional[str] = None
+    billing_address: Optional[str] = None
+    billing_city: Optional[str] = None
+    billing_country: Optional[str] = None
+    contact_name: Optional[str] = None
+    contact_phone: Optional[str] = None
+
+
+class CorporateProfileOut(BaseModel):
+    id: str
+    user_id: str
+    company_name: str
+    tax_id: Optional[str]
+    industry: Optional[str]
+    billing_address: Optional[str]
+    billing_city: Optional[str]
+    billing_country: Optional[str]
+    contact_name: Optional[str]
+    contact_phone: Optional[str]
+    status: str
+    approved_at: Optional[str]
+    pricing_tier: str
+    discount_pct: float
+    deposit_pct: float
+    notes: Optional[str]
+    created_at: str
+    # User info
+    user_email: Optional[str] = None
+    user_name: Optional[str] = None
+
+
+class CorporateApproval(BaseModel):
+    status: str  # approved | rejected
+    pricing_tier: Optional[str] = None  # standard | silver | gold | platinum
+    discount_pct: Optional[float] = None
+    deposit_pct: Optional[float] = None
+    notes: Optional[str] = None
+
+
+# ── Wallet / Token System (Phase 8) ──
+class WalletOut(BaseModel):
+    id: str
+    user_id: str
+    balance: float
+    reserved: float
+    currency: str
+    created_at: str
+    updated_at: str
+
+
+class WalletTransactionOut(BaseModel):
+    id: str
+    wallet_id: str
+    tx_type: str
+    amount: float
+    balance_after: float
+    reference_type: Optional[str]
+    reference_id: Optional[str]
+    description: Optional[str]
+    created_by: Optional[str]
+    created_at: str
+
+
+class WalletTopup(BaseModel):
+    amount: float  # Must be positive
+
+
+class WalletSpend(BaseModel):
+    amount: float
+    order_id: Optional[str] = None
+    description: Optional[str] = None
+
+
+class AdminWalletAdjust(BaseModel):
+    user_id: str
+    amount: float  # Positive = credit, negative = debit
+    description: Optional[str] = None

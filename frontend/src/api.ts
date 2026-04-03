@@ -137,6 +137,45 @@ export const api = {
   adminConfirmBankTransfer: (orderId: string, reference?: string) =>
     apiFetch(`/api/v1/payments/admin/bank-transfer/confirm?order_id=${orderId}${reference ? '&reference=' + reference : ''}`, { method: 'POST' }),
 
+  // corporate (Phase 7)
+  corporateRegister: (data: any) =>
+    apiFetch('/api/v1/corporate/register', { method: 'POST', body: JSON.stringify(data) }),
+  corporateProfile: () => apiFetch('/api/v1/corporate/profile'),
+  corporateUpdateProfile: (data: any) =>
+    apiFetch('/api/v1/corporate/profile', { method: 'PUT', body: JSON.stringify(data) }),
+  corporateDashboard: () => apiFetch('/api/v1/corporate/dashboard'),
+  corporateBulkOrder: (data: any) =>
+    apiFetch('/api/v1/corporate/bulk-order', { method: 'POST', body: JSON.stringify(data) }),
+  adminCorporateList: (status?: string) =>
+    apiFetch(`/api/v1/corporate/admin/all${status ? '?status=' + status : ''}`),
+  adminCorporateApprove: (profileId: string, data: any) =>
+    apiFetch(`/api/v1/corporate/admin/${profileId}/approve`, { method: 'PUT', body: JSON.stringify(data) }),
+  adminCorporateGet: (profileId: string) =>
+    apiFetch(`/api/v1/corporate/admin/${profileId}`),
+  corporateInvoice: (orderId: string) =>
+    apiFetch(`/api/v1/corporate/invoice/${orderId}`),
+  corporateInvoiceHtml: (orderId: string) =>
+    `/api/v1/corporate/invoice/${orderId}/html`,
+
+  // wallet (Phase 8)
+  walletMe: () => apiFetch('/api/v1/wallet/me'),
+  walletTransactions: (limit = 50) => apiFetch(`/api/v1/wallet/me/transactions?limit=${limit}`),
+  walletTopup: (amount: number) =>
+    apiFetch('/api/v1/wallet/topup', { method: 'POST', body: JSON.stringify({ amount }) }),
+  walletReserve: (amount: number, orderId?: string) =>
+    apiFetch('/api/v1/wallet/reserve', { method: 'POST', body: JSON.stringify({ amount, order_id: orderId }) }),
+  walletSpend: (amount: number, orderId?: string) =>
+    apiFetch('/api/v1/wallet/spend', { method: 'POST', body: JSON.stringify({ amount, order_id: orderId }) }),
+  walletRelease: (amount: number, orderId?: string) =>
+    apiFetch('/api/v1/wallet/release', { method: 'POST', body: JSON.stringify({ amount, order_id: orderId }) }),
+  walletRefund: (amount: number, orderId?: string) =>
+    apiFetch('/api/v1/wallet/refund', { method: 'POST', body: JSON.stringify({ amount, order_id: orderId }) }),
+  adminWalletList: () => apiFetch('/api/v1/wallet/admin/all'),
+  adminWalletAdjust: (userId: string, amount: number, description?: string) =>
+    apiFetch('/api/v1/wallet/admin/adjust', { method: 'POST', body: JSON.stringify({ user_id: userId, amount, description }) }),
+  adminWalletGet: (userId: string) => apiFetch(`/api/v1/wallet/admin/${userId}`),
+  adminWalletTransactions: (userId: string) => apiFetch(`/api/v1/wallet/admin/${userId}/transactions`),
+
   // analytics (US-13)
   analyticsOverview: () => apiFetch('/api/v1/admin/analytics/overview'),
   analyticsTopProducts: (limit = 10) => apiFetch(`/api/v1/admin/analytics/top-products?limit=${limit}`),

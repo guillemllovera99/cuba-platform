@@ -21,6 +21,10 @@ import AdminShipmentWindows from './pages/admin/AdminShipmentWindows'
 import AdminPickupPoints from './pages/admin/AdminPickupPoints'
 import About from './pages/About'
 import Profile from './pages/Profile'
+import CorporatePortal from './pages/CorporatePortal'
+import WalletPage from './pages/Wallet'
+import AdminCorporate from './pages/admin/AdminCorporate'
+import AdminWallets from './pages/admin/AdminWallets'
 
 function LangSwitcher() {
   const { lang, setLang } = useI18n()
@@ -79,6 +83,9 @@ function Navbar() {
           {isLoggedIn() ? (
             <div className="flex items-center gap-4">
               <Link to="/orders" className="text-base text-gray-600 hover:text-[#0B1628] transition-colors font-medium">{t('nav.orders')}</Link>
+              <Link to="/wallet" className="text-base text-gray-600 hover:text-[#0B1628] transition-colors font-medium">
+                {lang === 'es' ? 'Billetera' : lang === 'fr' ? 'Portefeuille' : 'Wallet'}
+              </Link>
               <Link to="/profile" className="text-base text-gray-600 hover:text-[#0B1628] transition-colors font-medium">
                 {lang === 'es' ? 'Perfil' : lang === 'fr' ? 'Profil' : 'Profile'}
               </Link>
@@ -117,6 +124,12 @@ function Navbar() {
           {isLoggedIn() ? (
             <>
               <Link to="/orders" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">{t('nav.orders')}</Link>
+              <Link to="/wallet" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">
+                {lang === 'es' ? 'Billetera' : lang === 'fr' ? 'Portefeuille' : 'Wallet'}
+              </Link>
+              <Link to="/corporate" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">
+                {lang === 'es' ? 'Corporativo' : lang === 'fr' ? 'Entreprise' : 'Corporate'}
+              </Link>
               <Link to="/profile" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">
                 {lang === 'es' ? 'Perfil' : lang === 'fr' ? 'Profil' : 'Profile'}
               </Link>
@@ -182,6 +195,8 @@ export default function App() {
           <Route path="/track" element={<TrackOrder />} />
           <Route path="/about" element={<About />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/corporate" element={<CorporatePortal />} />
+          <Route path="/wallet" element={<WalletPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/products" element={<AdminProducts />} />
@@ -192,6 +207,8 @@ export default function App() {
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
           <Route path="/admin/shipment-windows" element={<AdminShipmentWindows />} />
           <Route path="/admin/pickup-points" element={<AdminPickupPoints />} />
+          <Route path="/admin/corporate" element={<AdminCorporate />} />
+          <Route path="/admin/wallets" element={<AdminWallets />} />
         </Routes>
       </main>
       <Footer />

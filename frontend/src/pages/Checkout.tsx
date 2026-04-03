@@ -4,7 +4,7 @@ import { useCart, useAuth } from '../store'
 import { api } from '../api'
 import { useI18n, translate } from '../i18n'
 
-type PaymentMethod = 'stripe' | 'paypal' | 'bank_transfer' | 'mock'
+type PaymentMethod = 'stripe' | 'paypal' | 'bank_transfer' | 'wallet' | 'mock'
 
 type PickupPoint = {
   id: string
@@ -171,7 +171,20 @@ export default function Checkout() {
         return
       }
 
-      // Step 3: Handle bank transfer
+      // Step 3: Handle wallet payment
+      if (paymentMethod === 'wallet') {
+        try {
+          await api.walletReserve(order.deposit_amount || 0, order.id)
+          await api.walletSpend(order.deposit_amount || 0, order.id)
+          clearCart()
+          navigate(`/order/${order.id}/confirmed`)
+        } catch (walletErr: any) {
+          setError(walletErr.message || 'Insufficient wallet credits')
+        }
+        return
+      }
+
+      // Step 4: Handle bank transfer
       if (paymentMethod === 'bank_transfer') {
         const bankInfo = await api.bankTransferInitiate(order.id)
         clearCart()
@@ -180,7 +193,7 @@ export default function Checkout() {
         return
       }
 
-      // Step 4: Redirect to payment provider for deposit
+      // Step 5: Redirect to payment provider for deposit
       if (paymentMethod === 'stripe') {
         const session = await api.stripeCreateSession(order.id)
         clearCart()
@@ -358,6 +371,19 @@ export default function Checkout() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 </svg>
                 <span className="text-sm font-medium text-gray-800">{t('checkout.bankTransfer')}</span>
+              </div>
+            </label>
+
+            <label className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'wallet' ? 'border-[#0B1628] bg-[#0B1628]/5' : 'border-gray-200 hover:border-gray-300'}`}>
+              <input type="radio" name="payment" checked={paymentMethod === 'wallet'}
+                onChange={() => setPaymentMethod('wallet')} className="accent-[#0B1628]" />
+              <div className="flex items-center gap-2 flex-1">
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span className="text-sm font-medium text-gray-800">
+                  {lang === 'es' ? 'Créditos de Plataforma' : lang === 'fr' ? 'Crédits Plateforme' : 'Platform Credits'}
+                </span>
               </div>
             </label>
           </div>
