@@ -59,9 +59,15 @@ export default function Checkout() {
       setPaymentMethod('mock')
     })
 
-    // Fetch pickup points
-    api.getPickupPoints().then(points => {
-      setPickupPoints(points)
+    // Fetch pickup points (API returns { city: [points] }, flatten to array)
+    api.getPickupPoints().then((grouped: any) => {
+      const flat: PickupPoint[] = []
+      if (grouped && typeof grouped === 'object') {
+        Object.values(grouped).forEach((cityPoints: any) => {
+          if (Array.isArray(cityPoints)) flat.push(...cityPoints)
+        })
+      }
+      setPickupPoints(flat)
     }).catch(() => {
       setPickupPoints([])
     })
