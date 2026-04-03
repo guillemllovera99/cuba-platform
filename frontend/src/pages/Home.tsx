@@ -111,7 +111,7 @@ export default function Home() {
 
       // If we don't have 8, fill with more energy/solar
       if (picked.length < 8) {
-        energy.slice(5).forEach(p => { if (picked.length < 8) pick(p) })
+        energy.slice(5).forEach((p: any) => { if (picked.length < 8) pick(p) })
       }
       // Still short? fill from all products
       if (picked.length < 8) {
