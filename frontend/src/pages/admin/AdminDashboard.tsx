@@ -48,6 +48,12 @@ export default function AdminDashboard() {
           <Link to="/admin/pickup-points" className="bg-teal-600 text-white px-4 py-2.5 rounded-lg text-sm hover:bg-teal-700 font-medium text-center min-h-[44px] flex items-center justify-center">
             Pickup Points
           </Link>
+          <Link to="/admin/corporate" className="bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm hover:bg-blue-700 font-medium text-center min-h-[44px] flex items-center justify-center">
+            Corporate Accounts
+          </Link>
+          <Link to="/admin/wallets" className="bg-amber-600 text-white px-4 py-2.5 rounded-lg text-sm hover:bg-amber-700 font-medium text-center min-h-[44px] flex items-center justify-center">
+            Wallets
+          </Link>
         </div>
       </div>
 

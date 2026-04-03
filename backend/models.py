@@ -232,3 +232,98 @@ class ShipmentEvent(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
     shipment: Mapped["Shipment"] = relationship(back_populates="events")
+
+
+# ════════════════════════════════════════════════════════════════
+# CORPORATE PROFILES — Phase 7 (B2B / Corporate Orders)
+# ════════════════════════════════════════════════════════════════
+
+class CorporateProfile(Base):
+    """
+    Extended profile for corporate/B2B accounts.
+    Linked 1:1 to a User record. Admin must approve before corporate
+    pricing and bulk features are unlocked.
+    """
+    __tablename__ = "corporate_profiles"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id"), unique=True, nullable=False
+    )
+    company_name: Mapped[str] = mapped_column(String(500), nullable=False)
+    tax_id: Mapped[str] = mapped_column(String(100), nullable=True)
+    industry: Mapped[str] = mapped_column(String(255), nullable=True)
+    billing_address: Mapped[str] = mapped_column(Text, nullable=True)
+    billing_city: Mapped[str] = mapped_column(String(255), nullable=True)
+    billing_country: Mapped[str] = mapped_column(String(100), nullable=True)
+    contact_name: Mapped[str] = mapped_column(String(255), nullable=True)
+    contact_phone: Mapped[str] = mapped_column(String(50), nullable=True)
+    # Approval workflow
+    status: Mapped[str] = mapped_column(String(30), default="pending")
+    # pending | approved | rejected
+    approved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    approved_by: Mapped[str] = mapped_column(String(36), nullable=True)
+    # Pricing tier
+    pricing_tier: Mapped[str] = mapped_column(String(30), default="standard")
+    # standard | silver | gold | platinum
+    discount_pct: Mapped[float] = mapped_column(Numeric(5, 2), default=0)
+    # Deposit override — corporates pay 50% upfront
+    deposit_pct: Mapped[float] = mapped_column(Numeric(5, 2), default=50)
+    notes: Mapped[str] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+    user: Mapped["User"] = relationship()
+
+
+# ════════════════════════════════════════════════════════════════
+# WALLET / TOKEN SYSTEM — Phase 8 (Platform Credits)
+# ════════════════════════════════════════════════════════════════
+
+class Wallet(Base):
+    """
+    One wallet per user. Tracks available balance.
+    All mutations go through WalletTransaction for full audit trail.
+    """
+    __tablename__ = "wallets"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id"), unique=True, nullable=False
+    )
+    balance: Mapped[float] = mapped_column(Numeric(12, 2), default=0, nullable=False)
+    reserved: Mapped[float] = mapped_column(Numeric(12, 2), default=0, nullable=False)
+    currency: Mapped[str] = mapped_column(String(10), default="USD")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+    user: Mapped["User"] = relationship()
+    transactions: Mapped[list["WalletTransaction"]] = relationship(
+        back_populates="wallet", order_by="WalletTransaction.created_at.desc()"
+    )
+
+
+class WalletTransaction(Base):
+    """
+    Immutable ledger of every wallet credit/debit.
+    Token states: topup → available → reserved → released/spent → refunded
+    """
+    __tablename__ = "wallet_transactions"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    wallet_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("wallets.id"), nullable=False
+    )
+    tx_type: Mapped[str] = mapped_column(String(30), nullable=False)
+    # Valid types: topup, reserve, release, spend, refund, admin_adjust
+    amount: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False)
+    # Positive = credit, negative = debit
+    balance_after: Mapped[float] = mapped_column(Numeric(12, 2), nullable=False)
+    reference_type: Mapped[str] = mapped_column(String(30), nullable=True)
+    # e.g. "order", "payment", "admin", "card_topup"
+    reference_id: Mapped[str] = mapped_column(String(36), nullable=True)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+    created_by: Mapped[str] = mapped_column(String(36), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+    wallet: Mapped["Wallet"] = relationship(back_populates="transactions")
