@@ -176,15 +176,13 @@ export default function Home() {
           <p className="text-center text-[9px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-6">
             {t('home.featured.title')}
           </p>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-6 sm:gap-8 items-center justify-items-center">
-            <img src="/Forbes.png" alt="Forbes" className="h-5 sm:h-6 object-contain opacity-50 hover:opacity-80 transition-opacity" />
-            <img src="/cnn.png" alt="CNN" className="h-5 sm:h-6 object-contain opacity-50 hover:opacity-80 transition-opacity" />
-            <img src="/freshplaza.png" alt="Fresh Plaza" className="h-6 sm:h-7 object-contain opacity-50 hover:opacity-80 transition-opacity" />
-            <img src="/impactalpha.png" alt="ImpactAlpha" className="h-4 sm:h-5 object-contain opacity-50 hover:opacity-80 transition-opacity" />
-            <div className="text-center opacity-40 hover:opacity-70 transition-opacity">
-              <span className="text-xs sm:text-sm font-serif font-bold text-[#0B1628]">El Financiero</span>
-            </div>
-            <img src="/inforural.png" alt="Inforural" className="h-6 sm:h-7 object-contain opacity-50 hover:opacity-80 transition-opacity" />
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 sm:gap-6 items-center justify-items-center">
+            <img src="/forbeslogo.jpg" alt="Forbes" className="h-6 sm:h-8 object-contain opacity-50 hover:opacity-80 transition-opacity" />
+            <img src="/CNNlogo.png" alt="CNN" className="h-6 sm:h-8 object-contain opacity-50 hover:opacity-80 transition-opacity" />
+            <img src="/freshplazalogo.png" alt="Fresh Plaza" className="h-8 sm:h-10 object-contain opacity-50 hover:opacity-80 transition-opacity" />
+            <img src="/impactalpha.png" alt="ImpactAlpha" className="h-5 sm:h-7 object-contain opacity-50 hover:opacity-80 transition-opacity" />
+            <img src="/El_Financiero_Logo.svg.png" alt="El Financiero" className="h-6 sm:h-8 object-contain opacity-50 hover:opacity-80 transition-opacity" />
+            <img src="/inforural.png" alt="Inforural" className="w-16 sm:w-20 object-contain opacity-50 hover:opacity-80 transition-opacity" />
           </div>
         </div>
       </section>
@@ -196,14 +194,9 @@ export default function Home() {
             {t('home.members.title')}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-14">
-            <div className="text-center opacity-50 hover:opacity-80 transition-opacity">
-              <p className="text-sm sm:text-base font-bold text-[#0B1628] font-serif leading-tight">Swiss Sustainable<br />Finance</p>
-            </div>
-            <div className="hidden sm:block w-px h-8 bg-gray-200" />
-            <div className="text-center opacity-50 hover:opacity-80 transition-opacity">
-              <p className="text-sm sm:text-base font-bold text-[#0B1628] font-serif leading-tight">Alianza por la<br />Inversi&oacute;n de Impacto</p>
-              <p className="text-[10px] text-gray-400 mt-0.5">M&eacute;xico</p>
-            </div>
+            <img src="/logo-swiss-sustinable-finance.png" alt="Swiss Sustainable Finance" className="h-10 sm:h-14 object-contain opacity-50 hover:opacity-80 transition-opacity" />
+            <div className="hidden sm:block w-px h-10 bg-gray-200" />
+            <img src="/logo-AIIMX-GSGnational-partner-1024x418.png" alt="Alianza por la Inversión de Impacto México" className="h-10 sm:h-14 object-contain opacity-50 hover:opacity-80 transition-opacity" />
           </div>
         </div>
       </section>

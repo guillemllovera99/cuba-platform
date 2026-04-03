@@ -42,6 +42,7 @@ export const api = {
   register: (data: any) => apiFetch('/auth/register', { method: 'POST', body: JSON.stringify(data) }),
   login: (data: any) => apiFetch('/auth/login', { method: 'POST', body: JSON.stringify(data) }),
   me: () => apiFetch('/auth/me'),
+  updateProfile: (data: any) => apiFetch('/auth/profile', { method: 'PUT', body: JSON.stringify(data) }),
 
   // catalog
   getProducts: (params?: string) => apiFetch(`/api/v1/catalog/products${params ? '?' + params : ''}`),

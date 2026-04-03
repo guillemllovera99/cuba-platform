@@ -20,6 +20,7 @@ import AdminAnalytics from './pages/admin/AdminAnalytics'
 import AdminShipmentWindows from './pages/admin/AdminShipmentWindows'
 import AdminPickupPoints from './pages/admin/AdminPickupPoints'
 import About from './pages/About'
+import Profile from './pages/Profile'
 
 function LangSwitcher() {
   const { lang, setLang } = useI18n()
@@ -78,6 +79,9 @@ function Navbar() {
           {isLoggedIn() ? (
             <div className="flex items-center gap-4">
               <Link to="/orders" className="text-base text-gray-600 hover:text-[#0B1628] transition-colors font-medium">{t('nav.orders')}</Link>
+              <Link to="/profile" className="text-base text-gray-600 hover:text-[#0B1628] transition-colors font-medium">
+                {lang === 'es' ? 'Perfil' : lang === 'fr' ? 'Profil' : 'Profile'}
+              </Link>
               <span className="text-xs text-gray-400">{user?.email}</span>
               <button onClick={() => { logout(); navigate('/') }} className="text-sm text-red-500 hover:text-red-700 transition-colors">
                 {t('nav.logout')}
@@ -113,6 +117,9 @@ function Navbar() {
           {isLoggedIn() ? (
             <>
               <Link to="/orders" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">{t('nav.orders')}</Link>
+              <Link to="/profile" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">
+                {lang === 'es' ? 'Perfil' : lang === 'fr' ? 'Profil' : 'Profile'}
+              </Link>
               <button onClick={() => { logout(); navigate('/'); setMobileOpen(false) }} className="block text-sm text-red-500">{t('nav.logout')}</button>
             </>
           ) : (
@@ -174,6 +181,7 @@ export default function App() {
           <Route path="/orders" element={<Orders />} />
           <Route path="/track" element={<TrackOrder />} />
           <Route path="/about" element={<About />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/admin/products" element={<AdminProducts />} />

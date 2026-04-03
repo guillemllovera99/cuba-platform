@@ -25,6 +25,11 @@ class UserOut(BaseModel):
     phone: Optional[str]
 
 
+class ProfileUpdate(BaseModel):
+    full_name: Optional[str] = None
+    phone: Optional[str] = None
+
+
 class TokenOut(BaseModel):
     access_token: str
     user: UserOut

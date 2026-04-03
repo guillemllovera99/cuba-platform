@@ -51,12 +51,11 @@ export default function Checkout() {
   useEffect(() => {
     api.paymentConfig().then(cfg => {
       setPaymentConfig(cfg)
-      if (cfg.stripe_enabled) setPaymentMethod('stripe')
-      else if (cfg.paypal_enabled) setPaymentMethod('paypal')
-      else setPaymentMethod('mock')
+      // Default to stripe (card), always show all payment options
+      setPaymentMethod('stripe')
     }).catch(() => {
-      setPaymentConfig({ stripe_enabled: false, paypal_enabled: false, payments_enabled: false })
-      setPaymentMethod('mock')
+      setPaymentConfig({ stripe_enabled: false, paypal_enabled: false, payments_enabled: true })
+      setPaymentMethod('stripe')
     })
 
     // Fetch pickup points (API returns { city: [points] }, flatten to array)
@@ -148,7 +147,7 @@ export default function Checkout() {
   const subtotal = total()
   const depositAmount = Math.round(subtotal * 0.20 * 100) / 100
   const balanceAmount = Math.round((subtotal - depositAmount) * 100) / 100
-  const isMock = !paymentConfig?.payments_enabled
+  const isMock = false // Always show real payment options
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -227,9 +226,6 @@ export default function Checkout() {
       }
     }
   }
-
-  const stripeAvailable = paymentConfig?.stripe_enabled
-  const paypalAvailable = paymentConfig?.paypal_enabled
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -328,50 +324,44 @@ export default function Checkout() {
           </div>
         </div>
 
-        {/* Payment Method Selection */}
-        {!isMock && (
-          <div className="mt-6">
-            <h2 className="font-semibold text-[#0B1628] mb-3">{t('checkout.paymentMethod')}</h2>
-            <div className="space-y-2">
-              {stripeAvailable && (
-                <label className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'stripe' ? 'border-[#0B1628] bg-[#0B1628]/5' : 'border-gray-200 hover:border-gray-300'}`}>
-                  <input type="radio" name="payment" checked={paymentMethod === 'stripe'}
-                    onChange={() => setPaymentMethod('stripe')} className="accent-[#0B1628]" />
-                  <div className="flex items-center gap-2 flex-1">
-                    <svg viewBox="0 0 28 12" className="h-4 w-7" aria-label="Stripe">
-                      <rect width="28" height="12" rx="2" fill="#635BFF"/>
-                      <text x="14" y="9" textAnchor="middle" fill="white" fontSize="7" fontWeight="bold" fontFamily="sans-serif">S</text>
-                    </svg>
-                    <span className="text-sm font-medium text-gray-800">{t('checkout.creditCard')}</span>
-                  </div>
-                </label>
-              )}
-              {paypalAvailable && (
-                <label className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'paypal' ? 'border-[#0B1628] bg-[#0B1628]/5' : 'border-gray-200 hover:border-gray-300'}`}>
-                  <input type="radio" name="payment" checked={paymentMethod === 'paypal'}
-                    onChange={() => setPaymentMethod('paypal')} className="accent-[#0B1628]" />
-                  <div className="flex items-center gap-2 flex-1">
-                    <svg viewBox="0 0 28 12" className="h-4 w-7" aria-label="PayPal">
-                      <rect width="28" height="12" rx="2" fill="#003087"/>
-                      <text x="14" y="9" textAnchor="middle" fill="white" fontSize="7" fontWeight="bold" fontFamily="sans-serif">P</text>
-                    </svg>
-                    <span className="text-sm font-medium text-gray-800">PayPal</span>
-                  </div>
-                </label>
-              )}
-              <label className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'bank_transfer' ? 'border-[#0B1628] bg-[#0B1628]/5' : 'border-gray-200 hover:border-gray-300'}`}>
-                <input type="radio" name="payment" checked={paymentMethod === 'bank_transfer'}
-                  onChange={() => setPaymentMethod('bank_transfer')} className="accent-[#0B1628]" />
-                <div className="flex items-center gap-2 flex-1">
-                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                  <span className="text-sm font-medium text-gray-800">{t('checkout.bankTransfer')}</span>
-                </div>
-              </label>
-            </div>
+        {/* Payment Method Selection — always show all options */}
+        <div className="mt-6">
+          <h2 className="font-semibold text-[#0B1628] mb-3">{t('checkout.paymentMethod')}</h2>
+          <div className="space-y-2">
+            <label className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'stripe' ? 'border-[#0B1628] bg-[#0B1628]/5' : 'border-gray-200 hover:border-gray-300'}`}>
+              <input type="radio" name="payment" checked={paymentMethod === 'stripe'}
+                onChange={() => setPaymentMethod('stripe')} className="accent-[#0B1628]" />
+              <div className="flex items-center gap-2 flex-1">
+                <svg viewBox="0 0 28 12" className="h-4 w-7" aria-label="Card">
+                  <rect width="28" height="12" rx="2" fill="#635BFF"/>
+                  <text x="14" y="9" textAnchor="middle" fill="white" fontSize="7" fontWeight="bold" fontFamily="sans-serif">S</text>
+                </svg>
+                <span className="text-sm font-medium text-gray-800">{t('checkout.creditCard')}</span>
+              </div>
+            </label>
+            <label className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'paypal' ? 'border-[#0B1628] bg-[#0B1628]/5' : 'border-gray-200 hover:border-gray-300'}`}>
+              <input type="radio" name="payment" checked={paymentMethod === 'paypal'}
+                onChange={() => setPaymentMethod('paypal')} className="accent-[#0B1628]" />
+              <div className="flex items-center gap-2 flex-1">
+                <svg viewBox="0 0 28 12" className="h-4 w-7" aria-label="PayPal">
+                  <rect width="28" height="12" rx="2" fill="#003087"/>
+                  <text x="14" y="9" textAnchor="middle" fill="white" fontSize="7" fontWeight="bold" fontFamily="sans-serif">P</text>
+                </svg>
+                <span className="text-sm font-medium text-gray-800">PayPal</span>
+              </div>
+            </label>
+            <label className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'bank_transfer' ? 'border-[#0B1628] bg-[#0B1628]/5' : 'border-gray-200 hover:border-gray-300'}`}>
+              <input type="radio" name="payment" checked={paymentMethod === 'bank_transfer'}
+                onChange={() => setPaymentMethod('bank_transfer')} className="accent-[#0B1628]" />
+              <div className="flex items-center gap-2 flex-1">
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                <span className="text-sm font-medium text-gray-800">{t('checkout.bankTransfer')}</span>
+              </div>
+            </label>
           </div>
-        )}
+        </div>
 
         {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
 
