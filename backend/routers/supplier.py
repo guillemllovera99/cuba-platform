@@ -33,13 +33,13 @@ async def register_supplier(
     user=Depends(require_auth),
 ):
     existing = await db.execute(
-        select(SupplierProfile).where(SupplierProfile.user_id == user["id"])
+        select(SupplierProfile).where(SupplierProfile.user_id == user["sub"])
     )
     if existing.scalar_one_or_none():
         raise HTTPException(400, "Supplier profile already exists")
 
     profile = SupplierProfile(
-        user_id=user["id"],
+        user_id=user["sub"],
         company_name=data.company_name,
         country=data.country,
         contact_name=data.contact_name,
@@ -50,7 +50,7 @@ async def register_supplier(
     db.add(profile)
 
     # Update user account_type
-    u_result = await db.execute(select(User).where(User.id == user["id"]))
+    u_result = await db.execute(select(User).where(User.id == user["sub"]))
     u = u_result.scalar_one()
     u.account_type = "supplier"
     await db.commit()
@@ -75,7 +75,7 @@ async def get_supplier_profile(
     user=Depends(require_auth),
 ):
     result = await db.execute(
-        select(SupplierProfile).where(SupplierProfile.user_id == user["id"])
+        select(SupplierProfile).where(SupplierProfile.user_id == user["sub"])
     )
     profile = result.scalar_one_or_none()
     if not profile:
@@ -101,7 +101,7 @@ async def supplier_purchase_orders(
 ):
     # Get supplier profile
     s_result = await db.execute(
-        select(SupplierProfile).where(SupplierProfile.user_id == user["id"])
+        select(SupplierProfile).where(SupplierProfile.user_id == user["sub"])
     )
     supplier = s_result.scalar_one_or_none()
     if not supplier:
@@ -153,7 +153,7 @@ async def supplier_confirm_po(
     user=Depends(require_auth),
 ):
     s_result = await db.execute(
-        select(SupplierProfile).where(SupplierProfile.user_id == user["id"])
+        select(SupplierProfile).where(SupplierProfile.user_id == user["sub"])
     )
     supplier = s_result.scalar_one_or_none()
     if not supplier:
@@ -183,7 +183,7 @@ async def supplier_ship_po(
     user=Depends(require_auth),
 ):
     s_result = await db.execute(
-        select(SupplierProfile).where(SupplierProfile.user_id == user["id"])
+        select(SupplierProfile).where(SupplierProfile.user_id == user["sub"])
     )
     supplier = s_result.scalar_one_or_none()
     if not supplier:
@@ -280,7 +280,7 @@ async def admin_create_po(
         po_number=_gen_po_number(),
         supplier_id=data.supplier_id,
         notes=data.notes,
-        created_by=admin["id"],
+        created_by=admin["sub"],
     )
 
     total = 0.0

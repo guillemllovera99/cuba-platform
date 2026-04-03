@@ -26,13 +26,13 @@ async def register_partner(
     user=Depends(require_auth),
 ):
     existing = await db.execute(
-        select(PartnerProfile).where(PartnerProfile.user_id == user["id"])
+        select(PartnerProfile).where(PartnerProfile.user_id == user["sub"])
     )
     if existing.scalar_one_or_none():
         raise HTTPException(400, "Partner profile already exists")
 
     profile = PartnerProfile(
-        user_id=user["id"],
+        user_id=user["sub"],
         company_name=data.company_name,
         region=data.region,
         contact_phone=data.contact_phone,
@@ -41,7 +41,7 @@ async def register_partner(
     db.add(profile)
 
     # Update user role
-    u_result = await db.execute(select(User).where(User.id == user["id"]))
+    u_result = await db.execute(select(User).where(User.id == user["sub"]))
     u = u_result.scalar_one()
     u.account_type = "partner"
     await db.commit()
@@ -53,7 +53,7 @@ async def register_partner(
         contact_phone=profile.contact_phone, contact_name=profile.contact_name,
         status=profile.status, approved_at=str(profile.approved_at) if profile.approved_at else None,
         notes=profile.notes, created_at=str(profile.created_at),
-        user_email=user.get("email"), user_name=user.get("full_name"),
+        user_email=u.email if u else None, user_name=u.full_name if u else None,
     )
 
 
@@ -64,7 +64,7 @@ async def get_partner_profile(
     user=Depends(require_auth),
 ):
     result = await db.execute(
-        select(PartnerProfile).where(PartnerProfile.user_id == user["id"])
+        select(PartnerProfile).where(PartnerProfile.user_id == user["sub"])
     )
     profile = result.scalar_one_or_none()
     if not profile:
@@ -87,7 +87,7 @@ async def partner_orders(
 ):
     # Get partner profile
     p_result = await db.execute(
-        select(PartnerProfile).where(PartnerProfile.user_id == user["id"])
+        select(PartnerProfile).where(PartnerProfile.user_id == user["sub"])
     )
     partner = p_result.scalar_one_or_none()
     if not partner or partner.status != "approved":
@@ -134,7 +134,7 @@ async def partner_stats(
     user=Depends(require_auth),
 ):
     p_result = await db.execute(
-        select(PartnerProfile).where(PartnerProfile.user_id == user["id"])
+        select(PartnerProfile).where(PartnerProfile.user_id == user["sub"])
     )
     partner = p_result.scalar_one_or_none()
     if not partner or partner.status != "approved":
@@ -145,7 +145,7 @@ async def partner_stats(
     # Count deliveries confirmed by this partner
     confirmed = await db.execute(
         select(func.count()).select_from(DeliveryConfirmation)
-        .where(DeliveryConfirmation.confirmed_by == user["id"])
+        .where(DeliveryConfirmation.confirmed_by == user["sub"])
     )
     # Feedback from orders in region
     feedback_count = await db.execute(
