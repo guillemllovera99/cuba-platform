@@ -66,6 +66,20 @@ class Product(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
 
 
+class PickupPoint(Base):
+    """Pickup locations in Cuba where recipients collect their orders."""
+    __tablename__ = "pickup_points"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    city: Mapped[str] = mapped_column(String(255), nullable=False)
+    address: Mapped[str] = mapped_column(Text, nullable=False)
+    contact_phone: Mapped[str] = mapped_column(String(50), nullable=True)
+    contact_name: Mapped[str] = mapped_column(String(255), nullable=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
 class Order(Base):
     __tablename__ = "orders"
 
@@ -78,6 +92,7 @@ class Order(Base):
     recipient_phone: Mapped[str] = mapped_column(String(50), nullable=True)
     recipient_city: Mapped[str] = mapped_column(String(255), nullable=True)
     recipient_address: Mapped[str] = mapped_column(Text, nullable=True)
+    pickup_point_id: Mapped[str] = mapped_column(String(36), ForeignKey("pickup_points.id"), nullable=True)
     # totals
     subtotal_usd: Mapped[float] = mapped_column(Numeric(10, 2), nullable=True)
     total_usd: Mapped[float] = mapped_column(Numeric(10, 2), nullable=True)

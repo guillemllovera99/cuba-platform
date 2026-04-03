@@ -49,6 +49,12 @@ export default function AdminOrders() {
     loadOrders()
   }
 
+  const handleConfirmBankTransfer = async (orderId: string) => {
+    const reference = prompt('Enter bank transfer reference (optional):')
+    await api.adminConfirmBankTransfer(orderId, reference || undefined)
+    loadOrders()
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -111,6 +117,15 @@ export default function AdminOrders() {
                       className="bg-blue-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-blue-700"
                     >
                       Confirm Balance
+                    </button>
+                  )}
+                  {/* Confirm Bank Transfer button */}
+                  {(order.status === 'pending_deposit' || order.status === 'balance_due') && (
+                    <button
+                      onClick={() => handleConfirmBankTransfer(order.id)}
+                      className="bg-teal-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-teal-700"
+                    >
+                      Confirm Bank Transfer
                     </button>
                   )}
                   <select
