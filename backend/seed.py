@@ -44,7 +44,7 @@ PRODUCTS = [
         "category": "Grains & Carbohydrates",
         "price_usd": 6.50,
         "stock_quantity": 200,
-        "image_url": _img("Arroz+5kg"),
+        "image_url": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "GC-RIC-002",
@@ -53,7 +53,7 @@ PRODUCTS = [
         "category": "Grains & Carbohydrates",
         "price_usd": 11.50,
         "stock_quantity": 120,
-        "image_url": _img("Arroz+10kg"),
+        "image_url": "https://images.unsplash.com/photo-1704916029542-da6fa7bc34e7?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "GC-PAS-001",
@@ -62,7 +62,7 @@ PRODUCTS = [
         "category": "Grains & Carbohydrates",
         "price_usd": 2.00,
         "stock_quantity": 250,
-        "image_url": _img("Espagueti+500g"),
+        "image_url": "https://images.unsplash.com/photo-1551462147-37885acc36f1?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "GC-PAS-002",
@@ -71,7 +71,7 @@ PRODUCTS = [
         "category": "Grains & Carbohydrates",
         "price_usd": 2.00,
         "stock_quantity": 200,
-        "image_url": _img("Macarrones+500g"),
+        "image_url": "https://images.unsplash.com/photo-1612874742237-6526221588e3?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "GC-FLR-001",
@@ -80,7 +80,7 @@ PRODUCTS = [
         "category": "Grains & Carbohydrates",
         "price_usd": 3.75,
         "stock_quantity": 150,
-        "image_url": _img("Harina+Trigo+2kg"),
+        "image_url": "https://images.unsplash.com/photo-1627485937980-221c88ac04f9?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "GC-FLR-002",
@@ -89,7 +89,7 @@ PRODUCTS = [
         "category": "Grains & Carbohydrates",
         "price_usd": 7.50,
         "stock_quantity": 80,
-        "image_url": _img("Harina+Trigo+5kg"),
+        "image_url": "https://images.unsplash.com/photo-1627735483792-233bf632619b?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "GC-CRM-001",
@@ -98,7 +98,7 @@ PRODUCTS = [
         "category": "Grains & Carbohydrates",
         "price_usd": 2.50,
         "stock_quantity": 180,
-        "image_url": _img("Harina+Maiz+1kg"),
+        "image_url": "https://images.unsplash.com/photo-1610725664285-7c57e6eeac3f?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "GC-CRM-002",
@@ -107,7 +107,7 @@ PRODUCTS = [
         "category": "Grains & Carbohydrates",
         "price_usd": 5.00,
         "stock_quantity": 100,
-        "image_url": _img("Harina+Maiz+2.5kg"),
+        "image_url": "https://images.unsplash.com/photo-1685884626675-19a87a3897d0?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "GC-CSF-001",
@@ -116,7 +116,7 @@ PRODUCTS = [
         "category": "Grains & Carbohydrates",
         "price_usd": 3.25,
         "stock_quantity": 130,
-        "image_url": _img("Harina+Yuca+1kg"),
+        "image_url": "https://images.unsplash.com/photo-1760727466909-a73872aeecda?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "GC-BRF-001",
@@ -125,7 +125,7 @@ PRODUCTS = [
         "category": "Grains & Carbohydrates",
         "price_usd": 4.25,
         "stock_quantity": 110,
-        "image_url": _img("Harina+Pan+2kg"),
+        "image_url": "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&h=400&fit=crop&auto=format&q=80",
     },
     # +3 new grains
     {
@@ -135,7 +135,7 @@ PRODUCTS = [
         "category": "Grains & Carbohydrates",
         "price_usd": 2.75,
         "stock_quantity": 160,
-        "image_url": _img("Avena+500g"),
+        "image_url": "https://images.unsplash.com/photo-1614961233913-a5113e3d6b48?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "GC-PLN-001",
@@ -144,7 +144,7 @@ PRODUCTS = [
         "category": "Grains & Carbohydrates",
         "price_usd": 3.50,
         "stock_quantity": 120,
-        "image_url": _img("Harina+Platano"),
+        "image_url": "https://images.unsplash.com/photo-1577116730797-5d99b71d3946?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "GC-SEM-001",
@@ -153,7 +153,7 @@ PRODUCTS = [
         "category": "Grains & Carbohydrates",
         "price_usd": 3.00,
         "stock_quantity": 100,
-        "image_url": _img("Semolina+1kg"),
+        "image_url": "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&h=400&fit=crop&auto=format&q=80",
     },
 
     # ═══════════════════════════════════════════════════════════════
@@ -166,7 +166,7 @@ PRODUCTS = [
         "category": "Beans & Legumes",
         "price_usd": 3.25,
         "stock_quantity": 250,
-        "image_url": _img("Frijoles+Negros+1kg"),
+        "image_url": "https://images.unsplash.com/photo-1570388873891-8fad79ab5b3d?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BL-BLK-002",
@@ -175,7 +175,7 @@ PRODUCTS = [
         "category": "Beans & Legumes",
         "price_usd": 7.00,
         "stock_quantity": 140,
-        "image_url": _img("Frijoles+Negros+2.5kg"),
+        "image_url": "https://images.unsplash.com/photo-1647545401750-6dd5539879ac?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BL-RED-001",
@@ -184,7 +184,7 @@ PRODUCTS = [
         "category": "Beans & Legumes",
         "price_usd": 3.50,
         "stock_quantity": 200,
-        "image_url": _img("Frijoles+Rojos+1kg"),
+        "image_url": "https://images.unsplash.com/photo-1584542285514-14e6663f41d9?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BL-LNT-001",
@@ -193,7 +193,7 @@ PRODUCTS = [
         "category": "Beans & Legumes",
         "price_usd": 2.50,
         "stock_quantity": 180,
-        "image_url": _img("Lentejas+500g"),
+        "image_url": "https://images.unsplash.com/photo-1662558743513-073896b802ef?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BL-CHK-001",
@@ -202,7 +202,7 @@ PRODUCTS = [
         "category": "Beans & Legumes",
         "price_usd": 2.75,
         "stock_quantity": 160,
-        "image_url": _img("Garbanzos+500g"),
+        "image_url": "https://images.unsplash.com/photo-1709229851054-a09c8f7bd7e3?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BL-SPL-001",
@@ -211,7 +211,7 @@ PRODUCTS = [
         "category": "Beans & Legumes",
         "price_usd": 2.25,
         "stock_quantity": 170,
-        "image_url": _img("Chicharos+500g"),
+        "image_url": "https://images.unsplash.com/photo-1515543904379-3d757afe72e4?w=600&h=400&fit=crop&auto=format&q=80",
     },
 
     # ═══════════════════════════════════════════════════════════════
@@ -224,7 +224,7 @@ PRODUCTS = [
         "category": "Canned & Preserved Foods",
         "price_usd": 5.25,
         "stock_quantity": 180,
-        "image_url": _img("Atun+3-Pack"),
+        "image_url": "https://images.unsplash.com/photo-1683295549596-00f7547bf6a8?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "CN-TUN-002",
@@ -233,7 +233,7 @@ PRODUCTS = [
         "category": "Canned & Preserved Foods",
         "price_usd": 9.00,
         "stock_quantity": 100,
-        "image_url": _img("Atun+6-Pack"),
+        "image_url": "https://images.unsplash.com/photo-1672529276739-c462c62d2113?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "CN-SAR-001",
@@ -242,7 +242,7 @@ PRODUCTS = [
         "category": "Canned & Preserved Foods",
         "price_usd": 5.50,
         "stock_quantity": 150,
-        "image_url": _img("Sardinas+4-Pack"),
+        "image_url": "https://images.unsplash.com/photo-1653174577821-9ab410d92d44?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "CN-CHK-001",
@@ -251,7 +251,7 @@ PRODUCTS = [
         "category": "Canned & Preserved Foods",
         "price_usd": 4.50,
         "stock_quantity": 130,
-        "image_url": _img("Pollo+Conserva+350g"),
+        "image_url": "https://images.unsplash.com/photo-1623552600370-69433ec7ce45?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "CN-VEG-001",
@@ -260,7 +260,7 @@ PRODUCTS = [
         "category": "Canned & Preserved Foods",
         "price_usd": 2.75,
         "stock_quantity": 200,
-        "image_url": _img("Vegetales+Mixtos"),
+        "image_url": "https://images.unsplash.com/photo-1690052694621-3a947e346a2b?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "CN-SPM-001",
@@ -269,7 +269,7 @@ PRODUCTS = [
         "category": "Canned & Preserved Foods",
         "price_usd": 4.00,
         "stock_quantity": 170,
-        "image_url": _img("Spam+340g"),
+        "image_url": "https://images.unsplash.com/photo-1760926548218-086f0f60e778?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "CN-SPM-002",
@@ -278,7 +278,7 @@ PRODUCTS = [
         "category": "Canned & Preserved Foods",
         "price_usd": 10.50,
         "stock_quantity": 90,
-        "image_url": _img("Spam+3-Pack"),
+        "image_url": "https://images.unsplash.com/photo-1741651402309-b9ae6225a24f?w=600&h=400&fit=crop&auto=format&q=80",
     },
 
     # ═══════════════════════════════════════════════════════════════
@@ -292,7 +292,7 @@ PRODUCTS = [
         "category": "Fresh Produce",
         "price_usd": 4.50,
         "stock_quantity": 80,
-        "image_url": _img("Aguacate+x3+SIGNATURE"),
+        "image_url": "https://images.unsplash.com/photo-1523049673857-eb18f1d7b578?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "FP-AVO-002",
@@ -301,7 +301,7 @@ PRODUCTS = [
         "category": "Fresh Produce",
         "price_usd": 8.00,
         "stock_quantity": 50,
-        "image_url": _img("Aguacate+x6+SIGNATURE"),
+        "image_url": "https://images.unsplash.com/photo-1590477331710-b60b921c0c7f?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "FP-AVO-003",
@@ -310,7 +310,7 @@ PRODUCTS = [
         "category": "Fresh Produce",
         "price_usd": 5.50,
         "stock_quantity": 40,
-        "image_url": _img("Aguacate+Mamey+x3"),
+        "image_url": "https://images.unsplash.com/photo-1632671074687-846c61c4eb22?w=600&h=400&fit=crop&auto=format&q=80",
     },
     # Plantains
     {
@@ -320,7 +320,7 @@ PRODUCTS = [
         "category": "Fresh Produce",
         "price_usd": 3.50,
         "stock_quantity": 80,
-        "image_url": _img("Platano+Maduro+x6"),
+        "image_url": "https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "FP-PLT-002",
@@ -329,7 +329,7 @@ PRODUCTS = [
         "category": "Fresh Produce",
         "price_usd": 3.00,
         "stock_quantity": 80,
-        "image_url": _img("Platano+Verde+x6"),
+        "image_url": "https://images.unsplash.com/photo-1590351029408-2cad4e18bab7?w=600&h=400&fit=crop&auto=format&q=80",
     },
     # Root vegetables
     {
@@ -339,7 +339,7 @@ PRODUCTS = [
         "category": "Fresh Produce",
         "price_usd": 3.25,
         "stock_quantity": 70,
-        "image_url": _img("Boniato+2kg"),
+        "image_url": "https://images.unsplash.com/photo-1596097635092-6e413e1c8908?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "FP-YUC-001",
@@ -348,7 +348,7 @@ PRODUCTS = [
         "category": "Fresh Produce",
         "price_usd": 3.50,
         "stock_quantity": 65,
-        "image_url": _img("Yuca+2kg"),
+        "image_url": "https://images.unsplash.com/photo-1598512752271-33f913a5af13?w=600&h=400&fit=crop&auto=format&q=80",
     },
     # +4 new tropical fruits
     {
@@ -358,7 +358,7 @@ PRODUCTS = [
         "category": "Fresh Produce",
         "price_usd": 4.00,
         "stock_quantity": 60,
-        "image_url": _img("Mango+x4"),
+        "image_url": "https://images.unsplash.com/photo-1553279768-865429fa0078?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "FP-PAP-001",
@@ -367,7 +367,7 @@ PRODUCTS = [
         "category": "Fresh Produce",
         "price_usd": 3.50,
         "stock_quantity": 50,
-        "image_url": _img("Papaya+Grande"),
+        "image_url": "https://images.unsplash.com/photo-1517282009859-f000ec3b26fe?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "FP-GUA-001",
@@ -376,7 +376,7 @@ PRODUCTS = [
         "category": "Fresh Produce",
         "price_usd": 3.75,
         "stock_quantity": 55,
-        "image_url": _img("Guayaba+x6"),
+        "image_url": "https://images.unsplash.com/photo-1536511132770-e5058c7e8c46?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "FP-COC-001",
@@ -385,7 +385,7 @@ PRODUCTS = [
         "category": "Fresh Produce",
         "price_usd": 4.00,
         "stock_quantity": 45,
-        "image_url": _img("Coco+x2"),
+        "image_url": "https://images.unsplash.com/photo-1532062368888-6df40e6ccc88?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "FP-GBN-001",
@@ -394,7 +394,7 @@ PRODUCTS = [
         "category": "Fresh Produce",
         "price_usd": 5.00,
         "stock_quantity": 35,
-        "image_url": _img("Guanabana"),
+        "image_url": "https://images.unsplash.com/photo-1631815333087-9ccf8fa82166?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "FP-CIR-001",
@@ -403,7 +403,7 @@ PRODUCTS = [
         "category": "Fresh Produce",
         "price_usd": 3.00,
         "stock_quantity": 50,
-        "image_url": _img("Ciruelas+500g"),
+        "image_url": "https://images.unsplash.com/photo-1695131864926-f905bef01977?w=600&h=400&fit=crop&auto=format&q=80",
     },
 
     # ═══════════════════════════════════════════════════════════════
@@ -417,7 +417,7 @@ PRODUCTS = [
         "category": "Coffee & Beverages",
         "price_usd": 6.50,
         "stock_quantity": 120,
-        "image_url": _img("Cubita+Dark+250g"),
+        "image_url": "https://images.unsplash.com/photo-1565273975703-c096791fd3ad?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "CB-CUB-002",
@@ -426,7 +426,7 @@ PRODUCTS = [
         "category": "Coffee & Beverages",
         "price_usd": 11.50,
         "stock_quantity": 80,
-        "image_url": _img("Cubita+Dark+500g"),
+        "image_url": "https://images.unsplash.com/photo-1626523573013-fab070962a90?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "CB-CUB-003",
@@ -435,7 +435,7 @@ PRODUCTS = [
         "category": "Coffee & Beverages",
         "price_usd": 6.50,
         "stock_quantity": 90,
-        "image_url": _img("Cubita+Medium+250g"),
+        "image_url": "https://images.unsplash.com/photo-1649780563985-ff945be65785?w=600&h=400&fit=crop&auto=format&q=80",
     },
     # Serrano brand
     {
@@ -445,7 +445,7 @@ PRODUCTS = [
         "category": "Coffee & Beverages",
         "price_usd": 7.00,
         "stock_quantity": 90,
-        "image_url": _img("Serrano+Dark+250g"),
+        "image_url": "https://images.unsplash.com/photo-1587734195342-39d4b9b2ff05?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "CB-SER-002",
@@ -454,7 +454,7 @@ PRODUCTS = [
         "category": "Coffee & Beverages",
         "price_usd": 13.00,
         "stock_quantity": 60,
-        "image_url": _img("Serrano+WholeBean+500g"),
+        "image_url": "https://images.unsplash.com/photo-1627436381099-72af9692894f?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "CB-SER-003",
@@ -463,7 +463,7 @@ PRODUCTS = [
         "category": "Coffee & Beverages",
         "price_usd": 7.00,
         "stock_quantity": 70,
-        "image_url": _img("Serrano+Light+250g"),
+        "image_url": "https://images.unsplash.com/photo-1652568699339-a03bff9f630f?w=600&h=400&fit=crop&auto=format&q=80",
     },
     # Turquino brand
     {
@@ -473,7 +473,7 @@ PRODUCTS = [
         "category": "Coffee & Beverages",
         "price_usd": 8.00,
         "stock_quantity": 50,
-        "image_url": _img("Turquino+250g"),
+        "image_url": "https://images.unsplash.com/photo-1649777888193-e47833d91521?w=600&h=400&fit=crop&auto=format&q=80",
     },
     # Blends & specialty
     {
@@ -483,7 +483,7 @@ PRODUCTS = [
         "category": "Coffee & Beverages",
         "price_usd": 6.00,
         "stock_quantity": 100,
-        "image_url": _img("Espresso+Blend+250g"),
+        "image_url": "https://images.unsplash.com/photo-1606102906144-96b3c8d73719?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "CB-BLD-002",
@@ -492,7 +492,7 @@ PRODUCTS = [
         "category": "Coffee & Beverages",
         "price_usd": 7.50,
         "stock_quantity": 60,
-        "image_url": _img("Cafe+Decaf+250g"),
+        "image_url": "https://images.unsplash.com/photo-1559629720-61aac91b0b77?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "CB-INS-001",
@@ -501,7 +501,7 @@ PRODUCTS = [
         "category": "Coffee & Beverages",
         "price_usd": 5.00,
         "stock_quantity": 110,
-        "image_url": _img("Cafe+Instantaneo"),
+        "image_url": "https://images.unsplash.com/photo-1661877044098-eb9b894e4506?w=600&h=400&fit=crop&auto=format&q=80",
     },
 
     # ═══════════════════════════════════════════════════════════════
@@ -514,7 +514,7 @@ PRODUCTS = [
         "category": "Dairy & Milk",
         "price_usd": 8.50,
         "stock_quantity": 100,
-        "image_url": _img("Leche+Polvo+Entera+800g"),
+        "image_url": "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "DM-PWM-002",
@@ -523,7 +523,7 @@ PRODUCTS = [
         "category": "Dairy & Milk",
         "price_usd": 22.00,
         "stock_quantity": 50,
-        "image_url": _img("Leche+Polvo+2.5kg"),
+        "image_url": "https://images.unsplash.com/photo-1704650311140-aba27da8623d?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "DM-SKM-001",
@@ -532,7 +532,7 @@ PRODUCTS = [
         "category": "Dairy & Milk",
         "price_usd": 7.50,
         "stock_quantity": 80,
-        "image_url": _img("Leche+Descremada+800g"),
+        "image_url": "https://images.unsplash.com/photo-1662106324078-50ae25130065?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "DM-CON-001",
@@ -541,7 +541,7 @@ PRODUCTS = [
         "category": "Dairy & Milk",
         "price_usd": 3.50,
         "stock_quantity": 150,
-        "image_url": _img("Leche+Condensada+395g"),
+        "image_url": "https://images.unsplash.com/photo-1618426703715-2815f841b680?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "DM-CON-002",
@@ -550,7 +550,7 @@ PRODUCTS = [
         "category": "Dairy & Milk",
         "price_usd": 9.00,
         "stock_quantity": 80,
-        "image_url": _img("Leche+Condensada+3-Pack"),
+        "image_url": "https://images.unsplash.com/photo-1739886446818-93bc4ace12a5?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "DM-EVP-001",
@@ -559,7 +559,7 @@ PRODUCTS = [
         "category": "Dairy & Milk",
         "price_usd": 2.50,
         "stock_quantity": 130,
-        "image_url": _img("Leche+Evaporada+370g"),
+        "image_url": "https://images.unsplash.com/photo-1716483758486-47c7ec801677?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "DM-CRM-001",
@@ -568,7 +568,7 @@ PRODUCTS = [
         "category": "Dairy & Milk",
         "price_usd": 5.00,
         "stock_quantity": 90,
-        "image_url": _img("Crema+Leche+3-Pack"),
+        "image_url": "https://images.unsplash.com/photo-1698943510650-9232c98a5328?w=600&h=400&fit=crop&auto=format&q=80",
     },
 
     # ═══════════════════════════════════════════════════════════════
@@ -581,7 +581,7 @@ PRODUCTS = [
         "category": "Juice Packs",
         "price_usd": 6.00,
         "stock_quantity": 90,
-        "image_url": _img("Jugo+Mango+3-Pack"),
+        "image_url": "https://images.unsplash.com/photo-1764403714198-f10e8e4039d0?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "JP-PAP-001",
@@ -590,7 +590,7 @@ PRODUCTS = [
         "category": "Juice Packs",
         "price_usd": 6.00,
         "stock_quantity": 80,
-        "image_url": _img("Jugo+Papaya+3-Pack"),
+        "image_url": "https://images.unsplash.com/photo-1760533536165-ddaf3c79b814?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "JP-GUA-001",
@@ -599,7 +599,7 @@ PRODUCTS = [
         "category": "Juice Packs",
         "price_usd": 6.00,
         "stock_quantity": 85,
-        "image_url": _img("Jugo+Guayaba+3-Pack"),
+        "image_url": "https://images.unsplash.com/photo-1718942900907-06790d4a852c?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "JP-COC-001",
@@ -608,7 +608,7 @@ PRODUCTS = [
         "category": "Juice Packs",
         "price_usd": 7.00,
         "stock_quantity": 75,
-        "image_url": _img("Agua+Coco+6-Pack"),
+        "image_url": "https://images.unsplash.com/photo-1629908011199-c57e22fe9207?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "JP-COC-002",
@@ -617,7 +617,7 @@ PRODUCTS = [
         "category": "Juice Packs",
         "price_usd": 5.50,
         "stock_quantity": 90,
-        "image_url": _img("Leche+Coco+3-Pack"),
+        "image_url": "https://images.unsplash.com/photo-1743947063655-30e3b4e07db7?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "JP-GBN-001",
@@ -626,7 +626,7 @@ PRODUCTS = [
         "category": "Juice Packs",
         "price_usd": 7.00,
         "stock_quantity": 60,
-        "image_url": _img("Jugo+Guanabana+3-Pack"),
+        "image_url": "https://images.unsplash.com/photo-1650547002496-e7ed9df4bf3c?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "JP-MIX-001",
@@ -635,7 +635,7 @@ PRODUCTS = [
         "category": "Juice Packs",
         "price_usd": 12.00,
         "stock_quantity": 45,
-        "image_url": _img("Jugo+Tropical+Mix+6"),
+        "image_url": "https://images.unsplash.com/photo-1546173159-315724a31696?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "JP-CIR-001",
@@ -644,7 +644,7 @@ PRODUCTS = [
         "category": "Juice Packs",
         "price_usd": 5.50,
         "stock_quantity": 65,
-        "image_url": _img("Jugo+Ciruela+3-Pack"),
+        "image_url": "https://images.unsplash.com/photo-1697642452436-9c40773cbcbb?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "JP-PSN-001",
@@ -653,7 +653,7 @@ PRODUCTS = [
         "category": "Juice Packs",
         "price_usd": 6.50,
         "stock_quantity": 70,
-        "image_url": _img("Jugo+Maracuya+3-Pack"),
+        "image_url": "https://images.unsplash.com/photo-1764403726655-5b24a34df0cc?w=600&h=400&fit=crop&auto=format&q=80",
     },
 
     # ═══════════════════════════════════════════════════════════════
@@ -666,7 +666,7 @@ PRODUCTS = [
         "category": "Appliances & Energy",
         "price_usd": 25.00,
         "stock_quantity": 35,
-        "image_url": _img("Arrocera+1.8L"),
+        "image_url": "https://images.unsplash.com/photo-1548243325-bf5b90ad929f?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "AE-FAN-001",
@@ -675,7 +675,7 @@ PRODUCTS = [
         "category": "Appliances & Energy",
         "price_usd": 45.00,
         "stock_quantity": 30,
-        "image_url": _img("Ventilador+Solar+16"),
+        "image_url": "https://images.unsplash.com/photo-1576503963299-fcd31822b523?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "AE-FAN-002",
@@ -684,7 +684,7 @@ PRODUCTS = [
         "category": "Appliances & Energy",
         "price_usd": 85.00,
         "stock_quantity": 15,
-        "image_url": _img("Ventilador+Techo+Solar"),
+        "image_url": "https://images.unsplash.com/photo-1555470100-1728256970aa?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "AE-REF-001",
@@ -693,7 +693,7 @@ PRODUCTS = [
         "category": "Appliances & Energy",
         "price_usd": 160.00,
         "stock_quantity": 12,
-        "image_url": _img("Mini+Fridge+DC+50L"),
+        "image_url": "https://images.unsplash.com/photo-1655776012241-0729290d1e11?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "AE-REF-002",
@@ -702,7 +702,7 @@ PRODUCTS = [
         "category": "Appliances & Energy",
         "price_usd": 320.00,
         "stock_quantity": 8,
-        "image_url": _img("Fridge+Solar+DC+100L"),
+        "image_url": "https://images.unsplash.com/photo-1589557944589-c1d0eaabc88e?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "AE-LED-001",
@@ -711,7 +711,7 @@ PRODUCTS = [
         "category": "Appliances & Energy",
         "price_usd": 28.00,
         "stock_quantity": 40,
-        "image_url": _img("LED+Solar+Kit+6"),
+        "image_url": "https://images.unsplash.com/photo-1601260483544-72824cd8634d?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "AE-CHG-001",
@@ -720,7 +720,7 @@ PRODUCTS = [
         "category": "Appliances & Energy",
         "price_usd": 15.00,
         "stock_quantity": 50,
-        "image_url": _img("Cargador+Solar+USB"),
+        "image_url": "https://images.unsplash.com/photo-1581153691064-8d0ec09725b9?w=600&h=400&fit=crop&auto=format&q=80",
     },
 
     # ═══════════════════════════════════════════════════════════════
@@ -733,7 +733,7 @@ PRODUCTS = [
         "category": "Solar Energy",
         "price_usd": 85.00,
         "stock_quantity": 30,
-        "image_url": _img("Panel+Solar+100W"),
+        "image_url": "https://images.unsplash.com/photo-1652326320478-38c1e9842e85?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "SE-PNL-002",
@@ -742,7 +742,7 @@ PRODUCTS = [
         "category": "Solar Energy",
         "price_usd": 160.00,
         "stock_quantity": 25,
-        "image_url": _img("Panel+Solar+200W"),
+        "image_url": "https://images.unsplash.com/photo-1652326291220-658ebcb8d223?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "SE-PNL-003",
@@ -751,7 +751,7 @@ PRODUCTS = [
         "category": "Solar Energy",
         "price_usd": 290.00,
         "stock_quantity": 15,
-        "image_url": _img("Panel+Solar+400W"),
+        "image_url": "https://images.unsplash.com/photo-1652326319476-d061f4cf7f28?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "SE-RPM-001",
@@ -760,7 +760,7 @@ PRODUCTS = [
         "category": "Solar Energy",
         "price_usd": 220.00,
         "stock_quantity": 20,
-        "image_url": _img("Panel+Techo+300W"),
+        "image_url": "https://images.unsplash.com/photo-1652326291289-f666da315e7b?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "SE-RPM-002",
@@ -769,7 +769,7 @@ PRODUCTS = [
         "category": "Solar Energy",
         "price_usd": 380.00,
         "stock_quantity": 12,
-        "image_url": _img("Panel+Techo+550W"),
+        "image_url": "https://images.unsplash.com/photo-1652326320134-3571944c83b4?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "SE-BAT-001",
@@ -778,7 +778,7 @@ PRODUCTS = [
         "category": "Solar Energy",
         "price_usd": 650.00,
         "stock_quantity": 10,
-        "image_url": _img("Bateria+Solar+5kWh"),
+        "image_url": "https://images.unsplash.com/photo-1650866137641-4246da0f5f09?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "SE-BAT-002",
@@ -787,7 +787,7 @@ PRODUCTS = [
         "category": "Solar Energy",
         "price_usd": 1200.00,
         "stock_quantity": 8,
-        "image_url": _img("Bateria+Solar+10kWh"),
+        "image_url": "https://images.unsplash.com/photo-1650866156457-bb7c4afd54da?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "SE-INV-001",
@@ -796,7 +796,7 @@ PRODUCTS = [
         "category": "Solar Energy",
         "price_usd": 320.00,
         "stock_quantity": 18,
-        "image_url": _img("Inversor+Solar+3kW"),
+        "image_url": "https://images.unsplash.com/photo-1650865939539-583831ef0c00?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "SE-INV-002",
@@ -805,7 +805,7 @@ PRODUCTS = [
         "category": "Solar Energy",
         "price_usd": 480.00,
         "stock_quantity": 12,
-        "image_url": _img("Inversor+Solar+5kW"),
+        "image_url": "https://images.unsplash.com/photo-1650865940168-074387fb7d46?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "SE-PWB-001",
@@ -814,7 +814,7 @@ PRODUCTS = [
         "category": "Solar Energy",
         "price_usd": 25.00,
         "stock_quantity": 60,
-        "image_url": _img("PowerBank+Solar+20K"),
+        "image_url": "https://images.unsplash.com/photo-1650866155994-3bd730b5daf9?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "SE-PWB-002",
@@ -823,7 +823,7 @@ PRODUCTS = [
         "category": "Solar Energy",
         "price_usd": 45.00,
         "stock_quantity": 40,
-        "image_url": _img("PowerBank+Solar+50K"),
+        "image_url": "https://images.unsplash.com/photo-1650866156027-f1f93931a967?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "SE-FLD-001",
@@ -832,7 +832,7 @@ PRODUCTS = [
         "category": "Solar Energy",
         "price_usd": 55.00,
         "stock_quantity": 35,
-        "image_url": _img("Solar+Plegable+60W"),
+        "image_url": "https://images.unsplash.com/photo-1650865941929-38ba5754ba19?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "SE-FLD-002",
@@ -841,7 +841,7 @@ PRODUCTS = [
         "category": "Solar Energy",
         "price_usd": 95.00,
         "stock_quantity": 25,
-        "image_url": _img("Solar+Plegable+120W"),
+        "image_url": "https://images.unsplash.com/photo-1650865941863-98a671278203?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "SE-BDL-001",
@@ -850,7 +850,7 @@ PRODUCTS = [
         "category": "Solar Energy",
         "price_usd": 950.00,
         "stock_quantity": 10,
-        "image_url": _img("Kit+Solar+Hogar"),
+        "image_url": "https://images.unsplash.com/photo-1652326320285-0fd8bb355255?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "SE-BDL-002",
@@ -859,7 +859,7 @@ PRODUCTS = [
         "category": "Solar Energy",
         "price_usd": 180.00,
         "stock_quantity": 20,
-        "image_url": _img("Kit+Iluminacion+Solar"),
+        "image_url": "https://images.unsplash.com/photo-1652326321057-d3f833c9fa7d?w=600&h=400&fit=crop&auto=format&q=80",
     },
 
     # ═══════════════════════════════════════════════════════════════
@@ -872,7 +872,7 @@ PRODUCTS = [
         "category": "Diesel & Fuel Supply",
         "price_usd": 12.00,
         "stock_quantity": 80,
-        "image_url": _img("Diesel+5L"),
+        "image_url": "https://images.unsplash.com/photo-1658260867231-535a1f7c98b9?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "DF-DSL-002",
@@ -881,7 +881,7 @@ PRODUCTS = [
         "category": "Diesel & Fuel Supply",
         "price_usd": 42.00,
         "stock_quantity": 50,
-        "image_url": _img("Diesel+20L"),
+        "image_url": "https://images.unsplash.com/photo-1703095107789-d204fa7d2ad2?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "DF-DSL-003",
@@ -890,7 +890,7 @@ PRODUCTS = [
         "category": "Diesel & Fuel Supply",
         "price_usd": 95.00,
         "stock_quantity": 25,
-        "image_url": _img("Diesel+50L"),
+        "image_url": "https://images.unsplash.com/photo-1674655798804-b739c31b6cf5?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "DF-STR-001",
@@ -899,7 +899,7 @@ PRODUCTS = [
         "category": "Diesel & Fuel Supply",
         "price_usd": 65.00,
         "stock_quantity": 15,
-        "image_url": _img("Barril+200L"),
+        "image_url": "https://images.unsplash.com/photo-1669300741021-bc29d2a63798?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "DF-GEN-001",
@@ -908,7 +908,7 @@ PRODUCTS = [
         "category": "Diesel & Fuel Supply",
         "price_usd": 450.00,
         "stock_quantity": 12,
-        "image_url": _img("Generador+3.5kW"),
+        "image_url": "https://images.unsplash.com/photo-1659958196981-0be9d1b7c446?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "DF-GEN-002",
@@ -917,7 +917,7 @@ PRODUCTS = [
         "category": "Diesel & Fuel Supply",
         "price_usd": 850.00,
         "stock_quantity": 8,
-        "image_url": _img("Generador+7kW"),
+        "image_url": "https://images.unsplash.com/photo-1589225925761-1f31d7ea5468?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "DF-GEN-003",
@@ -926,7 +926,7 @@ PRODUCTS = [
         "category": "Diesel & Fuel Supply",
         "price_usd": 280.00,
         "stock_quantity": 20,
-        "image_url": _img("Generador+Portatil+2kW"),
+        "image_url": "https://images.unsplash.com/photo-1699351301924-2d8180c4bd99?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "DF-PMP-001",
@@ -935,7 +935,7 @@ PRODUCTS = [
         "category": "Diesel & Fuel Supply",
         "price_usd": 18.00,
         "stock_quantity": 40,
-        "image_url": _img("Bomba+Combustible"),
+        "image_url": "https://images.unsplash.com/photo-1694095691445-f5d62c0f555e?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "DF-BDL-001",
@@ -944,7 +944,7 @@ PRODUCTS = [
         "category": "Diesel & Fuel Supply",
         "price_usd": 490.00,
         "stock_quantity": 10,
-        "image_url": _img("Kit+Generador+Inicio"),
+        "image_url": "https://images.unsplash.com/photo-1705056561325-efbd3e68de53?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "DF-BDL-002",
@@ -953,7 +953,7 @@ PRODUCTS = [
         "category": "Diesel & Fuel Supply",
         "price_usd": 950.00,
         "stock_quantity": 5,
-        "image_url": _img("Kit+Finca+Energia"),
+        "image_url": "https://images.unsplash.com/photo-1759692071712-adc78a8516c8?w=600&h=400&fit=crop&auto=format&q=80",
     },
 
     # ═══════════════════════════════════════════════════════════════
@@ -966,7 +966,7 @@ PRODUCTS = [
         "category": "Battery & Energy Storage",
         "price_usd": 320.00,
         "stock_quantity": 15,
-        "image_url": _img("Bateria+Litio+100Ah"),
+        "image_url": "https://images.unsplash.com/photo-1676337167748-00b4e684322a?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BS-LIT-002",
@@ -975,7 +975,7 @@ PRODUCTS = [
         "category": "Battery & Energy Storage",
         "price_usd": 580.00,
         "stock_quantity": 10,
-        "image_url": _img("Bateria+Litio+200Ah"),
+        "image_url": "https://images.unsplash.com/photo-1628697550216-c4b824f3e22c?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BS-LED-001",
@@ -984,7 +984,7 @@ PRODUCTS = [
         "category": "Battery & Energy Storage",
         "price_usd": 120.00,
         "stock_quantity": 25,
-        "image_url": _img("Bateria+Plomo+100Ah"),
+        "image_url": "https://images.unsplash.com/photo-1681263810102-ee12f623a5f3?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BS-LED-002",
@@ -993,7 +993,7 @@ PRODUCTS = [
         "category": "Battery & Energy Storage",
         "price_usd": 210.00,
         "stock_quantity": 15,
-        "image_url": _img("Bateria+Plomo+200Ah"),
+        "image_url": "https://images.unsplash.com/photo-1515594515116-863345d8507c?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BS-PPS-001",
@@ -1002,7 +1002,7 @@ PRODUCTS = [
         "category": "Battery & Energy Storage",
         "price_usd": 350.00,
         "stock_quantity": 20,
-        "image_url": _img("Estacion+500Wh"),
+        "image_url": "https://images.unsplash.com/photo-1732030373864-d37573915751?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BS-PPS-002",
@@ -1011,7 +1011,7 @@ PRODUCTS = [
         "category": "Battery & Energy Storage",
         "price_usd": 750.00,
         "stock_quantity": 12,
-        "image_url": _img("Estacion+1500Wh"),
+        "image_url": "https://images.unsplash.com/photo-1738851941850-c0fca601b398?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BS-SBK-001",
@@ -1020,7 +1020,7 @@ PRODUCTS = [
         "category": "Battery & Energy Storage",
         "price_usd": 550.00,
         "stock_quantity": 10,
-        "image_url": _img("Banco+Baterias+2.4kWh"),
+        "image_url": "https://images.unsplash.com/photo-1561115867-be8460fbebfe?w=600&h=400&fit=crop&auto=format&q=80",
     },
 
     # ═══════════════════════════════════════════════════════════════
@@ -1033,7 +1033,7 @@ PRODUCTS = [
         "category": "Micro-grid & Home Energy",
         "price_usd": 3500.00,
         "stock_quantity": 5,
-        "image_url": _img("Kit+OffGrid+3kW"),
+        "image_url": "https://images.unsplash.com/photo-1527971179697-13dce75dfbd0?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "MG-OGK-002",
@@ -1042,7 +1042,7 @@ PRODUCTS = [
         "category": "Micro-grid & Home Energy",
         "price_usd": 5800.00,
         "stock_quantity": 3,
-        "image_url": _img("Kit+OffGrid+5kW"),
+        "image_url": "https://images.unsplash.com/photo-1695736122218-0bd73e177484?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "MG-HYB-001",
@@ -1051,7 +1051,7 @@ PRODUCTS = [
         "category": "Micro-grid & Home Energy",
         "price_usd": 2800.00,
         "stock_quantity": 5,
-        "image_url": _img("Hibrido+Solar+Gen"),
+        "image_url": "https://images.unsplash.com/photo-1687865014576-9ae3570f550a?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "MG-HYB-002",
@@ -1060,7 +1060,7 @@ PRODUCTS = [
         "category": "Micro-grid & Home Energy",
         "price_usd": 5200.00,
         "stock_quantity": 3,
-        "image_url": _img("Hibrido+Premium"),
+        "image_url": "https://images.unsplash.com/photo-1681263849578-7585abbe0455?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "MG-CTR-001",
@@ -1069,7 +1069,7 @@ PRODUCTS = [
         "category": "Micro-grid & Home Energy",
         "price_usd": 280.00,
         "stock_quantity": 15,
-        "image_url": _img("Controlador+Smart"),
+        "image_url": "https://images.unsplash.com/photo-1692611825915-0f3c9bdb257d?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "MG-PDB-001",
@@ -1078,7 +1078,7 @@ PRODUCTS = [
         "category": "Micro-grid & Home Energy",
         "price_usd": 120.00,
         "stock_quantity": 20,
-        "image_url": _img("Caja+Distribucion"),
+        "image_url": "https://images.unsplash.com/photo-1761158495585-eac721decf1b?w=600&h=400&fit=crop&auto=format&q=80",
     },
 
     # ═══════════════════════════════════════════════════════════════
@@ -1091,7 +1091,7 @@ PRODUCTS = [
         "category": "Essential Bundles",
         "price_usd": 45.00,
         "stock_quantity": 100,
-        "image_url": _img("Pack+Familiar"),
+        "image_url": "https://images.unsplash.com/photo-1637087788835-4f051e32bfa1?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BX-PRO-001",
@@ -1100,7 +1100,7 @@ PRODUCTS = [
         "category": "Essential Bundles",
         "price_usd": 38.00,
         "stock_quantity": 80,
-        "image_url": _img("Pack+Proteinas"),
+        "image_url": "https://images.unsplash.com/photo-1554702309-b733f9d3a552?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BX-BEB-001",
@@ -1109,7 +1109,7 @@ PRODUCTS = [
         "category": "Essential Bundles",
         "price_usd": 32.00,
         "stock_quantity": 60,
-        "image_url": _img("Pack+Bebidas"),
+        "image_url": "https://images.unsplash.com/photo-1546173159-315724a31696?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BX-CAF-001",
@@ -1118,7 +1118,7 @@ PRODUCTS = [
         "category": "Essential Bundles",
         "price_usd": 35.00,
         "stock_quantity": 70,
-        "image_url": _img("Pack+Cafe"),
+        "image_url": "https://images.unsplash.com/photo-1606102906144-96b3c8d73719?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BX-FRU-001",
@@ -1127,7 +1127,7 @@ PRODUCTS = [
         "category": "Essential Bundles",
         "price_usd": 28.00,
         "stock_quantity": 40,
-        "image_url": _img("Pack+Frutas"),
+        "image_url": "https://images.unsplash.com/photo-1758184875542-2a30993210b4?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BX-SOL-001",
@@ -1136,7 +1136,7 @@ PRODUCTS = [
         "category": "Essential Bundles",
         "price_usd": 220.00,
         "stock_quantity": 15,
-        "image_url": _img("Pack+Solar"),
+        "image_url": "https://images.unsplash.com/photo-1652326320478-38c1e9842e85?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BX-DES-001",
@@ -1145,7 +1145,7 @@ PRODUCTS = [
         "category": "Essential Bundles",
         "price_usd": 65.00,
         "stock_quantity": 50,
-        "image_url": _img("Pack+Despensa"),
+        "image_url": "https://images.unsplash.com/photo-1543168256-418811576931?w=600&h=400&fit=crop&auto=format&q=80",
     },
     {
         "sku": "BX-BLK-001",
@@ -1154,7 +1154,7 @@ PRODUCTS = [
         "category": "Essential Bundles",
         "price_usd": 120.00,
         "stock_quantity": 30,
-        "image_url": _img("Mega+Pack"),
+        "image_url": "https://images.unsplash.com/photo-1578730260644-8d1b35ce2c69?w=600&h=400&fit=crop&auto=format&q=80",
     },
 ]
 
@@ -1175,16 +1175,31 @@ async def seed():
         else:
             print("Admin user already exists")
 
-        # Upsert products — add any missing ones by SKU
-        result = await session.execute(select(Product.sku))
-        existing_skus = {row[0] for row in result.all() if row[0]}
+        # Upsert products — add missing, update images for existing
+        result = await session.execute(select(Product))
+        existing = {p.sku: p for p in result.scalars().all() if p.sku}
+
+        # Build lookup of desired images from PRODUCTS list
+        desired_images = {p["sku"]: p["image_url"] for p in PRODUCTS}
 
         new_products = []
+        updated_images = 0
         for p_data in PRODUCTS:
-            if p_data["sku"] not in existing_skus:
+            sku = p_data["sku"]
+            if sku not in existing:
                 product = Product(**p_data)
                 session.add(product)
                 new_products.append((product, p_data["stock_quantity"]))
+            else:
+                # Update image if it's a placeholder or different from desired
+                existing_product = existing[sku]
+                if existing_product.image_url != p_data["image_url"] and (
+                    not existing_product.image_url
+                    or "placehold.co" in (existing_product.image_url or "")
+                    or existing_product.image_url.startswith("https://placehold")
+                ):
+                    existing_product.image_url = p_data["image_url"]
+                    updated_images += 1
 
         if new_products:
             await session.flush()
@@ -1196,6 +1211,9 @@ async def seed():
             print(f"Added {len(new_products)} new products + inventory records")
         else:
             print(f"All {len(PRODUCTS)} products already exist")
+
+        if updated_images:
+            print(f"Updated {updated_images} product images to Unsplash photos")
 
         await session.commit()
     print("Seed complete.")
