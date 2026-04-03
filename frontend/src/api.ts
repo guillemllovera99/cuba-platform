@@ -122,13 +122,13 @@ export const api = {
 
   // pickup points (Phase 5)
   getPickupPoints: () => apiFetch('/api/v1/pickup-points/'),
-  adminPickupPoints: () => apiFetch('/api/v1/admin/pickup-points/'),
+  adminPickupPoints: () => apiFetch('/api/v1/pickup-points/admin/'),
   adminCreatePickupPoint: (data: any) =>
-    apiFetch('/api/v1/admin/pickup-points/', { method: 'POST', body: JSON.stringify(data) }),
+    apiFetch('/api/v1/pickup-points/admin/', { method: 'POST', body: JSON.stringify(data) }),
   adminUpdatePickupPoint: (id: string, data: any) =>
-    apiFetch(`/api/v1/admin/pickup-points/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+    apiFetch(`/api/v1/pickup-points/admin/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   adminDeletePickupPoint: (id: string) =>
-    apiFetch(`/api/v1/admin/pickup-points/${id}`, { method: 'DELETE' }),
+    apiFetch(`/api/v1/pickup-points/admin/${id}`, { method: 'DELETE' }),
 
   // bank transfer (Phase 6)
   bankTransferInitiate: (orderId: string) =>
