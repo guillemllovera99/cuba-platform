@@ -42,6 +42,9 @@ export default function AdminDashboard() {
           <Link to="/admin/analytics" className="bg-purple-600 text-white px-4 py-2.5 rounded-lg text-sm hover:bg-purple-700 font-medium text-center min-h-[44px] flex items-center justify-center">
             Analytics
           </Link>
+          <Link to="/admin/shipment-windows" className="bg-orange-500 text-white px-4 py-2.5 rounded-lg text-sm hover:bg-orange-600 font-medium text-center min-h-[44px] flex items-center justify-center">
+            Preorder Windows
+          </Link>
         </div>
       </div>
 

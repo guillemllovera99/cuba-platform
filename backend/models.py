@@ -28,6 +28,23 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
 
+class ShipmentWindow(Base):
+    """
+    Preorder shipment windows. Admin creates windows like "April 2026 Shipment".
+    Products linked to a window inherit its deadline and ship date.
+    """
+    __tablename__ = "shipment_windows"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)  # e.g. "April 2026 Caribbean Shipment"
+    description: Mapped[str] = mapped_column(Text, nullable=True)
+    order_deadline: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    estimated_departure: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    estimated_arrival: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
 class Product(Base):
     __tablename__ = "products"
 
@@ -40,6 +57,11 @@ class Product(Base):
     stock_quantity: Mapped[int] = mapped_column(Integer, default=0)
     image_url: Mapped[str] = mapped_column(String(1000), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    # Preorder fields (Phase 4)
+    is_preorder: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
+    preorder_deadline: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    estimated_ship_date: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    shipment_window_id: Mapped[str] = mapped_column(String(36), ForeignKey("shipment_windows.id"), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
 
@@ -59,6 +81,11 @@ class Order(Base):
     # totals
     subtotal_usd: Mapped[float] = mapped_column(Numeric(10, 2), nullable=True)
     total_usd: Mapped[float] = mapped_column(Numeric(10, 2), nullable=True)
+    # Split payment (20% deposit flow)
+    deposit_amount: Mapped[float] = mapped_column(Numeric(10, 2), nullable=True)
+    balance_amount: Mapped[float] = mapped_column(Numeric(10, 2), nullable=True)
+    deposit_paid_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    balance_paid_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
     notes: Mapped[str] = mapped_column(Text, nullable=True)
     paid_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)

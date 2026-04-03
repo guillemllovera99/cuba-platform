@@ -17,16 +17,10 @@ from routers.shipments import ensure_shipment_for_order
 router = APIRouter(prefix="/api/v1/orders/admin", tags=["admin-orders"])
 
 VALID_STATUSES = [
-    "pending_payment", "paid", "processing",
-    "shipped", "delivered", "cancelled",
+    "pending_deposit", "deposit_paid", "balance_due", "paid",
+    "pending_payment",  # legacy compat
+    "processing", "shipped", "delivered", "cancelled",
 ]
-
-# Status transitions that are NOT allowed
-INVALID_TRANSITIONS = {
-    "delivered": {"pending_payment", "paid"},  # can't go backwards to unpaid
-    "cancelled": set(),                         # anything can be cancelled
-    "shipped": {"pending_payment"},             # can't ship without payment
-}
 
 
 @router.get("/all", response_model=list[OrderOut])
@@ -73,25 +67,82 @@ async def admin_update_status(
     #
     # Cancel from any non-cancelled state → release reserved stock
     if new_status == "cancelled":
-        # Only release if stock was reserved (i.e. order went through checkout)
-        # For pending_payment or paid orders, stock is reserved but not yet confirmed
-        # For processing/shipped, confirm_sale already happened so we skip release
-        if old_status in ("pending_payment", "paid"):
+        # Only release if stock was reserved but sale not yet confirmed
+        if old_status in ("pending_payment", "pending_deposit", "deposit_paid", "balance_due"):
             for item in order.items:
                 await release_stock(db, item.product_id, item.quantity, order.id)
 
-    # Transition to "paid" from "pending_payment" → confirm the sale
-    # (This handles manual admin confirmation when payment is verified outside the app)
-    if new_status == "paid" and old_status == "pending_payment":
+    # Transition to "paid" → confirm the sale (inventory moves from reserved to sold)
+    if new_status == "paid" and old_status in ("pending_payment", "deposit_paid", "balance_due"):
         order.paid_at = datetime.now(timezone.utc)
+        if old_status == "balance_due":
+            order.balance_paid_at = datetime.now(timezone.utc)
         for item in order.items:
             await confirm_sale(db, item.product_id, item.quantity, order.id)
+
+    # Admin requests balance payment (deposit_paid → balance_due)
+    if new_status == "balance_due" and old_status == "deposit_paid":
+        pass  # Just a status change, no inventory action needed
 
     # Auto-create shipment when order moves to processing
     if new_status == "processing":
         await ensure_shipment_for_order(db, order)
 
     order.status = new_status
+    await db.commit()
+    await db.refresh(order, attribute_names=["items"])
+    return _order_to_out(order)
+
+
+# ── Admin: Request balance payment ─────────────────────────────
+# Convenience endpoint that moves deposit_paid → balance_due
+@router.put("/{order_id}/request-balance", response_model=OrderOut)
+async def admin_request_balance(
+    order_id: str,
+    admin: dict = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(Order).where(Order.id == order_id).options(selectinload(Order.items))
+    )
+    order = result.scalar_one_or_none()
+    if not order:
+        raise HTTPException(404, "Order not found")
+    if order.status != "deposit_paid":
+        raise HTTPException(400, f"Can only request balance from deposit_paid orders (current: {order.status})")
+
+    order.status = "balance_due"
+    await db.commit()
+    await db.refresh(order, attribute_names=["items"])
+    return _order_to_out(order)
+
+
+# ── Admin: Confirm balance payment (manual) ────────────────────
+# For when admin verifies payment outside the app
+@router.put("/{order_id}/confirm-balance", response_model=OrderOut)
+async def admin_confirm_balance(
+    order_id: str,
+    admin: dict = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(Order).where(Order.id == order_id).options(selectinload(Order.items))
+    )
+    order = result.scalar_one_or_none()
+    if not order:
+        raise HTTPException(404, "Order not found")
+    if order.status != "balance_due":
+        raise HTTPException(400, f"Can only confirm balance for balance_due orders (current: {order.status})")
+
+    now = datetime.now(timezone.utc)
+    order.status = "paid"
+    order.balance_paid_at = now
+    order.paid_at = now
+
+    # Confirm inventory sale
+    for item in order.items:
+        await confirm_sale(db, item.product_id, item.quantity, order.id)
+
     await db.commit()
     await db.refresh(order, attribute_names=["items"])
     return _order_to_out(order)

@@ -50,6 +50,10 @@ class ProductUpdate(BaseModel):
     stock_quantity: Optional[int] = None
     image_url: Optional[str] = None
     is_active: Optional[bool] = None
+    is_preorder: Optional[bool] = None
+    preorder_deadline: Optional[str] = None
+    estimated_ship_date: Optional[str] = None
+    shipment_window_id: Optional[str] = None
 
 
 class ProductOut(BaseModel):
@@ -62,6 +66,10 @@ class ProductOut(BaseModel):
     stock_quantity: int
     image_url: Optional[str]
     is_active: bool
+    is_preorder: bool = False
+    preorder_deadline: Optional[str] = None
+    estimated_ship_date: Optional[str] = None
+    shipment_window_id: Optional[str] = None
 
 
 # ── Orders ──
@@ -98,6 +106,10 @@ class OrderOut(BaseModel):
     recipient_address: Optional[str]
     subtotal_usd: Optional[float]
     total_usd: Optional[float]
+    deposit_amount: Optional[float] = None
+    balance_amount: Optional[float] = None
+    deposit_paid_at: Optional[str] = None
+    balance_paid_at: Optional[str] = None
     notes: Optional[str]
     paid_at: Optional[str]
     created_at: str
@@ -150,3 +162,22 @@ class ShipmentEventCreate(BaseModel):
     status: str
     location: Optional[str] = None
     description: Optional[str] = None
+
+
+# ── Shipment Windows (Phase 4 — preorder) ──
+class ShipmentWindowCreate(BaseModel):
+    name: str
+    description: Optional[str] = None
+    order_deadline: str  # ISO datetime
+    estimated_departure: str
+    estimated_arrival: Optional[str] = None
+
+class ShipmentWindowOut(BaseModel):
+    id: str
+    name: str
+    description: Optional[str]
+    order_deadline: str
+    estimated_departure: str
+    estimated_arrival: Optional[str]
+    is_active: bool
+    created_at: str

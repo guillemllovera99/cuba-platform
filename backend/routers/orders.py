@@ -35,6 +35,10 @@ def _order_to_out(order: Order) -> OrderOut:
         recipient_address=order.recipient_address,
         subtotal_usd=float(order.subtotal_usd) if order.subtotal_usd else None,
         total_usd=float(order.total_usd) if order.total_usd else None,
+        deposit_amount=float(order.deposit_amount) if order.deposit_amount else None,
+        balance_amount=float(order.balance_amount) if order.balance_amount else None,
+        deposit_paid_at=order.deposit_paid_at.isoformat() if order.deposit_paid_at else None,
+        balance_paid_at=order.balance_paid_at.isoformat() if order.balance_paid_at else None,
         notes=order.notes,
         paid_at=order.paid_at.isoformat() if order.paid_at else None,
         created_at=order.created_at.isoformat() if order.created_at else "",
@@ -105,34 +109,42 @@ async def checkout(
         ))
         product.stock_quantity -= item.quantity
 
+    # Calculate 20% deposit and 80% balance
+    deposit = round(subtotal * 0.20, 2)
+    balance = round(subtotal - deposit, 2)
+
     if PAYMENTS_ENABLED:
-        # Real payment mode: order stays pending until Stripe/PayPal confirms
+        # Real payment mode: order stays pending_deposit until Stripe/PayPal confirms 20%
         order = Order(
             order_code=order_code,
             client_user_id=user["sub"],
-            status="pending_payment",
+            status="pending_deposit",
             recipient_name=req.recipient_name,
             recipient_phone=req.recipient_phone,
             recipient_city=req.recipient_city,
             recipient_address=req.recipient_address,
             subtotal_usd=subtotal,
             total_usd=subtotal,
+            deposit_amount=deposit,
+            balance_amount=balance,
             notes=req.notes,
         )
     else:
-        # Mock mode: auto-confirm payment (demo/dev behavior)
+        # Mock mode: auto-confirm deposit payment (demo/dev behavior)
         order = Order(
             order_code=order_code,
             client_user_id=user["sub"],
-            status="paid",
+            status="deposit_paid",
             recipient_name=req.recipient_name,
             recipient_phone=req.recipient_phone,
             recipient_city=req.recipient_city,
             recipient_address=req.recipient_address,
             subtotal_usd=subtotal,
             total_usd=subtotal,
+            deposit_amount=deposit,
+            balance_amount=balance,
             notes=req.notes,
-            paid_at=datetime.now(timezone.utc),
+            deposit_paid_at=datetime.now(timezone.utc),
         )
 
     order.items = order_items
@@ -148,7 +160,7 @@ async def checkout(
     await db.refresh(order, attribute_names=["items"])
 
     mode = "MOCK" if not PAYMENTS_ENABLED else "PENDING"
-    print(f"ORDER [{mode}]: {order.order_code} — {len(reserved)} items, ${subtotal:.2f}")
+    print(f"ORDER [{mode}]: {order.order_code} — {len(reserved)} items, ${subtotal:.2f} (deposit: ${deposit:.2f})")
 
     return _order_to_out(order)
 

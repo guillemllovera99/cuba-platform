@@ -50,6 +50,7 @@ from routers.payments import router as payments_router
 from routers.shipments import router as shipments_router
 from routers.analytics import router as analytics_router
 from routers.upload import router as upload_router
+from routers.shipment_windows import router as shipment_windows_router
 
 # Serve uploaded product images
 UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "uploads")
@@ -66,6 +67,7 @@ app.include_router(payments_router)
 app.include_router(shipments_router)
 app.include_router(analytics_router)
 app.include_router(upload_router)
+app.include_router(shipment_windows_router)
 
 
 if __name__ == "__main__":

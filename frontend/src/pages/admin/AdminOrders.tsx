@@ -3,8 +3,14 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../store'
 import { api } from '../../api'
 
-const STATUSES = ['', 'pending_payment', 'paid', 'processing', 'shipped', 'delivered', 'cancelled']
+const STATUSES = [
+  '', 'pending_deposit', 'deposit_paid', 'balance_due', 'paid',
+  'pending_payment', 'processing', 'shipped', 'delivered', 'cancelled',
+]
 const STATUS_COLORS: Record<string, string> = {
+  pending_deposit: 'bg-orange-100 text-orange-800',
+  deposit_paid: 'bg-teal-100 text-teal-800',
+  balance_due: 'bg-amber-100 text-amber-800',
   pending_payment: 'bg-yellow-100 text-yellow-800',
   paid: 'bg-blue-100 text-blue-800',
   processing: 'bg-indigo-100 text-indigo-800',
@@ -33,6 +39,16 @@ export default function AdminOrders() {
     loadOrders()
   }
 
+  const handleRequestBalance = async (orderId: string) => {
+    await api.adminRequestBalance(orderId)
+    loadOrders()
+  }
+
+  const handleConfirmBalance = async (orderId: string) => {
+    await api.adminConfirmBalance(orderId)
+    loadOrders()
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -44,7 +60,7 @@ export default function AdminOrders() {
         {STATUSES.map(s => (
           <button key={s} onClick={() => setFilter(s)}
             className={`px-3 py-1 rounded text-sm ${filter === s ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
-            {s ? s.replace('_', ' ') : 'All'}
+            {s ? s.replace(/_/g, ' ') : 'All'}
           </button>
         ))}
       </div>
@@ -60,22 +76,53 @@ export default function AdminOrders() {
                   <div className="flex items-center gap-2 mb-1">
                     <span className="font-mono font-bold text-green-700">{order.order_code}</span>
                     <span className={`px-2 py-0.5 rounded text-xs font-medium uppercase ${STATUS_COLORS[order.status] || 'bg-gray-100'}`}>
-                      {order.status.replace('_', ' ')}
+                      {order.status.replace(/_/g, ' ')}
                     </span>
                   </div>
                   <p className="text-sm text-gray-500">
                     {new Date(order.created_at).toLocaleString()} &middot; ${order.total_usd?.toFixed(2)} USD
                   </p>
+                  {/* Deposit/Balance info */}
+                  {order.deposit_amount && (
+                    <div className="flex gap-3 mt-1 text-xs">
+                      <span className={order.deposit_paid_at ? 'text-green-600' : 'text-orange-600'}>
+                        Deposit: ${order.deposit_amount?.toFixed(2)} {order.deposit_paid_at ? '\u2713' : ''}
+                      </span>
+                      <span className={order.balance_paid_at ? 'text-green-600' : 'text-gray-400'}>
+                        Balance: ${order.balance_amount?.toFixed(2)} {order.balance_paid_at ? '\u2713' : ''}
+                      </span>
+                    </div>
+                  )}
                 </div>
-                <select
-                  value={order.status}
-                  onChange={e => handleStatus(order.id, e.target.value)}
-                  className="border rounded px-2 py-1 text-sm"
-                >
-                  {STATUSES.filter(Boolean).map(s => (
-                    <option key={s} value={s}>{s.replace('_', ' ')}</option>
-                  ))}
-                </select>
+                <div className="flex items-center gap-2">
+                  {/* Request Balance button */}
+                  {order.status === 'deposit_paid' && (
+                    <button
+                      onClick={() => handleRequestBalance(order.id)}
+                      className="bg-amber-500 text-white px-3 py-1 rounded text-xs font-medium hover:bg-amber-600"
+                    >
+                      Request Balance
+                    </button>
+                  )}
+                  {/* Confirm Balance button */}
+                  {order.status === 'balance_due' && (
+                    <button
+                      onClick={() => handleConfirmBalance(order.id)}
+                      className="bg-blue-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-blue-700"
+                    >
+                      Confirm Balance
+                    </button>
+                  )}
+                  <select
+                    value={order.status}
+                    onChange={e => handleStatus(order.id, e.target.value)}
+                    className="border rounded px-2 py-1 text-sm"
+                  >
+                    {STATUSES.filter(Boolean).map(s => (
+                      <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-sm mb-3">

@@ -63,4 +63,28 @@ async def _ensure_columns(engine):
                 "ALTER TABLE users ADD COLUMN IF NOT EXISTS account_type VARCHAR(20) DEFAULT 'buyer'"
             ))
         except Exception:
-            pass  # Column already exists or DB doesn't support IF NOT EXISTS
+            pass
+
+        # Split payment fields on orders (Phase 3)
+        for col in [
+            "ALTER TABLE orders ADD COLUMN IF NOT EXISTS deposit_amount NUMERIC(10,2)",
+            "ALTER TABLE orders ADD COLUMN IF NOT EXISTS balance_amount NUMERIC(10,2)",
+            "ALTER TABLE orders ADD COLUMN IF NOT EXISTS deposit_paid_at TIMESTAMPTZ",
+            "ALTER TABLE orders ADD COLUMN IF NOT EXISTS balance_paid_at TIMESTAMPTZ",
+        ]:
+            try:
+                await conn.execute(text(col))
+            except Exception:
+                pass
+
+        # Preorder fields on products (Phase 4)
+        for col in [
+            "ALTER TABLE products ADD COLUMN IF NOT EXISTS is_preorder BOOLEAN DEFAULT false",
+            "ALTER TABLE products ADD COLUMN IF NOT EXISTS preorder_deadline TIMESTAMPTZ",
+            "ALTER TABLE products ADD COLUMN IF NOT EXISTS estimated_ship_date TIMESTAMPTZ",
+            "ALTER TABLE products ADD COLUMN IF NOT EXISTS shipment_window_id VARCHAR(36)",
+        ]:
+            try:
+                await conn.execute(text(col))
+            except Exception:
+                pass
