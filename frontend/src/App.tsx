@@ -17,6 +17,7 @@ import AdminProductForm from './pages/admin/AdminProductForm'
 import AdminOrders from './pages/admin/AdminOrders'
 import AdminShipments from './pages/admin/AdminShipments'
 import AdminAnalytics from './pages/admin/AdminAnalytics'
+import AdminShipmentWindows from './pages/admin/AdminShipmentWindows'
 import About from './pages/About'
 
 function LangSwitcher() {
@@ -180,6 +181,7 @@ export default function App() {
           <Route path="/admin/orders" element={<AdminOrders />} />
           <Route path="/admin/shipments" element={<AdminShipments />} />
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
+          <Route path="/admin/shipment-windows" element={<AdminShipmentWindows />} />
         </Routes>
       </main>
       <Footer />

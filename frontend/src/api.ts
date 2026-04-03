@@ -104,6 +104,22 @@ export const api = {
     return res.json()
   },
 
+  // admin order actions (deposit flow)
+  adminRequestBalance: (orderId: string) =>
+    apiFetch(`/api/v1/orders/admin/${orderId}/request-balance`, { method: 'PUT' }),
+  adminConfirmBalance: (orderId: string) =>
+    apiFetch(`/api/v1/orders/admin/${orderId}/confirm-balance`, { method: 'PUT' }),
+
+  // shipment windows (preorder)
+  adminShipmentWindows: () => apiFetch('/api/v1/admin/shipment-windows/'),
+  adminCreateShipmentWindow: (data: any) =>
+    apiFetch('/api/v1/admin/shipment-windows/', { method: 'POST', body: JSON.stringify(data) }),
+  adminUpdateShipmentWindow: (id: string, data: any) =>
+    apiFetch(`/api/v1/admin/shipment-windows/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  adminDeleteShipmentWindow: (id: string) =>
+    apiFetch(`/api/v1/admin/shipment-windows/${id}`, { method: 'DELETE' }),
+  activeShipmentWindows: () => apiFetch('/api/v1/admin/shipment-windows/active'),
+
   // analytics (US-13)
   analyticsOverview: () => apiFetch('/api/v1/admin/analytics/overview'),
   analyticsTopProducts: (limit = 10) => apiFetch(`/api/v1/admin/analytics/top-products?limit=${limit}`),

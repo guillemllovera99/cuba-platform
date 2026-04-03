@@ -1,4 +1,6 @@
 """Catalog endpoints: public product listing + admin product CRUD."""
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -77,6 +79,12 @@ async def update_product(
         raise HTTPException(404, "Product not found")
 
     update_data = req.model_dump(exclude_unset=True)
+    # Convert ISO string dates to datetime for preorder fields
+    for dt_field in ("preorder_deadline", "estimated_ship_date"):
+        if dt_field in update_data and update_data[dt_field]:
+            update_data[dt_field] = datetime.fromisoformat(update_data[dt_field])
+        elif dt_field in update_data and not update_data[dt_field]:
+            update_data[dt_field] = None
     for key, val in update_data.items():
         setattr(product, key, val)
     await db.commit()

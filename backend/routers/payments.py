@@ -1,6 +1,7 @@
 """
 Payment endpoints: Stripe Checkout sessions, PayPal orders, and webhooks.
 
+Supports both full-payment (legacy) and split-payment (20% deposit / 80% balance) flows.
 Both Stripe and PayPal are free to set up — you only pay per transaction.
 When neither is configured (no env keys), the system falls back to mock
 mode where checkout auto-confirms orders.
@@ -24,6 +25,9 @@ from services.inventory_service import confirm_sale, release_stock
 
 router = APIRouter(prefix="/api/v1/payments", tags=["payments"])
 
+# Statuses that can trigger a payment session
+PAYABLE_STATUSES = {"pending_payment", "pending_deposit", "balance_due"}
+
 
 # ── Config endpoint (tells frontend which providers are available) ─────
 @router.get("/config")
@@ -37,6 +41,22 @@ async def payment_config():
     }
 
 
+def _get_charge_amount(order: Order) -> tuple[float, str]:
+    """
+    Determine how much to charge and what the payment is for.
+    Returns (amount_usd, description).
+    """
+    if order.status == "pending_deposit":
+        amount = float(order.deposit_amount) if order.deposit_amount else float(order.total_usd) * 0.20
+        return (amount, f"20% Deposit for Order {order.order_code}")
+    elif order.status == "balance_due":
+        amount = float(order.balance_amount) if order.balance_amount else float(order.total_usd) * 0.80
+        return (amount, f"80% Balance for Order {order.order_code}")
+    else:
+        # Legacy full payment
+        return (float(order.total_usd), f"Order {order.order_code}")
+
+
 # ════════════════════════════════════════════════════════════════════════
 # STRIPE
 # ════════════════════════════════════════════════════════════════════════
@@ -46,7 +66,7 @@ async def stripe_create_session(
     order_id: str,
     db: AsyncSession = Depends(get_db),
 ):
-    """Create a Stripe Checkout Session for a pending_payment order."""
+    """Create a Stripe Checkout Session for a payable order."""
     if not STRIPE_ENABLED:
         raise HTTPException(400, "Stripe is not configured")
 
@@ -59,32 +79,34 @@ async def stripe_create_session(
     order = result.scalar_one_or_none()
     if not order:
         raise HTTPException(404, "Order not found")
-    if order.status != "pending_payment":
+    if order.status not in PAYABLE_STATUSES:
         raise HTTPException(400, f"Order is already {order.status}")
 
-    # Build Stripe line items from order items
-    line_items = []
-    for item in order.items:
-        line_items.append({
-            "price_data": {
-                "currency": "usd",
-                "unit_amount": int(float(item.unit_price_usd) * 100),  # cents
-                "product_data": {
-                    "name": item.product_name or f"Product {item.product_id}",
-                },
+    charge_amount, charge_desc = _get_charge_amount(order)
+
+    line_items = [{
+        "price_data": {
+            "currency": "usd",
+            "unit_amount": int(charge_amount * 100),  # cents
+            "product_data": {
+                "name": charge_desc,
             },
-            "quantity": item.quantity,
-        })
+        },
+        "quantity": 1,
+    }]
+
+    payment_type = "deposit" if order.status == "pending_deposit" else "balance" if order.status == "balance_due" else "full"
 
     session = stripe.checkout.Session.create(
         payment_method_types=["card"],
         line_items=line_items,
         mode="payment",
-        success_url=f"{FRONTEND_URL}/order/{order.id}/confirmed?payment=success",
+        success_url=f"{FRONTEND_URL}/order/{order.id}/confirmed?payment=success&type={payment_type}",
         cancel_url=f"{FRONTEND_URL}/order/{order.id}/confirmed?payment=cancelled",
         metadata={
             "order_id": order.id,
             "order_code": order.order_code,
+            "payment_type": payment_type,
         },
     )
 
@@ -93,10 +115,7 @@ async def stripe_create_session(
 
 @router.post("/stripe/webhook")
 async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
-    """
-    Handle Stripe webhook events.
-    Stripe sends checkout.session.completed when payment succeeds.
-    """
+    """Handle Stripe webhook events."""
     if not STRIPE_ENABLED:
         return Response(status_code=400)
 
@@ -112,7 +131,6 @@ async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
                 payload, sig_header, STRIPE_WEBHOOK_SECRET
             )
         else:
-            # No webhook secret configured — parse directly (dev only)
             event = stripe.Event.construct_from(
                 json.loads(payload), stripe.api_key
             )
@@ -123,9 +141,11 @@ async def stripe_webhook(request: Request, db: AsyncSession = Depends(get_db)):
     if event["type"] == "checkout.session.completed":
         session = event["data"]["object"]
         order_id = session.get("metadata", {}).get("order_id")
+        payment_type = session.get("metadata", {}).get("payment_type", "full")
 
         if order_id:
-            await _confirm_order_payment(db, order_id, f"stripe:{session.get('id', '')}")
+            payment_ref = f"stripe:{session.get('id', '')}"
+            await _confirm_order_payment(db, order_id, payment_ref, payment_type)
 
     return Response(status_code=200)
 
@@ -159,7 +179,7 @@ async def paypal_create_order(
     order_id: str,
     db: AsyncSession = Depends(get_db),
 ):
-    """Create a PayPal order for a pending_payment order."""
+    """Create a PayPal order for a payable order."""
     if not PAYPAL_ENABLED:
         raise HTTPException(400, "PayPal is not configured")
 
@@ -171,8 +191,11 @@ async def paypal_create_order(
     order = result.scalar_one_or_none()
     if not order:
         raise HTTPException(404, "Order not found")
-    if order.status != "pending_payment":
+    if order.status not in PAYABLE_STATUSES:
         raise HTTPException(400, f"Order is already {order.status}")
+
+    charge_amount, charge_desc = _get_charge_amount(order)
+    payment_type = "deposit" if order.status == "pending_deposit" else "balance" if order.status == "balance_due" else "full"
 
     access_token = await _get_paypal_access_token()
     base_url = (
@@ -180,37 +203,18 @@ async def paypal_create_order(
         else "https://api-m.paypal.com"
     )
 
-    # Build PayPal order items
-    items = []
-    for item in order.items:
-        items.append({
-            "name": (item.product_name or "Product")[:127],
-            "quantity": str(item.quantity),
-            "unit_amount": {
-                "currency_code": "USD",
-                "value": f"{float(item.unit_price_usd):.2f}",
-            },
-        })
-
     paypal_order_data = {
         "intent": "CAPTURE",
         "purchase_units": [{
             "reference_id": order.id,
-            "description": f"Order {order.order_code}",
+            "description": charge_desc,
             "amount": {
                 "currency_code": "USD",
-                "value": f"{float(order.total_usd):.2f}",
-                "breakdown": {
-                    "item_total": {
-                        "currency_code": "USD",
-                        "value": f"{float(order.subtotal_usd):.2f}",
-                    }
-                },
+                "value": f"{charge_amount:.2f}",
             },
-            "items": items,
         }],
         "application_context": {
-            "return_url": f"{FRONTEND_URL}/order/{order.id}/confirmed?payment=success&provider=paypal",
+            "return_url": f"{FRONTEND_URL}/order/{order.id}/confirmed?payment=success&provider=paypal&type={payment_type}",
             "cancel_url": f"{FRONTEND_URL}/order/{order.id}/confirmed?payment=cancelled",
             "brand_name": "Asymmetrica Cuba",
             "user_action": "PAY_NOW",
@@ -229,7 +233,6 @@ async def paypal_create_order(
         resp.raise_for_status()
         paypal_order = resp.json()
 
-    # Find the approval URL
     approve_url = next(
         (link["href"] for link in paypal_order.get("links", []) if link["rel"] == "approve"),
         None,
@@ -253,6 +256,18 @@ async def paypal_capture_order(
 
     import httpx
 
+    # Determine payment type before capture
+    result = await db.execute(
+        select(Order).where(Order.id == order_id).options(selectinload(Order.items))
+    )
+    order = result.scalar_one_or_none()
+    payment_type = "full"
+    if order:
+        if order.status == "pending_deposit":
+            payment_type = "deposit"
+        elif order.status == "balance_due":
+            payment_type = "balance"
+
     access_token = await _get_paypal_access_token()
     base_url = (
         "https://api-m.sandbox.paypal.com" if PAYPAL_MODE == "sandbox"
@@ -271,7 +286,7 @@ async def paypal_capture_order(
     if resp.status_code in (200, 201):
         capture_data = resp.json()
         if capture_data.get("status") == "COMPLETED":
-            await _confirm_order_payment(db, order_id, f"paypal:{paypal_order_id}")
+            await _confirm_order_payment(db, order_id, f"paypal:{paypal_order_id}", payment_type)
             return {"status": "captured", "order_id": order_id}
 
     raise HTTPException(400, "PayPal capture failed")
@@ -281,9 +296,11 @@ async def paypal_capture_order(
 # SHARED: confirm payment on an order
 # ════════════════════════════════════════════════════════════════════════
 
-async def _confirm_order_payment(db: AsyncSession, order_id: str, payment_ref: str):
+async def _confirm_order_payment(
+    db: AsyncSession, order_id: str, payment_ref: str, payment_type: str = "full"
+):
     """
-    Mark an order as paid and confirm the inventory sale.
+    Mark an order's deposit or balance (or full amount) as paid.
     Called by both Stripe webhook and PayPal capture.
     """
     result = await db.execute(
@@ -293,17 +310,41 @@ async def _confirm_order_payment(db: AsyncSession, order_id: str, payment_ref: s
     if not order:
         print(f"Payment confirm: order {order_id} not found")
         return
-    if order.status != "pending_payment":
-        print(f"Payment confirm: order {order_id} already {order.status}")
-        return
 
-    order.status = "paid"
-    order.paid_at = datetime.now(timezone.utc)
-    order.notes = (order.notes or "") + f"\nPayment ref: {payment_ref}"
+    now = datetime.now(timezone.utc)
 
-    # Confirm inventory sale for each item
-    for item in order.items:
-        await confirm_sale(db, item.product_id, item.quantity, order.id)
+    if payment_type == "deposit":
+        if order.status != "pending_deposit":
+            print(f"Payment confirm: order {order_id} not pending_deposit (is {order.status})")
+            return
+        order.status = "deposit_paid"
+        order.deposit_paid_at = now
+        order.notes = (order.notes or "") + f"\nDeposit paid ref: {payment_ref}"
+        print(f"ORDER DEPOSIT PAID: {order.order_code} via {payment_ref}")
+
+    elif payment_type == "balance":
+        if order.status != "balance_due":
+            print(f"Payment confirm: order {order_id} not balance_due (is {order.status})")
+            return
+        order.status = "paid"
+        order.balance_paid_at = now
+        order.paid_at = now
+        order.notes = (order.notes or "") + f"\nBalance paid ref: {payment_ref}"
+        # Confirm inventory sale for each item (stock was reserved at checkout)
+        for item in order.items:
+            await confirm_sale(db, item.product_id, item.quantity, order.id)
+        print(f"ORDER FULLY PAID: {order.order_code} via {payment_ref}")
+
+    else:
+        # Legacy full payment flow
+        if order.status != "pending_payment":
+            print(f"Payment confirm: order {order_id} already {order.status}")
+            return
+        order.status = "paid"
+        order.paid_at = now
+        order.notes = (order.notes or "") + f"\nPayment ref: {payment_ref}"
+        for item in order.items:
+            await confirm_sale(db, item.product_id, item.quantity, order.id)
+        print(f"ORDER PAID: {order.order_code} via {payment_ref}")
 
     await db.commit()
-    print(f"ORDER PAID: {order.order_code} via {payment_ref}")

@@ -20,18 +20,25 @@ export default function AdminProductForm() {
   const [uploading, setUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const [shipmentWindows, setShipmentWindows] = useState<any[]>([])
   const [form, setForm] = useState({
     name: '', sku: '', description: '', category: CATEGORIES[0],
     price_usd: 0, stock_quantity: 0, image_url: '', is_active: true,
+    is_preorder: false, preorder_deadline: '', estimated_ship_date: '', shipment_window_id: '',
   })
 
   useEffect(() => {
     if (!isAdmin) { navigate('/'); return }
+    api.activeShipmentWindows().then(setShipmentWindows).catch(() => {})
     if (isEdit) {
       api.getProduct(id!).then(p => setForm({
         name: p.name, sku: p.sku || '', description: p.description || '',
         category: p.category, price_usd: p.price_usd, stock_quantity: p.stock_quantity,
         image_url: p.image_url || '', is_active: p.is_active,
+        is_preorder: p.is_preorder || false,
+        preorder_deadline: p.preorder_deadline ? p.preorder_deadline.slice(0, 16) : '',
+        estimated_ship_date: p.estimated_ship_date ? p.estimated_ship_date.slice(0, 16) : '',
+        shipment_window_id: p.shipment_window_id || '',
       })).catch(() => {})
     }
   }, [id, isAdmin])
@@ -74,10 +81,18 @@ export default function AdminProductForm() {
     setLoading(true)
     setError('')
     try {
+      const payload: any = { ...form }
+      // Convert datetime-local to ISO for backend
+      if (payload.preorder_deadline) payload.preorder_deadline = new Date(payload.preorder_deadline).toISOString()
+      else payload.preorder_deadline = null
+      if (payload.estimated_ship_date) payload.estimated_ship_date = new Date(payload.estimated_ship_date).toISOString()
+      else payload.estimated_ship_date = null
+      if (!payload.shipment_window_id) payload.shipment_window_id = null
+
       if (isEdit) {
-        await api.updateProduct(id!, form)
+        await api.updateProduct(id!, payload)
       } else {
-        await api.createProduct(form)
+        await api.createProduct(payload)
       }
       navigate('/admin/products')
     } catch (err: any) {
@@ -194,6 +209,40 @@ export default function AdminProductForm() {
             <input value={form.image_url} onChange={set('image_url')} className="w-full border rounded px-3 py-2 mt-1 text-sm" placeholder="https://..." />
           </details>
         </div>
+        {/* Preorder Settings */}
+        <div className="border-t pt-4 mt-4">
+          <div className="flex items-center gap-2 mb-3">
+            <input type="checkbox" checked={form.is_preorder} onChange={e => setForm(f => ({ ...f, is_preorder: e.target.checked }))} id="preorder" />
+            <label htmlFor="preorder" className="text-sm font-medium text-gray-700">Preorder Product</label>
+          </div>
+          {form.is_preorder && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 ml-0 sm:ml-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Order Deadline</label>
+                <input type="datetime-local" value={form.preorder_deadline} onChange={set('preorder_deadline')}
+                  className="w-full border rounded px-3 py-2 text-sm" />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Est. Ship Date</label>
+                <input type="datetime-local" value={form.estimated_ship_date} onChange={set('estimated_ship_date')}
+                  className="w-full border rounded px-3 py-2 text-sm" />
+              </div>
+              {shipmentWindows.length > 0 && (
+                <div className="col-span-full">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Shipment Window</label>
+                  <select value={form.shipment_window_id} onChange={set('shipment_window_id')}
+                    className="w-full border rounded px-3 py-2 text-sm">
+                    <option value="">No window (manual dates)</option>
+                    {shipmentWindows.map((w: any) => (
+                      <option key={w.id} value={w.id}>{w.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
         <div className="flex items-center gap-2">
           <input type="checkbox" checked={form.is_active} onChange={e => setForm(f => ({ ...f, is_active: e.target.checked }))} id="active" />
           <label htmlFor="active" className="text-sm text-gray-700">Active (visible in catalog)</label>

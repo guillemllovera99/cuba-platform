@@ -81,22 +81,27 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ───── HOW IT WORKS ───── */}
+      {/* ───── HOW IT WORKS — 5 steps with deposit/preorder flow ───── */}
       <section className="bg-white py-20 sm:py-28 px-6">
         <div className="max-w-5xl mx-auto">
-          <h2 className="text-3xl sm:text-5xl font-bold text-[#0B1628] text-center mb-16">
+          <h2 className="text-3xl sm:text-5xl font-bold text-[#0B1628] text-center mb-5">
             {t('home.services.title')}
           </h2>
-          <div className="grid md:grid-cols-3 gap-10">
+          <p className="text-gray-500 text-center max-w-2xl mx-auto mb-16">
+            {t('home.howItWorks.subtitle')}
+          </p>
+          <div className="grid md:grid-cols-5 gap-8">
             {[
-              { step: '01', title: t('home.services.sourcing'), desc: t('home.services.sourcingDesc') },
-              { step: '02', title: t('home.services.logistics'), desc: t('home.services.logisticsDesc') },
-              { step: '03', title: t('home.services.advisory'), desc: t('home.services.advisoryDesc') },
+              { step: '01', title: t('home.step1.title'), desc: t('home.step1.desc') },
+              { step: '02', title: t('home.step2.title'), desc: t('home.step2.desc') },
+              { step: '03', title: t('home.step3.title'), desc: t('home.step3.desc') },
+              { step: '04', title: t('home.step4.title'), desc: t('home.step4.desc') },
+              { step: '05', title: t('home.step5.title'), desc: t('home.step5.desc') },
             ].map(s => (
               <div key={s.step} className="text-center">
-                <div className="text-5xl font-bold text-[#0B1628]/10 mb-4">{s.step}</div>
-                <h3 className="text-xl font-bold text-[#0B1628] mb-3">{s.title}</h3>
-                <p className="text-gray-500 text-base leading-relaxed">{s.desc}</p>
+                <div className="text-4xl font-bold text-[#0B1628]/10 mb-3">{s.step}</div>
+                <h3 className="text-base font-bold text-[#0B1628] mb-2">{s.title}</h3>
+                <p className="text-gray-500 text-sm leading-relaxed">{s.desc}</p>
               </div>
             ))}
           </div>
@@ -116,7 +121,7 @@ export default function Home() {
             {t('catalog.title')}
           </h2>
           <p className="text-gray-500 text-base sm:text-lg max-w-2xl mx-auto mb-12">
-            {lang === 'es' ? 'Desde granos y productos frescos hasta paneles solares y equipos de energía.' : lang === 'fr' ? 'Des céréales et produits frais aux panneaux solaires et équipements énergétiques.' : 'From grains and fresh produce to solar panels and energy equipment.'}
+            {lang === 'es' ? 'Desde granos y productos frescos hasta paneles solares y equipos de energ\u00EDa.' : lang === 'fr' ? 'Des c\u00E9r\u00E9ales et produits frais aux panneaux solaires et \u00E9quipements \u00E9nerg\u00E9tiques.' : 'From grains and fresh produce to solar panels and energy equipment.'}
           </p>
           <div className="grid grid-cols-3 gap-4 sm:gap-6 max-w-lg mx-auto">
             {[

@@ -5,6 +5,31 @@ import { useCart } from '../store'
 import { useI18n, translate, tCat } from '../i18n'
 import { tProductName } from '../productNames'
 
+function PreorderBadge({ product, t }: { product: any; t: (k: string) => string }) {
+  if (!product.is_preorder) return null
+
+  const deadline = product.preorder_deadline ? new Date(product.preorder_deadline) : null
+  const now = new Date()
+
+  let daysLeft = 0
+  if (deadline) {
+    daysLeft = Math.max(0, Math.ceil((deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
+  }
+
+  return (
+    <div className="absolute top-2 left-2 z-10">
+      <span className="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-sm">
+        {t('catalog.preorder')}
+      </span>
+      {deadline && daysLeft > 0 && (
+        <span className="block mt-1 bg-black/70 text-white text-[10px] px-2 py-0.5 rounded-full text-center">
+          {daysLeft}d {t('catalog.left')}
+        </span>
+      )}
+    </div>
+  )
+}
+
 export default function Catalog() {
   const [products, setProducts] = useState<any[]>([])
   const [categories, setCategories] = useState<string[]>([])
@@ -73,22 +98,35 @@ export default function Catalog() {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {products.map(p => (
-              <div key={p.id} className="bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-lg transition-shadow">
+              <div key={p.id} className="bg-white border border-gray-100 rounded-xl overflow-hidden hover:shadow-lg transition-shadow relative">
                 <Link to={`/product/${p.id}`}>
-                  {p.image_url && <img src={p.image_url} alt={tProductName(lang, p.sku, p.name)} className="w-full h-36 sm:h-52 object-cover" />}
+                  <div className="relative">
+                    {p.image_url && <img src={p.image_url} alt={tProductName(lang, p.sku, p.name)} className="w-full h-36 sm:h-52 object-cover" />}
+                    <PreorderBadge product={p} t={t} />
+                  </div>
                   <div className="p-4 sm:p-5">
                     <span className="text-xs text-[#0B1628]/50 font-medium uppercase tracking-wide">{tCat(lang, p.category)}</span>
                     <h3 className="font-semibold text-[#0B1628] mt-1.5 text-sm sm:text-base leading-snug line-clamp-2">{tProductName(lang, p.sku, p.name)}</h3>
                     <p className="text-lg sm:text-xl font-bold text-[#0B1628] mt-2">${p.price_usd.toFixed(2)}</p>
+                    {p.is_preorder && (
+                      <p className="text-xs text-orange-600 font-medium mt-1">{t('catalog.preorderOnly')}</p>
+                    )}
                   </div>
                 </Link>
                 <div className="px-4 pb-4 sm:px-5 sm:pb-5">
                   <button
                     onClick={() => addItem(p)}
                     disabled={p.stock_quantity <= 0}
-                    className="w-full bg-[#0B1628] text-white py-3 rounded-lg hover:bg-[#0B1628]/90 disabled:bg-gray-300 disabled:cursor-not-allowed text-sm font-medium transition-colors min-h-[48px]"
+                    className={`w-full py-3 rounded-lg text-sm font-medium transition-colors min-h-[48px] ${
+                      p.is_preorder
+                        ? 'bg-orange-500 text-white hover:bg-orange-600 disabled:bg-gray-300 disabled:cursor-not-allowed'
+                        : 'bg-[#0B1628] text-white hover:bg-[#0B1628]/90 disabled:bg-gray-300 disabled:cursor-not-allowed'
+                    }`}
                   >
-                    {p.stock_quantity > 0 ? t('catalog.addToCart') : t('catalog.outOfStock')}
+                    {p.stock_quantity > 0
+                      ? (p.is_preorder ? t('catalog.preorderNow') : t('catalog.addToCart'))
+                      : t('catalog.outOfStock')
+                    }
                   </button>
                 </div>
               </div>

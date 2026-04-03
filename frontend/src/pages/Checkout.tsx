@@ -44,6 +44,11 @@ export default function Checkout() {
   const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm(f => ({ ...f, [field]: e.target.value }))
 
+  const subtotal = total()
+  const depositAmount = Math.round(subtotal * 0.20 * 100) / 100
+  const balanceAmount = Math.round((subtotal - depositAmount) * 100) / 100
+  const isMock = !paymentConfig?.payments_enabled
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.recipient_name || !form.recipient_phone || !form.recipient_city) {
@@ -53,20 +58,20 @@ export default function Checkout() {
     setError('')
 
     try {
-      // Step 1: Create order (pending_payment or auto-paid depending on backend config)
+      // Step 1: Create order
       const order = await api.checkout({
         items: items.map(i => ({ product_id: i.product_id, quantity: i.quantity })),
         ...form,
       })
 
-      // Step 2: If already paid (mock mode), go to confirmation
-      if (order.status === 'paid') {
+      // Step 2: If already deposit_paid (mock mode), go to confirmation
+      if (order.status === 'deposit_paid' || order.status === 'paid') {
         clearCart()
         navigate(`/order/${order.id}/confirmed`)
         return
       }
 
-      // Step 3: Redirect to payment provider
+      // Step 3: Redirect to payment provider for deposit
       if (paymentMethod === 'stripe') {
         const session = await api.stripeCreateSession(order.id)
         clearCart()
@@ -91,7 +96,6 @@ export default function Checkout() {
     }
   }
 
-  const isMock = !paymentConfig?.payments_enabled
   const stripeAvailable = paymentConfig?.stripe_enabled
   const paypalAvailable = paymentConfig?.paypal_enabled
 
@@ -99,7 +103,7 @@ export default function Checkout() {
     <div className="max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold text-[#0B1628] mb-6">{t('checkout.title')}</h1>
 
-      {/* Order Summary */}
+      {/* Order Summary with Deposit Breakdown */}
       <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
         <h2 className="font-semibold text-[#0B1628] mb-3">{t('checkout.summary')}</h2>
         {items.map(i => (
@@ -108,9 +112,34 @@ export default function Checkout() {
             <span className="font-medium">${(i.price_usd * i.quantity).toFixed(2)}</span>
           </div>
         ))}
-        <div className="border-t mt-3 pt-3 flex justify-between font-bold text-[#0B1628]">
-          <span>{t('checkout.total')}</span>
-          <span>${total().toFixed(2)} USD</span>
+        <div className="border-t mt-3 pt-3 space-y-2">
+          <div className="flex justify-between text-sm text-gray-600">
+            <span>{t('checkout.subtotal')}</span>
+            <span>${subtotal.toFixed(2)} USD</span>
+          </div>
+          <div className="flex justify-between text-sm font-medium text-green-700 bg-green-50 px-2 py-1.5 rounded">
+            <span>{t('checkout.depositNow')} (20%)</span>
+            <span>${depositAmount.toFixed(2)} USD</span>
+          </div>
+          <div className="flex justify-between text-sm text-gray-400">
+            <span>{t('checkout.balanceLater')} (80%)</span>
+            <span>${balanceAmount.toFixed(2)} USD</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Deposit Info Banner */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 sm:mb-6">
+        <div className="flex gap-3">
+          <div className="shrink-0 mt-0.5">
+            <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-blue-800">{t('checkout.depositExplainer')}</p>
+            <p className="text-xs text-blue-600 mt-1">{t('checkout.depositExplainerDetail')}</p>
+          </div>
         </div>
       </div>
 
@@ -145,7 +174,7 @@ export default function Checkout() {
           </div>
         </div>
 
-        {/* Payment Method Selection — only shown when real providers are configured */}
+        {/* Payment Method Selection */}
         {!isMock && (
           <div className="mt-6">
             <h2 className="font-semibold text-[#0B1628] mb-3">{t('checkout.paymentMethod')}</h2>
@@ -195,9 +224,10 @@ export default function Checkout() {
         )}
 
         <button type="submit" disabled={loading}
-          className="w-full mt-6 bg-[#0B1628] text-white py-3 rounded-lg hover:bg-[#0B1628]/90 font-semibold disabled:bg-gray-400 transition-colors min-h-[48px] text-base">
-          {loading ? t('checkout.processing') : `${t('checkout.placeOrder')} — $${total().toFixed(2)} USD`}
+          className="w-full mt-6 bg-green-600 text-white py-3.5 rounded-lg hover:bg-green-700 font-semibold disabled:bg-gray-400 transition-colors min-h-[48px] text-base">
+          {loading ? t('checkout.processing') : `${t('checkout.payDeposit')} — $${depositAmount.toFixed(2)} USD`}
         </button>
+        <p className="text-center text-xs text-gray-400 mt-2">{t('checkout.totalOrder')}: ${subtotal.toFixed(2)} USD</p>
       </form>
     </div>
   )

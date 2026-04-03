@@ -5,6 +5,9 @@ import { api } from '../api'
 import { useI18n, translate } from '../i18n'
 
 const STATUS_COLORS: Record<string, string> = {
+  pending_deposit: 'bg-orange-100 text-orange-800',
+  deposit_paid: 'bg-teal-100 text-teal-800',
+  balance_due: 'bg-amber-100 text-amber-800',
   pending_payment: 'bg-yellow-100 text-yellow-800',
   paid: 'bg-blue-100 text-blue-800',
   processing: 'bg-indigo-100 text-indigo-800',
@@ -40,6 +43,20 @@ export default function Orders() {
     setTimeout(() => setReorderedId(null), 2000)
   }
 
+  const handlePayBalance = async (order: any) => {
+    // Redirect to payment for balance
+    try {
+      const cfg = await api.paymentConfig()
+      if (cfg.stripe_enabled) {
+        const session = await api.stripeCreateSession(order.id)
+        window.location.href = session.url
+      } else if (cfg.paypal_enabled) {
+        const paypalOrder = await api.paypalCreateOrder(order.id)
+        window.location.href = paypalOrder.approve_url
+      }
+    } catch { /* payment not available */ }
+  }
+
   return (
     <div>
       <h1 className="text-2xl font-bold text-[#0B1628] mb-6">{t('orders.title')}</h1>
@@ -67,13 +84,37 @@ export default function Orders() {
                 </div>
                 <span className="font-bold text-[#0B1628]">${order.total_usd?.toFixed(2)}</span>
               </div>
+
+              {/* Deposit/Balance breakdown */}
+              {order.deposit_amount && (
+                <div className="mt-2 flex gap-4 text-xs">
+                  <span className={`${order.deposit_paid_at ? 'text-green-600' : 'text-orange-600'}`}>
+                    {t('orders.deposit')}: ${order.deposit_amount?.toFixed(2)}
+                    {order.deposit_paid_at ? ' \u2713' : ''}
+                  </span>
+                  <span className={`${order.balance_paid_at ? 'text-green-600' : 'text-gray-400'}`}>
+                    {t('orders.balance')}: ${order.balance_amount?.toFixed(2)}
+                    {order.balance_paid_at ? ' \u2713' : ''}
+                  </span>
+                </div>
+              )}
+
               <div className="mt-2 text-sm text-gray-600">
                 {order.items?.map((i: any) => (
                   <span key={i.id} className="mr-3">{i.product_name} x{i.quantity}</span>
                 ))}
               </div>
-              {/* Reorder button (US-14) */}
+
               <div className="mt-3 flex items-center gap-3">
+                {/* Pay Balance button for balance_due orders */}
+                {order.status === 'balance_due' && (
+                  <button
+                    onClick={() => handlePayBalance(order)}
+                    className="text-sm bg-amber-600 text-white px-4 py-2 rounded-lg hover:bg-amber-700 transition-colors min-h-[44px] font-medium"
+                  >
+                    {t('orders.payBalance')} — ${order.balance_amount?.toFixed(2)}
+                  </button>
+                )}
                 <button
                   onClick={() => handleReorder(order)}
                   className="text-sm bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors min-h-[44px] font-medium"
