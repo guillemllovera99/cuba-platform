@@ -277,33 +277,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ───── FEATURED IN — logos on dark bar ───── */}
-      <section className="bg-[#0B1628] py-10 sm:py-14 px-6">
+      {/* ───── FEATURED IN — logos on light gray bar ───── */}
+      <section className="bg-gray-100 py-10 sm:py-14 px-6 border-t border-gray-200">
         <div className="max-w-4xl mx-auto">
-          <p className="text-center text-[9px] uppercase tracking-[0.3em] text-white/30 font-medium mb-8">
+          <p className="text-center text-[9px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-8">
             {t('home.featured.title')}
           </p>
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-6 sm:gap-8 items-center justify-items-center">
-            <img src="/forbeslogo.jpg" alt="Forbes" className="h-5 sm:h-7 object-contain opacity-60 hover:opacity-90 transition-opacity brightness-0 invert" />
-            <img src="/CNNlogo.png" alt="CNN" className="h-5 sm:h-7 object-contain opacity-60 hover:opacity-90 transition-opacity brightness-0 invert" />
-            <img src="/freshplazalogo.png" alt="Fresh Plaza" className="h-7 sm:h-9 object-contain opacity-60 hover:opacity-90 transition-opacity brightness-0 invert" />
-            <img src="/impactalpha.png" alt="ImpactAlpha" className="h-4 sm:h-6 object-contain opacity-60 hover:opacity-90 transition-opacity brightness-0 invert" />
-            <img src="/El_Financiero_Logo.svg.png" alt="El Financiero" className="h-5 sm:h-7 object-contain opacity-60 hover:opacity-90 transition-opacity" />
-            <img src="/inforural.png" alt="Inforural" className="h-5 sm:h-7 object-contain opacity-60 hover:opacity-90 transition-opacity brightness-0 invert" />
+            <img src="/forbeslogo.jpg" alt="Forbes" className="h-5 sm:h-7 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
+            <img src="/CNNlogo.png" alt="CNN" className="h-5 sm:h-7 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
+            <img src="/freshplazalogo.png" alt="Fresh Plaza" className="h-7 sm:h-9 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
+            <img src="/impactalpha.png" alt="ImpactAlpha" className="h-4 sm:h-6 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
+            <img src="/El_Financiero_Logo.svg.png" alt="El Financiero" className="h-5 sm:h-7 object-contain opacity-70 hover:opacity-100 transition-opacity" />
+            <img src="/inforural.png" alt="Inforural" className="h-5 sm:h-7 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
           </div>
         </div>
       </section>
 
       {/* ───── MEMBERS OF ───── */}
-      <section className="bg-[#0F1D32] py-10 sm:py-14 px-6">
+      <section className="bg-gray-50 py-10 sm:py-14 px-6 border-t border-gray-200">
         <div className="max-w-3xl mx-auto">
-          <p className="text-center text-[9px] uppercase tracking-[0.3em] text-white/30 font-medium mb-8">
+          <p className="text-center text-[9px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-8">
             {t('home.members.title')}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-14">
-            <img src="/logo-swiss-sustinable-finance.png" alt="Swiss Sustainable Finance" className="h-10 sm:h-14 object-contain opacity-60 hover:opacity-90 transition-opacity brightness-0 invert" />
-            <div className="hidden sm:block w-px h-10 bg-white/15" />
-            <img src="/logo-AIIMX-GSGnational-partner-1024x418.png" alt="Alianza por la Inversión de Impacto México" className="h-10 sm:h-14 object-contain opacity-60 hover:opacity-90 transition-opacity brightness-0 invert" />
+            <img src="/logo-swiss-sustinable-finance.png" alt="Swiss Sustainable Finance" className="h-10 sm:h-14 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
+            <div className="hidden sm:block w-px h-10 bg-gray-300" />
+            <img src="/logo-AIIMX-GSGnational-partner-1024x418.png" alt="Alianza por la Inversión de Impacto México" className="h-10 sm:h-14 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
           </div>
         </div>
       </section>

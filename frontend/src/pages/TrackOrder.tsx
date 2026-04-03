@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { api } from '../api'
 import { useI18n, translate } from '../i18n'
 
@@ -178,6 +179,13 @@ export default function TrackOrder() {
               <span className="text-gray-500">{t('track.total')}</span>
               <span className="font-bold">${order.total_usd?.toFixed(2)} USD</span>
             </div>
+          </div>
+
+          {/* Recipient view link */}
+          <div className="border-t mt-4 pt-4">
+            <Link to="/recipient" className="text-sm text-blue-600 hover:text-blue-800 font-medium">
+              {lang === 'es' ? 'Vista del destinatario y comentarios' : lang === 'fr' ? 'Vue destinataire et commentaires' : 'Recipient view & feedback'} &rarr;
+            </Link>
           </div>
 
           <div className="border-t mt-4 pt-4">

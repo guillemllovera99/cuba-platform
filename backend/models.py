@@ -327,3 +327,153 @@ class WalletTransaction(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
     wallet: Mapped["Wallet"] = relationship(back_populates="transactions")
+
+
+# ════════════════════════════════════════════════════════════════
+# FEEDBACK — Phase 9 (Recipient View & Anonymous Feedback)
+# Anonymous feedback by order code — no login required.
+# ════════════════════════════════════════════════════════════════
+
+class OrderFeedback(Base):
+    """
+    Anonymous feedback from recipients in Cuba.
+    Linked to order by order_code (no user auth needed).
+    """
+    __tablename__ = "order_feedback"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    order_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("orders.id", ondelete="CASCADE"), nullable=False
+    )
+    order_code: Mapped[str] = mapped_column(String(20), nullable=False)
+    # Quick rating: ok | problem
+    rating: Mapped[str] = mapped_column(String(20), nullable=False)
+    # Optional details
+    comment: Mapped[str] = mapped_column(Text, nullable=True)
+    category: Mapped[str] = mapped_column(String(50), nullable=True)
+    # delivery | quality | missing_items | damaged | other
+    # Proof of delivery
+    photo_url: Mapped[str] = mapped_column(String(1000), nullable=True)
+    # Anonymous — no user_id
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class DeliveryConfirmation(Base):
+    """
+    Proof-of-delivery record: pickup code verified, photo uploaded.
+    Created by partner or system when order is handed over.
+    """
+    __tablename__ = "delivery_confirmations"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    order_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("orders.id", ondelete="CASCADE"), unique=True, nullable=False
+    )
+    confirmed_by: Mapped[str] = mapped_column(String(36), nullable=True)  # partner user_id
+    pickup_code: Mapped[str] = mapped_column(String(20), nullable=True)
+    recipient_id_check: Mapped[bool] = mapped_column(Boolean, default=False)
+    photo_url: Mapped[str] = mapped_column(String(1000), nullable=True)
+    notes: Mapped[str] = mapped_column(Text, nullable=True)
+    confirmed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+# ════════════════════════════════════════════════════════════════
+# PARTNER / SUPPLIER — Phase 10 (Portals)
+# ════════════════════════════════════════════════════════════════
+
+class PartnerProfile(Base):
+    """
+    Local distribution partner in Cuba.
+    Manages pickup points, last-mile delivery, proof-of-delivery.
+    """
+    __tablename__ = "partner_profiles"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id"), unique=True, nullable=False
+    )
+    company_name: Mapped[str] = mapped_column(String(500), nullable=False)
+    region: Mapped[str] = mapped_column(String(255), nullable=True)  # e.g. "Havana", "Santiago"
+    contact_phone: Mapped[str] = mapped_column(String(50), nullable=True)
+    contact_name: Mapped[str] = mapped_column(String(255), nullable=True)
+    status: Mapped[str] = mapped_column(String(30), default="pending")
+    # pending | approved | suspended
+    approved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    notes: Mapped[str] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+    user: Mapped["User"] = relationship()
+
+
+class SupplierProfile(Base):
+    """
+    External supplier/manufacturer.
+    Confirms purchase orders, ships goods, manages documents.
+    """
+    __tablename__ = "supplier_profiles"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    user_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("users.id"), unique=True, nullable=False
+    )
+    company_name: Mapped[str] = mapped_column(String(500), nullable=False)
+    country: Mapped[str] = mapped_column(String(100), nullable=True)
+    contact_name: Mapped[str] = mapped_column(String(255), nullable=True)
+    contact_email: Mapped[str] = mapped_column(String(255), nullable=True)
+    contact_phone: Mapped[str] = mapped_column(String(50), nullable=True)
+    product_categories: Mapped[str] = mapped_column(Text, nullable=True)  # JSON array as text
+    status: Mapped[str] = mapped_column(String(30), default="pending")
+    # pending | approved | suspended
+    approved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    notes: Mapped[str] = mapped_column(Text, nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+    user: Mapped["User"] = relationship()
+
+
+class PurchaseOrder(Base):
+    """
+    Purchase order sent to a supplier.
+    Links platform orders to supplier fulfillment.
+    """
+    __tablename__ = "purchase_orders"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    po_number: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    supplier_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("supplier_profiles.id"), nullable=False
+    )
+    status: Mapped[str] = mapped_column(String(30), default="draft")
+    # draft | sent | confirmed | shipped | delivered | cancelled
+    total_usd: Mapped[float] = mapped_column(Numeric(12, 2), nullable=True)
+    notes: Mapped[str] = mapped_column(Text, nullable=True)
+    sent_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    confirmed_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    shipped_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_by: Mapped[str] = mapped_column(String(36), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, onupdate=utcnow)
+
+    supplier: Mapped["SupplierProfile"] = relationship()
+    items: Mapped[list["PurchaseOrderItem"]] = relationship(
+        back_populates="purchase_order", cascade="all, delete-orphan"
+    )
+
+
+class PurchaseOrderItem(Base):
+    """Line item on a purchase order."""
+    __tablename__ = "purchase_order_items"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=new_uuid)
+    purchase_order_id: Mapped[str] = mapped_column(
+        String(36), ForeignKey("purchase_orders.id", ondelete="CASCADE"), nullable=False
+    )
+    product_id: Mapped[str] = mapped_column(String(36), ForeignKey("products.id"), nullable=True)
+    description: Mapped[str] = mapped_column(Text, nullable=False)
+    quantity: Mapped[int] = mapped_column(Integer, nullable=False)
+    unit_cost_usd: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
+    subtotal_usd: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)
+
+    purchase_order: Mapped["PurchaseOrder"] = relationship(back_populates="items")
