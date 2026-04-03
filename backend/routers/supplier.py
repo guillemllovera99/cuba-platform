@@ -16,7 +16,7 @@ from schemas import (
     SupplierProfileCreate, SupplierProfileOut,
     PurchaseOrderCreate, PurchaseOrderOut, PurchaseOrderItemOut,
 )
-from routers.auth import get_current_user, require_admin
+from auth import require_auth, require_admin
 
 router = APIRouter(prefix="/api/v1/supplier", tags=["supplier"])
 
@@ -30,7 +30,7 @@ def _gen_po_number() -> str:
 async def register_supplier(
     data: SupplierProfileCreate,
     db: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_auth),
 ):
     existing = await db.execute(
         select(SupplierProfile).where(SupplierProfile.user_id == user["id"])
@@ -72,7 +72,7 @@ async def register_supplier(
 @router.get("/profile", response_model=SupplierProfileOut)
 async def get_supplier_profile(
     db: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_auth),
 ):
     result = await db.execute(
         select(SupplierProfile).where(SupplierProfile.user_id == user["id"])
@@ -97,7 +97,7 @@ async def get_supplier_profile(
 async def supplier_purchase_orders(
     status: str | None = None,
     db: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_auth),
 ):
     # Get supplier profile
     s_result = await db.execute(
@@ -150,7 +150,7 @@ async def supplier_purchase_orders(
 async def supplier_confirm_po(
     po_id: str,
     db: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_auth),
 ):
     s_result = await db.execute(
         select(SupplierProfile).where(SupplierProfile.user_id == user["id"])
@@ -180,7 +180,7 @@ async def supplier_confirm_po(
 async def supplier_ship_po(
     po_id: str,
     db: AsyncSession = Depends(get_db),
-    user=Depends(get_current_user),
+    user=Depends(require_auth),
 ):
     s_result = await db.execute(
         select(SupplierProfile).where(SupplierProfile.user_id == user["id"])
@@ -213,7 +213,7 @@ async def supplier_ship_po(
 async def admin_list_suppliers(
     status: str | None = None,
     db: AsyncSession = Depends(get_db),
-    user=Depends(require_admin),
+    admin=Depends(require_admin),
 ):
     q = select(SupplierProfile).order_by(SupplierProfile.created_at.desc())
     if status:
@@ -244,7 +244,7 @@ async def admin_approve_supplier(
     status: str,
     notes: str | None = None,
     db: AsyncSession = Depends(get_db),
-    user=Depends(require_admin),
+    admin=Depends(require_admin),
 ):
     result = await db.execute(select(SupplierProfile).where(SupplierProfile.id == profile_id))
     profile = result.scalar_one_or_none()
@@ -266,7 +266,7 @@ async def admin_approve_supplier(
 async def admin_create_po(
     data: PurchaseOrderCreate,
     db: AsyncSession = Depends(get_db),
-    user=Depends(require_admin),
+    admin=Depends(require_admin),
 ):
     # Verify supplier exists
     s_result = await db.execute(
@@ -280,7 +280,7 @@ async def admin_create_po(
         po_number=_gen_po_number(),
         supplier_id=data.supplier_id,
         notes=data.notes,
-        created_by=user["id"],
+        created_by=admin["id"],
     )
 
     total = 0.0
@@ -325,7 +325,7 @@ async def admin_create_po(
 async def admin_send_po(
     po_id: str,
     db: AsyncSession = Depends(get_db),
-    user=Depends(require_admin),
+    admin=Depends(require_admin),
 ):
     result = await db.execute(select(PurchaseOrder).where(PurchaseOrder.id == po_id))
     po = result.scalar_one_or_none()
@@ -345,7 +345,7 @@ async def admin_send_po(
 async def admin_list_pos(
     status: str | None = None,
     db: AsyncSession = Depends(get_db),
-    user=Depends(require_admin),
+    admin=Depends(require_admin),
 ):
     q = select(PurchaseOrder).order_by(PurchaseOrder.created_at.desc())
     if status:
