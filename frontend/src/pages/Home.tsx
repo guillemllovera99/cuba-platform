@@ -17,83 +17,62 @@ export default function Home() {
 
   return (
     <div className="-mx-4 -mt-6 -mb-6">
-      {/* ───── HERO ───── */}
-      <section className="relative h-[85vh] min-h-[550px] flex items-center justify-center overflow-hidden">
+      {/* ───── HERO — compact, Caribbean coastline ───── */}
+      <section className="relative h-[50vh] min-h-[360px] max-h-[500px] flex items-center justify-center overflow-hidden">
         <img
-          src="/energy_photo.png"
-          alt="Caribbean agriculture and energy"
+          src="/kenrick-baksh-7F334ZFrp7w-unsplash.jpg"
+          alt="Caribbean coastline"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0B1628]/70 via-[#0B1628]/50 to-[#0B1628]/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0B1628]/60 via-[#0B1628]/40 to-[#0B1628]/70" />
 
-        <div className="relative z-10 text-center px-6 max-w-3xl mx-auto">
-          <p className="text-white/40 text-xs uppercase tracking-[0.3em] mb-6 font-light">
+        <div className="relative z-10 text-center px-6 max-w-2xl mx-auto">
+          <p className="text-white/40 text-[10px] uppercase tracking-[0.25em] mb-4 font-light">
             {t('home.hero.badge')}
           </p>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-5 leading-[1.1]">
-            {lang === 'es' ? 'Productos esenciales entregados a Cuba' : lang === 'fr' ? 'Produits essentiels livr\u00E9s \u00E0 Cuba' : 'Essential products delivered to Cuba'}
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 leading-[1.15]">
+            {lang === 'es' ? 'El mercado del Caribe' : lang === 'fr' ? 'Le march\u00E9 des Cara\u00EFbes' : 'The Caribbean Marketplace'}
           </h1>
-          <p className="text-white/70 text-base sm:text-lg leading-relaxed max-w-xl mx-auto mb-10">
-            {lang === 'es' ? 'Alimentos, agricultura y energ\u00EDa solar \u2014 pida desde cualquier lugar, nosotros nos encargamos del env\u00EDo.' : lang === 'fr' ? 'Alimentation, agriculture et \u00E9nergie solaire \u2014 commandez de partout, nous livrons.' : 'Food, agriculture, and solar energy \u2014 order from anywhere, we handle the shipping.'}
+          <p className="text-white/65 text-sm sm:text-base leading-relaxed max-w-lg mx-auto mb-8">
+            {lang === 'es'
+              ? 'Reserve con un 20% de dep\u00F3sito y reciba productos esenciales, agricultura y energ\u00EDa solar en el Caribe.'
+              : lang === 'fr'
+              ? 'R\u00E9servez avec un acompte de 20% et recevez produits essentiels, agriculture et \u00E9nergie solaire dans les Cara\u00EFbes.'
+              : 'Reserve with a 20% deposit and get essential goods, agriculture, and solar energy delivered across the Caribbean.'}
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               to="/catalog"
-              className="bg-green-600 text-white font-semibold px-10 py-4 rounded-lg hover:bg-green-700 transition-all shadow-lg shadow-green-600/25 text-base w-full sm:w-auto"
+              className="bg-green-600 text-white font-semibold px-8 py-3 rounded-lg hover:bg-green-700 transition-all text-sm w-full sm:w-auto"
             >
               {t('home.hero.cta')}
             </Link>
             <Link
               to="/track"
-              className="bg-white/10 backdrop-blur-sm text-white font-medium px-10 py-4 rounded-lg hover:bg-white/20 transition-all border border-white/20 text-base w-full sm:w-auto"
+              className="bg-white/10 backdrop-blur-sm text-white font-medium px-8 py-3 rounded-lg hover:bg-white/20 transition-all border border-white/20 text-sm w-full sm:w-auto"
             >
               {t('home.hero.ctaTrack')}
             </Link>
           </div>
         </div>
-
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
-          <svg className="w-5 h-5 text-white/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-          </svg>
-        </div>
-      </section>
-
-      {/* ───── VALUE PROPS — 3 columns ───── */}
-      <section className="bg-white border-b border-gray-100">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-gray-100">
-          {[
-            { icon: '🌾', title: lang === 'es' ? 'Productos Frescos' : lang === 'fr' ? 'Produits Frais' : 'Fresh Produce', desc: lang === 'es' ? 'Granos, caf\u00E9, l\u00E1cteos y m\u00E1s' : lang === 'fr' ? 'C\u00E9r\u00E9ales, caf\u00E9, produits laitiers' : 'Grains, coffee, dairy, and more' },
-            { icon: '☀️', title: lang === 'es' ? 'Energ\u00EDa Solar' : lang === 'fr' ? '\u00C9nergie Solaire' : 'Solar Energy', desc: lang === 'es' ? 'Paneles, bater\u00EDas, micro-redes' : lang === 'fr' ? 'Panneaux, batteries, micro-r\u00E9seaux' : 'Panels, batteries, micro-grids' },
-            { icon: '📦', title: lang === 'es' ? 'Env\u00EDo Directo' : lang === 'fr' ? 'Livraison Directe' : 'Direct Shipping', desc: lang === 'es' ? 'Rastreo completo hasta la puerta' : lang === 'fr' ? 'Suivi complet jusqu\'\u00E0 la porte' : 'Full tracking to the doorstep' },
-          ].map(v => (
-            <div key={v.title} className="flex items-center gap-4 px-8 py-6">
-              <span className="text-2xl">{v.icon}</span>
-              <div>
-                <p className="font-semibold text-[#0B1628] text-sm">{v.title}</p>
-                <p className="text-gray-500 text-xs">{v.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
       </section>
 
       {/* ───── FEATURED PRODUCTS ───── */}
       {featured.length > 0 && (
-        <section className="bg-[#FAFAFA] py-16 sm:py-20 px-6">
+        <section className="bg-white py-12 sm:py-16 px-6">
           <div className="max-w-6xl mx-auto">
-            <div className="flex items-center justify-between mb-10">
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#0B1628]">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#0B1628]">
                 {t('home.featured')}
               </h2>
               <Link to="/catalog" className="text-sm text-green-600 hover:text-green-700 font-medium">
                 {lang === 'es' ? 'Ver todo' : lang === 'fr' ? 'Voir tout' : 'View all'} &rarr;
               </Link>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-5">
               {featured.map((p: any) => (
-                <Link to={`/product/${p.id}`} key={p.id} className="group bg-white rounded-xl overflow-hidden border border-gray-100 hover:shadow-md transition-shadow">
+                <Link to={`/product/${p.id}`} key={p.id} className="group bg-white rounded-lg overflow-hidden border border-gray-100 hover:shadow-md transition-shadow">
                   <div className="aspect-square bg-gray-50 overflow-hidden">
                     <img
                       src={p.image_url || '/placeholder.png'}
@@ -101,17 +80,10 @@ export default function Home() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
-                  <div className="p-3 sm:p-4">
-                    <p className="text-xs text-gray-400 mb-1">{tCat(lang, p.category)}</p>
-                    <p className="font-medium text-[#0B1628] text-sm leading-tight mb-2 line-clamp-2">{p.name}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-[#0B1628]">${p.price_usd?.toFixed(2)}</span>
-                      {p.stock > 0 ? (
-                        <span className="text-[10px] text-green-600 bg-green-50 px-2 py-0.5 rounded-full">{t('home.inStock')}</span>
-                      ) : (
-                        <span className="text-[10px] text-red-500 bg-red-50 px-2 py-0.5 rounded-full">{t('home.outOfStock')}</span>
-                      )}
-                    </div>
+                  <div className="p-3">
+                    <p className="text-[10px] text-gray-400 mb-0.5">{tCat(lang, p.category)}</p>
+                    <p className="font-medium text-[#0B1628] text-xs sm:text-sm leading-tight mb-1.5 line-clamp-2">{p.name}</p>
+                    <span className="font-bold text-[#0B1628] text-sm">${p.price_usd?.toFixed(2)}</span>
                   </div>
                 </Link>
               ))}
@@ -121,110 +93,116 @@ export default function Home() {
       )}
 
       {/* ───── HOW IT WORKS — 5 steps ───── */}
-      <section className="bg-white py-16 sm:py-24 px-6">
-        <div className="max-w-5xl mx-auto">
-          <h2 className="text-2xl sm:text-4xl font-bold text-[#0B1628] text-center mb-4">
+      <section className="bg-[#FAFAFA] py-14 sm:py-20 px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-xl sm:text-3xl font-bold text-[#0B1628] text-center mb-3">
             {t('home.services.title')}
           </h2>
-          <p className="text-gray-500 text-center max-w-xl mx-auto mb-14 text-sm sm:text-base">
+          <p className="text-gray-500 text-center max-w-lg mx-auto mb-12 text-xs sm:text-sm">
             {t('home.howItWorks.subtitle')}
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-5 gap-6 sm:gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-6 sm:gap-3">
             {[
-              { step: '1', title: t('home.step1.title'), desc: t('home.step1.desc'), color: 'bg-blue-50 text-blue-700' },
-              { step: '2', title: t('home.step2.title'), desc: t('home.step2.desc'), color: 'bg-green-50 text-green-700' },
-              { step: '3', title: t('home.step3.title'), desc: t('home.step3.desc'), color: 'bg-amber-50 text-amber-700' },
-              { step: '4', title: t('home.step4.title'), desc: t('home.step4.desc'), color: 'bg-purple-50 text-purple-700' },
-              { step: '5', title: t('home.step5.title'), desc: t('home.step5.desc'), color: 'bg-teal-50 text-teal-700' },
-            ].map((s, i) => (
-              <div key={s.step} className="relative text-center sm:text-left">
-                {/* Connector line (desktop only) */}
-                {i < 4 && <div className="hidden sm:block absolute top-5 left-[60%] w-[80%] h-px bg-gray-200 z-0" />}
-                <div className={`relative z-10 w-10 h-10 rounded-full ${s.color} flex items-center justify-center font-bold text-sm mx-auto sm:mx-0 mb-3`}>
+              { step: '1', title: t('home.step1.title'), desc: t('home.step1.desc'), color: 'bg-[#0B1628] text-white' },
+              { step: '2', title: t('home.step2.title'), desc: t('home.step2.desc'), color: 'bg-green-600 text-white' },
+              { step: '3', title: t('home.step3.title'), desc: t('home.step3.desc'), color: 'bg-amber-500 text-white' },
+              { step: '4', title: t('home.step4.title'), desc: t('home.step4.desc'), color: 'bg-purple-600 text-white' },
+              { step: '5', title: t('home.step5.title'), desc: t('home.step5.desc'), color: 'bg-teal-600 text-white' },
+            ].map(s => (
+              <div key={s.step} className="text-center">
+                <div className={`w-8 h-8 rounded-full ${s.color} flex items-center justify-center font-bold text-xs mx-auto mb-2.5`}>
                   {s.step}
                 </div>
-                <h3 className="font-semibold text-[#0B1628] text-sm mb-1.5">{s.title}</h3>
-                <p className="text-gray-500 text-xs leading-relaxed">{s.desc}</p>
+                <h3 className="font-semibold text-[#0B1628] text-xs sm:text-sm mb-1">{s.title}</h3>
+                <p className="text-gray-500 text-[10px] sm:text-xs leading-relaxed">{s.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ───── CATEGORIES ───── */}
-      <section className="bg-[#FAFAFA] py-16 sm:py-20 px-6">
+      {/* ───── CATEGORIES with real photos ───── */}
+      <section className="bg-white py-14 sm:py-20 px-6">
         <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-4xl font-bold text-[#0B1628] mb-4">
+          <h2 className="text-xl sm:text-3xl font-bold text-[#0B1628] mb-3">
             {t('home.categories')}
           </h2>
-          <p className="text-gray-500 text-sm sm:text-base max-w-lg mx-auto mb-12">
+          <p className="text-gray-500 text-xs sm:text-sm max-w-md mx-auto mb-10">
             {lang === 'es' ? 'Desde granos y productos frescos hasta paneles solares y equipos de energ\u00EDa.' : lang === 'fr' ? 'Des c\u00E9r\u00E9ales et produits frais aux panneaux solaires et \u00E9quipements \u00E9nerg\u00E9tiques.' : 'From grains and fresh produce to solar panels and energy equipment.'}
           </p>
-          <div className="grid grid-cols-3 gap-4 sm:gap-6 max-w-lg mx-auto">
+          <div className="grid grid-cols-3 gap-3 sm:gap-5 max-w-lg mx-auto">
             {[
-              { label: t('home.value.agriculture'), img: '/coffee.jpg', category: 'Fresh Produce' },
-              { label: t('home.value.energy'), img: '/energy_photo.png', category: 'Solar Energy' },
-              { label: t('home.value.logistics'), img: '/agriculture_2.jpeg', category: 'Essential Bundles' },
+              { label: t('home.value.agriculture'), img: '/farmers.png', category: 'Fresh Produce' },
+              { label: t('home.value.energy'), img: '/red-zeppelin-UVGE-o757-g-unsplash.jpg', category: 'Solar Energy' },
+              { label: t('home.value.logistics'), img: '/omar-eagle-bG_xVUDGiQw-unsplash.jpg', category: 'Essential Bundles' },
             ].map(cat => (
               <Link to={`/catalog?category=${encodeURIComponent(cat.category)}`} key={cat.label} className="group">
-                <div className="rounded-xl overflow-hidden aspect-square mb-3 shadow-sm border border-gray-100">
+                <div className="rounded-lg overflow-hidden aspect-square mb-2 border border-gray-100">
                   <img src={cat.img} alt={cat.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                 </div>
-                <p className="text-sm font-semibold text-[#0B1628]">{cat.label}</p>
+                <p className="text-xs sm:text-sm font-semibold text-[#0B1628]">{cat.label}</p>
               </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ───── ABOUT BANNER ───── */}
-      <section className="bg-[#0B1628] py-16 sm:py-20 px-6">
-        <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-5">{t('home.about.title')}</h2>
-          <p className="text-white/60 text-sm sm:text-base leading-relaxed mb-8">
-            {t('home.about.text')}
-          </p>
-          <Link to="/about" className="inline-block text-white border border-white/20 px-8 py-3 rounded-lg hover:bg-white/10 transition-colors text-sm font-medium">
-            {lang === 'es' ? 'Conocer m\u00E1s' : lang === 'fr' ? 'En savoir plus' : 'Learn more'}
-          </Link>
+      {/* ───── ABOUT BANNER with logo ───── */}
+      <section className="relative overflow-hidden">
+        <img
+          src="/company_agriculture.jpg"
+          alt="Agriculture landscape"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-[#0B1628]/85" />
+        <div className="relative z-10 py-16 sm:py-20 px-6">
+          <div className="max-w-2xl mx-auto text-center">
+            <img src="/white_logo.png" alt="Asymmetrica" className="h-10 sm:h-12 mx-auto mb-6 opacity-80" />
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">{t('home.about.title')}</h2>
+            <p className="text-white/55 text-xs sm:text-sm leading-relaxed mb-6">
+              {t('home.about.text')}
+            </p>
+            <Link to="/about" className="inline-block text-white border border-white/20 px-6 py-2.5 rounded-lg hover:bg-white/10 transition-colors text-xs font-medium">
+              {lang === 'es' ? 'Conocer m\u00E1s' : lang === 'fr' ? 'En savoir plus' : 'Learn more'}
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* ───── TRUST SIGNALS ───── */}
-      <section className="bg-white py-12 sm:py-16 px-6">
-        <div className="max-w-5xl mx-auto">
-          <p className="text-center text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-8">
+      {/* ───── FEATURED IN — real logos ───── */}
+      <section className="bg-[#FAFAFA] py-10 sm:py-14 px-6">
+        <div className="max-w-4xl mx-auto">
+          <p className="text-center text-[9px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-6">
             {t('home.featured.title')}
           </p>
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-6 sm:gap-8 items-center justify-items-center">
-            {[
-              { name: 'Forbes', style: 'font-serif italic' },
-              { name: 'CNN', style: 'font-sans font-black tracking-wider' },
-              { name: 'Fresh Plaza', style: 'font-sans font-bold' },
-              { name: 'ImpactAlpha', style: 'font-sans font-bold italic' },
-              { name: 'El Financiero', style: 'font-serif font-bold' },
-              { name: 'Inforural', style: 'font-sans font-bold' },
-            ].map(m => (
-              <div key={m.name} className="text-center opacity-40 hover:opacity-70 transition-opacity">
-                <span className={`text-sm sm:text-base text-[#0B1628] ${m.style}`}>{m.name}</span>
-              </div>
-            ))}
+            <img src="/Forbes.png" alt="Forbes" className="h-5 sm:h-6 object-contain opacity-50 hover:opacity-80 transition-opacity" />
+            <img src="/cnn.png" alt="CNN" className="h-5 sm:h-6 object-contain opacity-50 hover:opacity-80 transition-opacity" />
+            <img src="/freshplaza.png" alt="Fresh Plaza" className="h-6 sm:h-7 object-contain opacity-50 hover:opacity-80 transition-opacity" />
+            <img src="/impactalpha.png" alt="ImpactAlpha" className="h-4 sm:h-5 object-contain opacity-50 hover:opacity-80 transition-opacity" />
+            <div className="text-center opacity-40 hover:opacity-70 transition-opacity">
+              <span className="text-xs sm:text-sm font-serif font-bold text-[#0B1628]">El Financiero</span>
+            </div>
+            <img src="/inforural.png" alt="Inforural" className="h-6 sm:h-7 object-contain opacity-50 hover:opacity-80 transition-opacity" />
           </div>
+        </div>
+      </section>
 
-          <div className="border-t border-gray-100 mt-10 pt-10">
-            <p className="text-center text-[10px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-8">
-              {t('home.members.title')}
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-14">
-              <div className="text-center opacity-50 hover:opacity-80 transition-opacity">
-                <p className="text-base sm:text-lg font-bold text-[#0B1628] font-serif leading-tight">Swiss Sustainable<br />Finance</p>
-              </div>
-              <div className="hidden sm:block w-px h-10 bg-gray-200" />
-              <div className="text-center opacity-50 hover:opacity-80 transition-opacity">
-                <p className="text-base sm:text-lg font-bold text-[#0B1628] font-serif leading-tight">Alianza por la<br />Inversi&oacute;n de Impacto</p>
-                <p className="text-xs text-gray-400 mt-1">M&eacute;xico</p>
-              </div>
+      {/* ───── MEMBERS OF ───── */}
+      <section className="bg-white py-10 sm:py-14 px-6">
+        <div className="max-w-3xl mx-auto">
+          <p className="text-center text-[9px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-6">
+            {t('home.members.title')}
+          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-14">
+            <div className="text-center opacity-50 hover:opacity-80 transition-opacity">
+              <p className="text-sm sm:text-base font-bold text-[#0B1628] font-serif leading-tight">Swiss Sustainable<br />Finance</p>
+            </div>
+            <div className="hidden sm:block w-px h-8 bg-gray-200" />
+            <div className="text-center opacity-50 hover:opacity-80 transition-opacity">
+              <p className="text-sm sm:text-base font-bold text-[#0B1628] font-serif leading-tight">Alianza por la<br />Inversi&oacute;n de Impacto</p>
+              <p className="text-[10px] text-gray-400 mt-0.5">M&eacute;xico</p>
             </div>
           </div>
         </div>
