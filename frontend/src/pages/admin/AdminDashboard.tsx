@@ -45,6 +45,9 @@ export default function AdminDashboard() {
           <Link to="/admin/shipment-windows" className="bg-orange-500 text-white px-4 py-2.5 rounded-lg text-sm hover:bg-orange-600 font-medium text-center min-h-[44px] flex items-center justify-center">
             Preorder Windows
           </Link>
+          <Link to="/admin/pickup-points" className="bg-teal-600 text-white px-4 py-2.5 rounded-lg text-sm hover:bg-teal-700 font-medium text-center min-h-[44px] flex items-center justify-center">
+            Pickup Points
+          </Link>
         </div>
       </div>
 

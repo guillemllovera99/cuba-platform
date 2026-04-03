@@ -4,7 +4,24 @@ import { useCart, useAuth } from '../store'
 import { api } from '../api'
 import { useI18n, translate } from '../i18n'
 
-type PaymentMethod = 'stripe' | 'paypal' | 'mock'
+type PaymentMethod = 'stripe' | 'paypal' | 'bank_transfer' | 'mock'
+
+type PickupPoint = {
+  id: string
+  name: string
+  city: string
+  address: string
+  contact_phone: string
+}
+
+type BankTransferInfo = {
+  iban: string
+  swift_bic: string
+  payment_reference: string
+  amount_usd: number
+  bank_name: string
+  account_holder: string
+}
 
 export default function Checkout() {
   const { items, total, clearCart } = useCart()
@@ -24,7 +41,12 @@ export default function Checkout() {
     recipient_city: '',
     recipient_address: '',
     notes: '',
+    pickup_point_id: '',
   })
+
+  const [pickupPoints, setPickupPoints] = useState<PickupPoint[]>([])
+  const [bankTransferInfo, setBankTransferInfo] = useState<BankTransferInfo | null>(null)
+  const [bankTransferOrderCode, setBankTransferOrderCode] = useState('')
 
   useEffect(() => {
     api.paymentConfig().then(cfg => {
@@ -36,10 +58,83 @@ export default function Checkout() {
       setPaymentConfig({ stripe_enabled: false, paypal_enabled: false, payments_enabled: false })
       setPaymentMethod('mock')
     })
+
+    // Fetch pickup points
+    api.getPickupPoints().then(points => {
+      setPickupPoints(points)
+    }).catch(() => {
+      setPickupPoints([])
+    })
   }, [])
 
   if (!isLoggedIn) { navigate('/login'); return null }
   if (items.length === 0) { navigate('/cart'); return null }
+
+  // If bank transfer instructions are displayed, show them instead of the form
+  if (bankTransferInfo) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <h1 className="text-2xl font-bold text-[#0B1628] mb-6">{t('checkout.title')}</h1>
+
+        <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-6">
+          <div className="flex gap-3 mb-4">
+            <div className="shrink-0">
+              <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-green-800 mb-2">{t('checkout.bankTransferSuccess')}</h2>
+              <p className="text-sm text-green-700 mb-1">{t('checkout.bankTransferNote')}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white border border-gray-200 rounded-lg p-6">
+          <h2 className="font-semibold text-[#0B1628] mb-4">{t('checkout.bankTransferInstructions')}</h2>
+
+          <div className="space-y-4">
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-1">{t('checkout.bankName')}</p>
+              <p className="text-base text-gray-900">{bankTransferInfo.bank_name}</p>
+            </div>
+
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-1">{t('checkout.iban')}</p>
+              <p className="text-base font-mono text-gray-900 break-all">{bankTransferInfo.iban}</p>
+            </div>
+
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-1">{t('checkout.swift')}</p>
+              <p className="text-base font-mono text-gray-900">{bankTransferInfo.swift_bic}</p>
+            </div>
+
+            <div>
+              <p className="text-sm font-medium text-gray-700 mb-1">{t('checkout.reference')}</p>
+              <p className="text-base font-mono text-gray-900 break-all">{bankTransferInfo.payment_reference}</p>
+            </div>
+
+            <div className="border-t pt-4">
+              <p className="text-sm font-medium text-gray-700 mb-1">Amount</p>
+              <p className="text-base font-semibold text-gray-900">${bankTransferInfo.amount_usd.toFixed(2)} USD</p>
+            </div>
+
+            <div className="border-t pt-4">
+              <p className="text-sm font-medium text-gray-700 mb-1">{t('checkout.recipient')}</p>
+              <p className="text-base text-gray-900">{bankTransferInfo.account_holder}</p>
+            </div>
+
+            <div className="border-t pt-4">
+              <p className="text-sm font-medium text-gray-700 mb-1">Order Code</p>
+              <p className="text-base font-mono text-gray-900">{bankTransferOrderCode}</p>
+            </div>
+          </div>
+
+          <p className="text-xs text-gray-500 mt-6">{t('checkout.bankTransferDesc')}</p>
+        </div>
+      </div>
+    )
+  }
 
   const set = (field: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm(f => ({ ...f, [field]: e.target.value }))
@@ -71,7 +166,16 @@ export default function Checkout() {
         return
       }
 
-      // Step 3: Redirect to payment provider for deposit
+      // Step 3: Handle bank transfer
+      if (paymentMethod === 'bank_transfer') {
+        const bankInfo = await api.bankTransferInitiate(order.id)
+        clearCart()
+        setBankTransferInfo(bankInfo)
+        setBankTransferOrderCode(order.id)
+        return
+      }
+
+      // Step 4: Redirect to payment provider for deposit
       if (paymentMethod === 'stripe') {
         const session = await api.stripeCreateSession(order.id)
         clearCart()
@@ -93,6 +197,28 @@ export default function Checkout() {
       setError(err.message || 'Checkout failed')
     } finally {
       setLoading(false)
+    }
+  }
+
+  // Group pickup points by city for dropdown
+  const pickupPointsByCity: { [key: string]: PickupPoint[] } = {}
+  pickupPoints.forEach(pp => {
+    if (!pickupPointsByCity[pp.city]) {
+      pickupPointsByCity[pp.city] = []
+    }
+    pickupPointsByCity[pp.city].push(pp)
+  })
+
+  const handlePickupPointSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const pickupId = e.target.value
+    setForm(f => ({ ...f, pickup_point_id: pickupId }))
+
+    // Auto-fill city if a pickup point is selected
+    if (pickupId) {
+      const selected = pickupPoints.find(pp => pp.id === pickupId)
+      if (selected) {
+        setForm(f => ({ ...f, recipient_city: selected.city }))
+      }
     }
   }
 
@@ -157,6 +283,28 @@ export default function Checkout() {
             <input value={form.recipient_phone} onChange={set('recipient_phone')} required
               className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]" placeholder={t('checkout.phonePlaceholder')} />
           </div>
+
+          {/* Pickup Point Dropdown (Phase 5) */}
+          {pickupPoints.length > 0 && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">{t('checkout.pickupPoint')}</label>
+              <select value={form.pickup_point_id} onChange={handlePickupPointSelect}
+                className="w-full border border-gray-300 rounded-lg px-3 py-3 text-base focus:outline-none focus:border-[#0B1628] focus:ring-1 focus:ring-[#0B1628]">
+                <option value="">{t('checkout.pickupPointNone')}</option>
+                {Object.entries(pickupPointsByCity).map(([city, points]) => (
+                  <optgroup key={city} label={city}>
+                    {points.map(point => (
+                      <option key={point.id} value={point.id}>
+                        {point.name} - {point.address}
+                      </option>
+                    ))}
+                  </optgroup>
+                ))}
+              </select>
+              <p className="text-xs text-gray-500 mt-1">{t('checkout.orManualAddress')}</p>
+            </div>
+          )}
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">{t('checkout.city')} *</label>
             <input value={form.recipient_city} onChange={set('recipient_city')} required
@@ -205,6 +353,16 @@ export default function Checkout() {
                   </div>
                 </label>
               )}
+              <label className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'bank_transfer' ? 'border-[#0B1628] bg-[#0B1628]/5' : 'border-gray-200 hover:border-gray-300'}`}>
+                <input type="radio" name="payment" checked={paymentMethod === 'bank_transfer'}
+                  onChange={() => setPaymentMethod('bank_transfer')} className="accent-[#0B1628]" />
+                <div className="flex items-center gap-2 flex-1">
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  <span className="text-sm font-medium text-gray-800">{t('checkout.bankTransfer')}</span>
+                </div>
+              </label>
             </div>
           </div>
         )}

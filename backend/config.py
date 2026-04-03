@@ -76,14 +76,23 @@ PAYPAL_MODE = _get_env("PAYPAL_MODE") or "sandbox"  # "sandbox" or "live"
 # Frontend URL for redirects after payment
 FRONTEND_URL = _get_env("FRONTEND_URL") or "http://localhost:5173"
 
+# Bank Transfer settings (always available, admin confirms manually)
+BANK_TRANSFER_ENABLED = True  # Always on as fallback
+BANK_TRANSFER_BANK_NAME = _get_env("BANK_TRANSFER_BANK_NAME") or "Asymmetrica Investments AG"
+BANK_TRANSFER_ACCOUNT_HOLDER = _get_env("BANK_TRANSFER_ACCOUNT_HOLDER") or "Asymmetrica Investments"
+BANK_TRANSFER_IBAN = _get_env("BANK_TRANSFER_IBAN") or "CH93 0076 2011 6238 5295 7"
+BANK_TRANSFER_SWIFT = _get_env("BANK_TRANSFER_SWIFT") or "UBSWCHZH80A"
+
 # Are real payment providers configured?
 STRIPE_ENABLED = bool(STRIPE_SECRET_KEY)
 PAYPAL_ENABLED = bool(PAYPAL_CLIENT_ID and PAYPAL_CLIENT_SECRET)
-PAYMENTS_ENABLED = STRIPE_ENABLED or PAYPAL_ENABLED
+PAYMENTS_ENABLED = STRIPE_ENABLED or PAYPAL_ENABLED or BANK_TRANSFER_ENABLED
 
 if STRIPE_ENABLED:
     print(f"Payments: Stripe enabled (key starts with {STRIPE_SECRET_KEY[:7]}...)")
 if PAYPAL_ENABLED:
     print(f"Payments: PayPal enabled ({PAYPAL_MODE} mode)")
-if not PAYMENTS_ENABLED:
-    print("Payments: MOCK mode (no Stripe/PayPal keys configured)")
+if BANK_TRANSFER_ENABLED:
+    print(f"Payments: Bank Transfer enabled (IBAN: {BANK_TRANSFER_IBAN[-4:]})")
+if not (STRIPE_ENABLED or PAYPAL_ENABLED):
+    print("Payments: MOCK mode (no Stripe/PayPal keys configured, using bank transfer fallback)")

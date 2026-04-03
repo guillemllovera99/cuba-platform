@@ -88,3 +88,11 @@ async def _ensure_columns(engine):
                 await conn.execute(text(col))
             except Exception:
                 pass
+
+        # Pickup Points on orders (Phase 5)
+        try:
+            await conn.execute(text(
+                "ALTER TABLE orders ADD COLUMN IF NOT EXISTS pickup_point_id VARCHAR(36)"
+            ))
+        except Exception:
+            pass

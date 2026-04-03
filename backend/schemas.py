@@ -84,6 +84,7 @@ class CheckoutRequest(BaseModel):
     recipient_phone: str
     recipient_city: str
     recipient_address: Optional[str] = None
+    pickup_point_id: Optional[str] = None
     notes: Optional[str] = None
 
 
@@ -104,6 +105,7 @@ class OrderOut(BaseModel):
     recipient_phone: Optional[str]
     recipient_city: Optional[str]
     recipient_address: Optional[str]
+    pickup_point_id: Optional[str] = None
     subtotal_usd: Optional[float]
     total_usd: Optional[float]
     deposit_amount: Optional[float] = None
@@ -118,6 +120,26 @@ class OrderOut(BaseModel):
 
 class StatusUpdate(BaseModel):
     status: str
+
+
+# ── Pickup Points (Phase 5) ──
+class PickupPointCreate(BaseModel):
+    name: str
+    city: str
+    address: str
+    contact_phone: Optional[str] = None
+    contact_name: Optional[str] = None
+
+
+class PickupPointOut(BaseModel):
+    id: str
+    name: str
+    city: str
+    address: str
+    contact_phone: Optional[str]
+    contact_name: Optional[str]
+    is_active: bool
+    created_at: str
 
 
 # ── Shipments / Delivery (US-12) ──

@@ -19,9 +19,11 @@ from models import Order
 from config import (
     STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_ENABLED,
     PAYPAL_CLIENT_ID, PAYPAL_CLIENT_SECRET, PAYPAL_MODE, PAYPAL_ENABLED,
-    PAYMENTS_ENABLED, FRONTEND_URL,
+    PAYMENTS_ENABLED, FRONTEND_URL, BANK_TRANSFER_ENABLED,
 )
 from services.inventory_service import confirm_sale, release_stock
+from services.payment_service import get_available_providers, get_bank_transfer_instructions
+from auth import require_admin
 
 router = APIRouter(prefix="/api/v1/payments", tags=["payments"])
 
@@ -33,11 +35,26 @@ PAYABLE_STATUSES = {"pending_payment", "pending_deposit", "balance_due"}
 @router.get("/config")
 async def payment_config():
     """Return which payment methods are available (no secrets exposed)."""
+    providers = get_available_providers()
+    bank_transfer_info = get_bank_transfer_instructions() if BANK_TRANSFER_ENABLED else None
+
     return {
         "stripe_enabled": STRIPE_ENABLED,
         "paypal_enabled": PAYPAL_ENABLED,
+        "bank_transfer_enabled": BANK_TRANSFER_ENABLED,
         "payments_enabled": PAYMENTS_ENABLED,
         "paypal_client_id": PAYPAL_CLIENT_ID if PAYPAL_ENABLED else None,
+        "providers": [
+            {
+                "provider": p.provider.value,
+                "enabled": p.enabled,
+                "label": p.label,
+                "description": p.description,
+                "cuba_compliant": p.cuba_compliant,
+            }
+            for p in providers
+        ],
+        "bank_transfer_info": bank_transfer_info,
     }
 
 
@@ -290,6 +307,99 @@ async def paypal_capture_order(
             return {"status": "captured", "order_id": order_id}
 
     raise HTTPException(400, "PayPal capture failed")
+
+
+# ════════════════════════════════════════════════════════════════════════
+# BANK TRANSFER
+# ════════════════════════════════════════════════════════════════════════
+
+@router.post("/bank-transfer/initiate")
+async def bank_transfer_initiate(
+    order_id: str,
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Initiate a bank transfer payment.
+    Returns bank transfer instructions + order reference for payment.
+    Does NOT change order status (stays pending_deposit or balance_due).
+    """
+    if not BANK_TRANSFER_ENABLED:
+        raise HTTPException(400, "Bank transfer is not available")
+
+    result = await db.execute(
+        select(Order).where(Order.id == order_id).options(selectinload(Order.items))
+    )
+    order = result.scalar_one_or_none()
+    if not order:
+        raise HTTPException(404, "Order not found")
+    if order.status not in PAYABLE_STATUSES:
+        raise HTTPException(400, f"Order is already {order.status}")
+
+    charge_amount, charge_desc = _get_charge_amount(order)
+    bank_info = get_bank_transfer_instructions()
+
+    # Create a payment reference from order code
+    payment_reference = f"{bank_info['reference_prefix']}{order.order_code}"
+
+    return {
+        "order_id": order.id,
+        "order_code": order.order_code,
+        "amount_usd": float(charge_amount),
+        "description": charge_desc,
+        "payment_reference": payment_reference,
+        "bank_name": bank_info["bank_name"],
+        "account_holder": bank_info["account_holder"],
+        "iban": bank_info["iban"],
+        "swift_bic": bank_info["swift_bic"],
+        "note": bank_info["note"],
+        "status": "awaiting_deposit",
+    }
+
+
+@router.post("/admin/bank-transfer/confirm")
+async def admin_bank_transfer_confirm(
+    order_id: str,
+    reference: str = None,
+    admin: dict = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Admin endpoint to confirm a bank transfer payment.
+    Accepts order_id and optional reference code for audit trail.
+    Confirms payment same as _confirm_order_payment.
+    """
+    if not BANK_TRANSFER_ENABLED:
+        raise HTTPException(400, "Bank transfer is not available")
+
+    result = await db.execute(
+        select(Order).where(Order.id == order_id).options(selectinload(Order.items))
+    )
+    order = result.scalar_one_or_none()
+    if not order:
+        raise HTTPException(404, "Order not found")
+    if order.status not in PAYABLE_STATUSES:
+        raise HTTPException(400, f"Order cannot be confirmed: already {order.status}")
+
+    # Determine payment type (deposit or balance or full)
+    payment_type = "full"
+    if order.status == "pending_deposit":
+        payment_type = "deposit"
+    elif order.status == "balance_due":
+        payment_type = "balance"
+
+    # Create reference for audit trail
+    payment_ref = f"bank_transfer:{reference or 'manual_confirm'}"
+
+    # Confirm the payment
+    await _confirm_order_payment(db, order_id, payment_ref, payment_type)
+
+    return {
+        "status": "confirmed",
+        "order_id": order_id,
+        "order_code": order.order_code,
+        "payment_type": payment_type,
+        "message": f"Bank transfer payment confirmed for order {order.order_code}",
+    }
 
 
 # ════════════════════════════════════════════════════════════════════════

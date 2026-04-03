@@ -120,6 +120,22 @@ export const api = {
     apiFetch(`/api/v1/admin/shipment-windows/${id}`, { method: 'DELETE' }),
   activeShipmentWindows: () => apiFetch('/api/v1/admin/shipment-windows/active'),
 
+  // pickup points (Phase 5)
+  getPickupPoints: () => apiFetch('/api/v1/pickup-points/'),
+  adminPickupPoints: () => apiFetch('/api/v1/admin/pickup-points/'),
+  adminCreatePickupPoint: (data: any) =>
+    apiFetch('/api/v1/admin/pickup-points/', { method: 'POST', body: JSON.stringify(data) }),
+  adminUpdatePickupPoint: (id: string, data: any) =>
+    apiFetch(`/api/v1/admin/pickup-points/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  adminDeletePickupPoint: (id: string) =>
+    apiFetch(`/api/v1/admin/pickup-points/${id}`, { method: 'DELETE' }),
+
+  // bank transfer (Phase 6)
+  bankTransferInitiate: (orderId: string) =>
+    apiFetch(`/api/v1/payments/bank-transfer/initiate?order_id=${orderId}`, { method: 'POST' }),
+  adminConfirmBankTransfer: (orderId: string, reference?: string) =>
+    apiFetch(`/api/v1/payments/admin/bank-transfer/confirm?order_id=${orderId}${reference ? '&reference=' + reference : ''}`, { method: 'POST' }),
+
   // analytics (US-13)
   analyticsOverview: () => apiFetch('/api/v1/admin/analytics/overview'),
   analyticsTopProducts: (limit = 10) => apiFetch(`/api/v1/admin/analytics/top-products?limit=${limit}`),
