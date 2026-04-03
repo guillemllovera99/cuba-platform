@@ -4,50 +4,119 @@ import { useI18n, translate, tCat } from '../i18n'
 import { api } from '../api'
 
 // Quick product name translation for featured display
+// Keys match actual seed data product names (no accents)
 const productNameTranslations: Record<string, Record<string, string>> = {
   en: {
-    'Paquete Solar Básico': 'Basic Solar Package',
-    'Paquete Solar Basico': 'Basic Solar Package',
-    'Kit Solar Portátil': 'Portable Solar Kit',
-    'Kit Solar Portatil': 'Portable Solar Kit',
+    // Solar / Energy
+    'Panel Solar Portatil': 'Portable Solar Panel',
     'Panel Solar': 'Solar Panel',
-    'Generador Solar': 'Solar Generator',
-    'Generador Portátil': 'Portable Generator',
-    'Generador Portatil': 'Portable Generator',
-    'Batería Solar': 'Solar Battery',
-    'Bateria Solar': 'Solar Battery',
+    'Modulo Solar': 'Solar Roof Module',
+    'Kit Solar Basico para Hogar': 'Basic Home Solar Kit',
+    'Kit Solar Basico': 'Basic Solar Kit',
+    'Kit Solar Plegable': 'Foldable Solar Kit',
+    'Kit Solar Off-Grid': 'Off-Grid Solar Kit',
+    'Paquete Solar Basico': 'Basic Solar Package',
     'Inversor Solar': 'Solar Inverter',
-    'Lámpara Solar': 'Solar Lamp',
-    'Lampara Solar': 'Solar Lamp',
-    'Café Turquino': 'Turquino Coffee',
-    'Café Cubano Espresso': 'Cuban Espresso Coffee',
-    'Café Cubano': 'Cuban Coffee',
-    'Espresso Cubano': 'Cuban Espresso',
-    'Paquete Completo de Despensa': 'Complete Pantry Bundle',
-    'Despensa Completa': 'Complete Pantry',
-    'Paquete Despensa': 'Pantry Bundle',
+    'Sistema de Bateria Solar': 'Solar Battery System',
+    'Power Bank Solar': 'Solar Power Bank',
+    'Generador Diesel': 'Diesel Generator',
+    'Generador Portatil': 'Portable Generator',
+    'Estacion de Energia Portatil': 'Portable Power Station',
+    'Bateria de Litio': 'Lithium Battery',
+    'Bateria Ciclo Profundo': 'Deep Cycle Battery',
+    'Banco de Baterias Solar': 'Solar Battery Bank',
+    'Sistema Hibrido Solar': 'Hybrid Solar System',
+    'Controlador Inteligente': 'Smart Energy Controller',
+    'Ventilador Solar': 'Solar Fan',
+    'Ventilador de Techo Solar': 'Solar Ceiling Fan',
+    'Mini Refrigerador': 'Mini Fridge',
+    'Refrigerador Solar': 'Solar Fridge',
+    'Kit Iluminacion LED Solar': 'Solar LED Lighting Kit',
+    'Kit de Iluminacion Solar': 'Solar Lighting Kit',
+    'Cargador Solar USB': 'Solar USB Charger',
+    'Olla Arrocera': 'Rice Cooker',
+    // Coffee
+    'Cafe Cubita Molido Oscuro': 'Cubita Dark Roast Coffee',
+    'Cafe Cubita Molido Medio': 'Cubita Medium Roast Coffee',
+    'Cafe Serrano Molido Oscuro': 'Serrano Dark Roast Coffee',
+    'Cafe Serrano Grano Entero': 'Serrano Whole Bean Coffee',
+    'Cafe Serrano Molido Suave': 'Serrano Light Roast Coffee',
+    'Cafe Turquino Montanes': 'Turquino Mountain Coffee',
+    'Cafe Mezcla Cubana': 'Cuban Espresso Blend',
+    'Cafe Descafeinado': 'Decaf Coffee',
+    'Cafe Instantaneo': 'Instant Coffee',
+    // Bundles
+    'Paquete Despensa Completa': 'Complete Pantry Bundle',
+    'Paquete Familiar Esencial': 'Essential Family Package',
+    'Paquete de Proteinas': 'Protein Package',
+    'Paquete de Bebidas Tropicales': 'Tropical Beverages Package',
+    'Paquete Cafetalero Cubano': 'Cuban Coffee Lovers Package',
+    'Paquete de Frutas Frescas': 'Fresh Fruits Package',
+    'Mega Paquete Todo Incluido': 'Mega All-Inclusive Package',
+    'Kit Generador': 'Generator Kit',
+    'Kit Energia para Finca': 'Farm Energy Kit',
+    // Produce / Food
+    'Arroz Blanco Premium': 'Premium White Rice',
+    'Frijoles Negros': 'Black Beans',
+    'Leche en Polvo': 'Powdered Milk',
+    'Atun en Aceite': 'Tuna in Oil',
+    'Aguacate Cubano': 'Cuban Avocado',
   },
   fr: {
-    'Paquete Solar Básico': 'Kit Solaire de Base',
-    'Paquete Solar Basico': 'Kit Solaire de Base',
-    'Kit Solar Portátil': 'Kit Solaire Portable',
-    'Kit Solar Portatil': 'Kit Solaire Portable',
+    // Solar / Energy
+    'Panel Solar Portatil': 'Panneau Solaire Portable',
     'Panel Solar': 'Panneau Solaire',
-    'Generador Solar': 'Générateur Solaire',
-    'Generador Portátil': 'Générateur Portable',
-    'Generador Portatil': 'Générateur Portable',
-    'Batería Solar': 'Batterie Solaire',
-    'Bateria Solar': 'Batterie Solaire',
+    'Modulo Solar': 'Module Solaire pour Toit',
+    'Kit Solar Basico para Hogar': 'Kit Solaire de Base pour Maison',
+    'Kit Solar Basico': 'Kit Solaire de Base',
+    'Kit Solar Plegable': 'Kit Solaire Pliable',
+    'Kit Solar Off-Grid': 'Kit Solaire Autonome',
+    'Paquete Solar Basico': 'Pack Solaire de Base',
     'Inversor Solar': 'Onduleur Solaire',
-    'Lámpara Solar': 'Lampe Solaire',
-    'Lampara Solar': 'Lampe Solaire',
-    'Café Turquino': 'Café Turquino',
-    'Café Cubano Espresso': 'Café Cubain Espresso',
-    'Café Cubano': 'Café Cubain',
-    'Espresso Cubano': 'Espresso Cubain',
-    'Paquete Completo de Despensa': 'Pack Garde-Manger Complet',
-    'Despensa Completa': 'Garde-Manger Complet',
-    'Paquete Despensa': 'Pack Garde-Manger',
+    'Sistema de Bateria Solar': 'Système de Batterie Solaire',
+    'Power Bank Solar': 'Batterie Externe Solaire',
+    'Generador Diesel': 'Générateur Diesel',
+    'Generador Portatil': 'Générateur Portable',
+    'Estacion de Energia Portatil': 'Station d\'Énergie Portable',
+    'Bateria de Litio': 'Batterie au Lithium',
+    'Bateria Ciclo Profundo': 'Batterie à Décharge Profonde',
+    'Banco de Baterias Solar': 'Banque de Batteries Solaire',
+    'Sistema Hibrido Solar': 'Système Hybride Solaire',
+    'Controlador Inteligente': 'Contrôleur Intelligent d\'Énergie',
+    'Ventilador Solar': 'Ventilateur Solaire',
+    'Ventilador de Techo Solar': 'Ventilateur de Plafond Solaire',
+    'Mini Refrigerador': 'Mini Réfrigérateur',
+    'Refrigerador Solar': 'Réfrigérateur Solaire',
+    'Kit Iluminacion LED Solar': 'Kit Éclairage LED Solaire',
+    'Kit de Iluminacion Solar': 'Kit Éclairage Solaire',
+    'Cargador Solar USB': 'Chargeur Solaire USB',
+    'Olla Arrocera': 'Cuiseur à Riz',
+    // Coffee
+    'Cafe Cubita Molido Oscuro': 'Café Cubita Torréfaction Foncée',
+    'Cafe Cubita Molido Medio': 'Café Cubita Torréfaction Moyenne',
+    'Cafe Serrano Molido Oscuro': 'Café Serrano Torréfaction Foncée',
+    'Cafe Serrano Grano Entero': 'Café Serrano Grains Entiers',
+    'Cafe Serrano Molido Suave': 'Café Serrano Torréfaction Légère',
+    'Cafe Turquino Montanes': 'Café Turquino des Montagnes',
+    'Cafe Mezcla Cubana': 'Mélange Espresso Cubain',
+    'Cafe Descafeinado': 'Café Décaféiné',
+    'Cafe Instantaneo': 'Café Instantané',
+    // Bundles
+    'Paquete Despensa Completa': 'Pack Garde-Manger Complet',
+    'Paquete Familiar Esencial': 'Pack Familial Essentiel',
+    'Paquete de Proteinas': 'Pack de Protéines',
+    'Paquete de Bebidas Tropicales': 'Pack de Boissons Tropicales',
+    'Paquete Cafetalero Cubano': 'Pack Café Cubain',
+    'Paquete de Frutas Frescas': 'Pack de Fruits Frais',
+    'Mega Paquete Todo Incluido': 'Méga Pack Tout Compris',
+    'Kit Generador': 'Kit Générateur',
+    'Kit Energia para Finca': 'Kit Énergie pour Ferme',
+    // Produce / Food
+    'Arroz Blanco Premium': 'Riz Blanc Premium',
+    'Frijoles Negros': 'Haricots Noirs',
+    'Leche en Polvo': 'Lait en Poudre',
+    'Atun en Aceite': 'Thon à l\'Huile',
+    'Aguacate Cubano': 'Avocat Cubain',
   },
 }
 
@@ -92,11 +161,13 @@ export default function Home() {
 
       // Coffee (2)
       const coffee = all.filter((p: any) =>
+        (p.name || '').toLowerCase().includes('cafe') ||
         (p.name || '').toLowerCase().includes('café') ||
         (p.name || '').toLowerCase().includes('coffee') ||
         (p.name || '').toLowerCase().includes('turquino') ||
         (p.name || '').toLowerCase().includes('espresso') ||
-        (p.category || '').toLowerCase().includes('coffee')
+        (p.category || '').toLowerCase().includes('coffee') ||
+        (p.category || '').toLowerCase().includes('cafe')
       )
       coffee.slice(0, 2).forEach(pick)
 
@@ -284,9 +355,9 @@ export default function Home() {
             {t('home.featured.title')}
           </p>
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-6 sm:gap-8 items-center justify-items-center">
-            <img src="/forbeslogo.jpg" alt="Forbes" className="h-5 sm:h-7 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
-            <img src="/CNNlogo.png" alt="CNN" className="h-5 sm:h-7 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
-            <img src="/freshplazalogo.png" alt="Fresh Plaza" className="h-7 sm:h-9 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
+            <img src="/Forbes.png" alt="Forbes" className="h-5 sm:h-7 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
+            <img src="/cnn.png" alt="CNN" className="h-5 sm:h-7 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
+            <img src="/freshplaza.png" alt="Fresh Plaza" className="h-7 sm:h-9 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
             <img src="/impactalpha.png" alt="ImpactAlpha" className="h-4 sm:h-6 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />
             <img src="/El_Financiero_Logo.svg.png" alt="El Financiero" className="h-5 sm:h-7 object-contain opacity-70 hover:opacity-100 transition-opacity" />
             <img src="/inforural.png" alt="Inforural" className="h-5 sm:h-7 object-contain opacity-70 hover:opacity-100 transition-opacity grayscale hover:grayscale-0" />

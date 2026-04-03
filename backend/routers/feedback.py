@@ -182,7 +182,7 @@ async def confirm_delivery(
 
     dc = DeliveryConfirmation(
         order_id=data.order_id,
-        confirmed_by=user["id"],
+        confirmed_by=user["sub"],
         pickup_code=data.pickup_code,
         recipient_id_check=data.recipient_id_check,
         notes=data.notes,
