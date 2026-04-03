@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useCart, useAuth } from '../store'
 import { api } from '../api'
 import { useI18n, translate } from '../i18n'
@@ -33,7 +33,7 @@ export default function Checkout() {
   const t = (key: string) => translate(lang, key)
 
   const [paymentConfig, setPaymentConfig] = useState<any>(null)
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('mock')
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('stripe')
 
   const [form, setForm] = useState({
     recipient_name: '',
@@ -48,17 +48,19 @@ export default function Checkout() {
   const [bankTransferInfo, setBankTransferInfo] = useState<BankTransferInfo | null>(null)
   const [bankTransferOrderCode, setBankTransferOrderCode] = useState('')
 
+  // Wallet state
+  const [walletBalance, setWalletBalance] = useState<number | null>(null)
+  const [walletLoading, setWalletLoading] = useState(false)
+
   useEffect(() => {
     api.paymentConfig().then(cfg => {
       setPaymentConfig(cfg)
-      // Default to stripe (card), always show all payment options
       setPaymentMethod('stripe')
     }).catch(() => {
       setPaymentConfig({ stripe_enabled: false, paypal_enabled: false, payments_enabled: true })
       setPaymentMethod('stripe')
     })
 
-    // Fetch pickup points (API returns { city: [points] }, flatten to array)
     api.getPickupPoints().then((grouped: any) => {
       const flat: PickupPoint[] = []
       if (grouped && typeof grouped === 'object') {
@@ -69,6 +71,13 @@ export default function Checkout() {
       setPickupPoints(flat)
     }).catch(() => {
       setPickupPoints([])
+    })
+
+    // Fetch wallet balance
+    api.walletMe().then((w: any) => {
+      setWalletBalance((w.balance || 0) - (w.reserved || 0))
+    }).catch(() => {
+      setWalletBalance(0)
     })
   }, [])
 
@@ -103,32 +112,26 @@ export default function Checkout() {
               <p className="text-sm font-medium text-gray-700 mb-1">{t('checkout.bankName')}</p>
               <p className="text-base text-gray-900">{bankTransferInfo.bank_name}</p>
             </div>
-
             <div>
               <p className="text-sm font-medium text-gray-700 mb-1">{t('checkout.iban')}</p>
               <p className="text-base font-mono text-gray-900 break-all">{bankTransferInfo.iban}</p>
             </div>
-
             <div>
               <p className="text-sm font-medium text-gray-700 mb-1">{t('checkout.swift')}</p>
               <p className="text-base font-mono text-gray-900">{bankTransferInfo.swift_bic}</p>
             </div>
-
             <div>
               <p className="text-sm font-medium text-gray-700 mb-1">{t('checkout.reference')}</p>
               <p className="text-base font-mono text-gray-900 break-all">{bankTransferInfo.payment_reference}</p>
             </div>
-
             <div className="border-t pt-4">
               <p className="text-sm font-medium text-gray-700 mb-1">Amount</p>
               <p className="text-base font-semibold text-gray-900">${bankTransferInfo.amount_usd.toFixed(2)} USD</p>
             </div>
-
             <div className="border-t pt-4">
               <p className="text-sm font-medium text-gray-700 mb-1">{t('checkout.recipient')}</p>
               <p className="text-base text-gray-900">{bankTransferInfo.account_holder}</p>
             </div>
-
             <div className="border-t pt-4">
               <p className="text-sm font-medium text-gray-700 mb-1">Order Code</p>
               <p className="text-base font-mono text-gray-900">{bankTransferOrderCode}</p>
@@ -147,13 +150,25 @@ export default function Checkout() {
   const subtotal = total()
   const depositAmount = Math.round(subtotal * 0.20 * 100) / 100
   const balanceAmount = Math.round((subtotal - depositAmount) * 100) / 100
-  const isMock = false // Always show real payment options
+
+  const walletSufficient = walletBalance !== null && walletBalance >= depositAmount
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.recipient_name || !form.recipient_phone || !form.recipient_city) {
       setError(t('checkout.fillRequired')); return
     }
+
+    // Check wallet balance before proceeding
+    if (paymentMethod === 'wallet' && !walletSufficient) {
+      setError(
+        lang === 'es' ? 'Saldo insuficiente. Recarga tu billetera primero.'
+        : lang === 'fr' ? 'Solde insuffisant. Rechargez votre portefeuille.'
+        : 'Insufficient credits. Please top up your wallet first.'
+      )
+      return
+    }
+
     setLoading(true)
     setError('')
 
@@ -174,13 +189,15 @@ export default function Checkout() {
       // Step 3: Handle wallet payment
       if (paymentMethod === 'wallet') {
         try {
-          await api.walletReserve(order.deposit_amount || 0, order.id)
-          await api.walletSpend(order.deposit_amount || 0, order.id)
+          const depositAmt = order.deposit_amount || depositAmount
+          await api.walletReserve(depositAmt, order.id)
+          await api.walletSpend(depositAmt, order.id)
           clearCart()
           navigate(`/order/${order.id}/confirmed`)
         } catch (walletErr: any) {
           setError(walletErr.message || 'Insufficient wallet credits')
         }
+        setLoading(false)
         return
       }
 
@@ -230,14 +247,46 @@ export default function Checkout() {
   const handlePickupPointSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const pickupId = e.target.value
     setForm(f => ({ ...f, pickup_point_id: pickupId }))
-
-    // Auto-fill city if a pickup point is selected
     if (pickupId) {
       const selected = pickupPoints.find(pp => pp.id === pickupId)
       if (selected) {
         setForm(f => ({ ...f, recipient_city: selected.city }))
       }
     }
+  }
+
+  // Payment method context messages
+  const getPaymentNotice = () => {
+    if (paymentMethod === 'wallet') {
+      return null // Handled separately
+    }
+    if (paymentMethod === 'bank_transfer') {
+      return (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
+          <p className="text-sm text-blue-800">
+            {lang === 'es' ? 'Se mostrarán los datos bancarios para completar la transferencia.'
+              : lang === 'fr' ? 'Les coordonnées bancaires seront affichées pour compléter le virement.'
+              : 'Bank details will be shown to complete the transfer.'}
+          </p>
+        </div>
+      )
+    }
+    return (
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
+        <p className="text-sm text-blue-800">{t('checkout.redirectNotice')}</p>
+      </div>
+    )
+  }
+
+  // Button label
+  const getButtonLabel = () => {
+    if (loading) return t('checkout.processing')
+    if (paymentMethod === 'wallet') {
+      return lang === 'es' ? `Pagar con Créditos — $${depositAmount.toFixed(2)} USD`
+        : lang === 'fr' ? `Payer avec Crédits — $${depositAmount.toFixed(2)} USD`
+        : `Pay with Credits — $${depositAmount.toFixed(2)} USD`
+    }
+    return `${t('checkout.payDeposit')} — $${depositAmount.toFixed(2)} USD`
   }
 
   return (
@@ -337,10 +386,11 @@ export default function Checkout() {
           </div>
         </div>
 
-        {/* Payment Method Selection — always show all options */}
+        {/* Payment Method Selection */}
         <div className="mt-6">
           <h2 className="font-semibold text-[#0B1628] mb-3">{t('checkout.paymentMethod')}</h2>
           <div className="space-y-2">
+            {/* Credit / Debit Card */}
             <label className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'stripe' ? 'border-[#0B1628] bg-[#0B1628]/5' : 'border-gray-200 hover:border-gray-300'}`}>
               <input type="radio" name="payment" checked={paymentMethod === 'stripe'}
                 onChange={() => setPaymentMethod('stripe')} className="accent-[#0B1628]" />
@@ -352,6 +402,8 @@ export default function Checkout() {
                 <span className="text-sm font-medium text-gray-800">{t('checkout.creditCard')}</span>
               </div>
             </label>
+
+            {/* PayPal */}
             <label className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'paypal' ? 'border-[#0B1628] bg-[#0B1628]/5' : 'border-gray-200 hover:border-gray-300'}`}>
               <input type="radio" name="payment" checked={paymentMethod === 'paypal'}
                 onChange={() => setPaymentMethod('paypal')} className="accent-[#0B1628]" />
@@ -363,6 +415,8 @@ export default function Checkout() {
                 <span className="text-sm font-medium text-gray-800">PayPal</span>
               </div>
             </label>
+
+            {/* Bank Transfer */}
             <label className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'bank_transfer' ? 'border-[#0B1628] bg-[#0B1628]/5' : 'border-gray-200 hover:border-gray-300'}`}>
               <input type="radio" name="payment" checked={paymentMethod === 'bank_transfer'}
                 onChange={() => setPaymentMethod('bank_transfer')} className="accent-[#0B1628]" />
@@ -374,6 +428,7 @@ export default function Checkout() {
               </div>
             </label>
 
+            {/* Platform Credits */}
             <label className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'wallet' ? 'border-[#0B1628] bg-[#0B1628]/5' : 'border-gray-200 hover:border-gray-300'}`}>
               <input type="radio" name="payment" checked={paymentMethod === 'wallet'}
                 onChange={() => setPaymentMethod('wallet')} className="accent-[#0B1628]" />
@@ -384,28 +439,82 @@ export default function Checkout() {
                 <span className="text-sm font-medium text-gray-800">
                   {lang === 'es' ? 'Créditos de Plataforma' : lang === 'fr' ? 'Crédits Plateforme' : 'Platform Credits'}
                 </span>
+                {walletBalance !== null && (
+                  <span className="ml-auto text-xs font-medium text-gray-500">
+                    {lang === 'es' ? 'Saldo' : lang === 'fr' ? 'Solde' : 'Balance'}: ${walletBalance.toFixed(2)}
+                  </span>
+                )}
               </div>
             </label>
           </div>
         </div>
 
+        {/* Wallet-specific info panel */}
+        {paymentMethod === 'wallet' && (
+          <div className={`mt-4 rounded-lg p-4 border ${walletSufficient ? 'bg-green-50 border-green-200' : 'bg-amber-50 border-amber-200'}`}>
+            <div className="flex items-start gap-3">
+              <div className="shrink-0 mt-0.5">
+                {walletSufficient ? (
+                  <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.832c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                )}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-1">
+                  <span className={`text-sm font-medium ${walletSufficient ? 'text-green-800' : 'text-amber-800'}`}>
+                    {lang === 'es' ? 'Tu saldo disponible' : lang === 'fr' ? 'Votre solde disponible' : 'Your available balance'}
+                  </span>
+                  <span className={`text-base font-bold ${walletSufficient ? 'text-green-700' : 'text-amber-700'}`}>
+                    ${(walletBalance || 0).toFixed(2)}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-gray-500">
+                    {lang === 'es' ? 'Depósito requerido (20%)' : lang === 'fr' ? 'Acompte requis (20%)' : 'Deposit required (20%)'}
+                  </span>
+                  <span className="text-sm font-medium text-gray-700">- ${depositAmount.toFixed(2)}</span>
+                </div>
+                {walletSufficient ? (
+                  <div className="flex items-center justify-between border-t border-green-200 pt-2">
+                    <span className="text-xs text-green-600">
+                      {lang === 'es' ? 'Saldo después del pago' : lang === 'fr' ? 'Solde après paiement' : 'Balance after payment'}
+                    </span>
+                    <span className="text-sm font-medium text-green-700">
+                      ${((walletBalance || 0) - depositAmount).toFixed(2)}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="border-t border-amber-200 pt-2">
+                    <p className="text-xs text-amber-700 mb-2">
+                      {lang === 'es'
+                        ? `Necesitas $${(depositAmount - (walletBalance || 0)).toFixed(2)} más. Recarga tu billetera.`
+                        : lang === 'fr'
+                        ? `Vous avez besoin de $${(depositAmount - (walletBalance || 0)).toFixed(2)} de plus.`
+                        : `You need $${(depositAmount - (walletBalance || 0)).toFixed(2)} more. Top up your wallet.`}
+                    </p>
+                    <Link to="/wallet" className="inline-block text-xs font-medium text-amber-800 underline hover:text-amber-900">
+                      {lang === 'es' ? 'Ir a Mi Billetera' : lang === 'fr' ? 'Aller au Portefeuille' : 'Go to My Wallet'} &rarr;
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
 
-        {isMock && (
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mt-4">
-            <p className="text-sm text-amber-800">{t('checkout.simulated')}</p>
-          </div>
-        )}
+        {/* Context-specific payment notice (not for wallet) */}
+        {getPaymentNotice()}
 
-        {!isMock && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
-            <p className="text-sm text-blue-800">{t('checkout.redirectNotice')}</p>
-          </div>
-        )}
-
-        <button type="submit" disabled={loading}
+        <button type="submit" disabled={loading || (paymentMethod === 'wallet' && !walletSufficient)}
           className="w-full mt-6 bg-green-600 text-white py-3.5 rounded-lg hover:bg-green-700 font-semibold disabled:bg-gray-400 transition-colors min-h-[48px] text-base">
-          {loading ? t('checkout.processing') : `${t('checkout.payDeposit')} — $${depositAmount.toFixed(2)} USD`}
+          {getButtonLabel()}
         </button>
         <p className="text-center text-xs text-gray-400 mt-2">{t('checkout.totalOrder')}: ${subtotal.toFixed(2)} USD</p>
       </form>
