@@ -3,15 +3,122 @@ import { Link } from 'react-router-dom'
 import { useI18n, translate, tCat } from '../i18n'
 import { api } from '../api'
 
+// Quick product name translation for featured display
+const productNameTranslations: Record<string, Record<string, string>> = {
+  en: {
+    'Paquete Solar Básico': 'Basic Solar Package',
+    'Paquete Solar Basico': 'Basic Solar Package',
+    'Kit Solar Portátil': 'Portable Solar Kit',
+    'Kit Solar Portatil': 'Portable Solar Kit',
+    'Panel Solar': 'Solar Panel',
+    'Generador Solar': 'Solar Generator',
+    'Generador Portátil': 'Portable Generator',
+    'Generador Portatil': 'Portable Generator',
+    'Batería Solar': 'Solar Battery',
+    'Bateria Solar': 'Solar Battery',
+    'Inversor Solar': 'Solar Inverter',
+    'Lámpara Solar': 'Solar Lamp',
+    'Lampara Solar': 'Solar Lamp',
+    'Café Turquino': 'Turquino Coffee',
+    'Café Cubano Espresso': 'Cuban Espresso Coffee',
+    'Café Cubano': 'Cuban Coffee',
+    'Espresso Cubano': 'Cuban Espresso',
+    'Paquete Completo de Despensa': 'Complete Pantry Bundle',
+    'Despensa Completa': 'Complete Pantry',
+    'Paquete Despensa': 'Pantry Bundle',
+  },
+  fr: {
+    'Paquete Solar Básico': 'Kit Solaire de Base',
+    'Paquete Solar Basico': 'Kit Solaire de Base',
+    'Kit Solar Portátil': 'Kit Solaire Portable',
+    'Kit Solar Portatil': 'Kit Solaire Portable',
+    'Panel Solar': 'Panneau Solaire',
+    'Generador Solar': 'Générateur Solaire',
+    'Generador Portátil': 'Générateur Portable',
+    'Generador Portatil': 'Générateur Portable',
+    'Batería Solar': 'Batterie Solaire',
+    'Bateria Solar': 'Batterie Solaire',
+    'Inversor Solar': 'Onduleur Solaire',
+    'Lámpara Solar': 'Lampe Solaire',
+    'Lampara Solar': 'Lampe Solaire',
+    'Café Turquino': 'Café Turquino',
+    'Café Cubano Espresso': 'Café Cubain Espresso',
+    'Café Cubano': 'Café Cubain',
+    'Espresso Cubano': 'Espresso Cubain',
+    'Paquete Completo de Despensa': 'Pack Garde-Manger Complet',
+    'Despensa Completa': 'Garde-Manger Complet',
+    'Paquete Despensa': 'Pack Garde-Manger',
+  },
+}
+
+function translateProductName(name: string, lang: string): string {
+  if (lang === 'es') return name // Keep original Spanish
+  const dict = productNameTranslations[lang] || {}
+  // Try exact match first
+  if (dict[name]) return dict[name]
+  // Try partial match — find the longest key that matches at the start of the name
+  for (const [es, translated] of Object.entries(dict)) {
+    if (name.toLowerCase().startsWith(es.toLowerCase())) {
+      return translated + name.slice(es.length)
+    }
+  }
+  return name // Fallback to original
+}
+
 export default function Home() {
   const lang = useI18n(s => s.lang)
   const t = (key: string) => translate(lang, key)
   const [featured, setFeatured] = useState<any[]>([])
 
   useEffect(() => {
-    api.getProducts('limit=8').then(data => {
-      const products = Array.isArray(data) ? data : data.products || data.items || []
-      setFeatured(products.slice(0, 8))
+    // Fetch all products, then pick the 8 featured:
+    // 5 energy/solar/portable, 2 coffee, 1 pantry bundle
+    api.getProducts().then(data => {
+      const all = Array.isArray(data) ? data : data.products || data.items || []
+      const picked: any[] = []
+      const seen = new Set<string>()
+
+      const pick = (p: any) => { if (!seen.has(p.id)) { seen.add(p.id); picked.push(p) } }
+
+      // Energy/Solar (5)
+      const energy = all.filter((p: any) =>
+        (p.category || '').toLowerCase().includes('solar') ||
+        (p.category || '').toLowerCase().includes('energy') ||
+        (p.name || '').toLowerCase().includes('solar') ||
+        (p.name || '').toLowerCase().includes('generador') ||
+        (p.name || '').toLowerCase().includes('portable')
+      )
+      energy.slice(0, 5).forEach(pick)
+
+      // Coffee (2)
+      const coffee = all.filter((p: any) =>
+        (p.name || '').toLowerCase().includes('café') ||
+        (p.name || '').toLowerCase().includes('coffee') ||
+        (p.name || '').toLowerCase().includes('turquino') ||
+        (p.name || '').toLowerCase().includes('espresso') ||
+        (p.category || '').toLowerCase().includes('coffee')
+      )
+      coffee.slice(0, 2).forEach(pick)
+
+      // Pantry bundle (1)
+      const bundles = all.filter((p: any) =>
+        (p.name || '').toLowerCase().includes('pantry') ||
+        (p.name || '').toLowerCase().includes('despensa') ||
+        (p.name || '').toLowerCase().includes('bundle') ||
+        (p.name || '').toLowerCase().includes('paquete completo')
+      )
+      bundles.slice(0, 1).forEach(pick)
+
+      // If we don't have 8, fill with more energy/solar
+      if (picked.length < 8) {
+        energy.slice(5).forEach(p => { if (picked.length < 8) pick(p) })
+      }
+      // Still short? fill from all products
+      if (picked.length < 8) {
+        all.forEach((p: any) => { if (picked.length < 8) pick(p) })
+      }
+
+      setFeatured(picked.slice(0, 8))
     }).catch(() => {})
   }, [])
 
@@ -31,7 +138,7 @@ export default function Home() {
             {t('home.hero.badge')}
           </p>
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 leading-[1.15]">
-            {lang === 'es' ? 'El mercado del Caribe' : lang === 'fr' ? 'Le march\u00E9 des Cara\u00EFbes' : 'The Caribbean Marketplace'}
+            {lang === 'es' ? 'El Marketplace de Preorden del Caribe' : lang === 'fr' ? 'Le March\u00E9 de Pr\u00E9commande des Cara\u00EFbes' : 'The Caribbean Preorder Marketplace'}
           </h1>
           <p className="text-white/65 text-sm sm:text-base leading-relaxed max-w-lg mx-auto mb-8">
             {lang === 'es'
@@ -82,7 +189,7 @@ export default function Home() {
                   </div>
                   <div className="p-3">
                     <p className="text-[10px] text-gray-400 mb-0.5">{tCat(lang, p.category)}</p>
-                    <p className="font-medium text-[#0B1628] text-xs sm:text-sm leading-tight mb-1.5 line-clamp-2">{p.name}</p>
+                    <p className="font-medium text-[#0B1628] text-xs sm:text-sm leading-tight mb-1.5 line-clamp-2">{translateProductName(p.name, lang)}</p>
                     <span className="font-bold text-[#0B1628] text-sm">${p.price_usd?.toFixed(2)}</span>
                   </div>
                 </Link>
@@ -170,33 +277,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ───── FEATURED IN — real logos ───── */}
-      <section className="bg-[#FAFAFA] py-10 sm:py-14 px-6">
+      {/* ───── FEATURED IN — logos on dark bar ───── */}
+      <section className="bg-[#0B1628] py-10 sm:py-14 px-6">
         <div className="max-w-4xl mx-auto">
-          <p className="text-center text-[9px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-6">
+          <p className="text-center text-[9px] uppercase tracking-[0.3em] text-white/30 font-medium mb-8">
             {t('home.featured.title')}
           </p>
-          <div className="grid grid-cols-3 sm:grid-cols-6 gap-4 sm:gap-6 items-center justify-items-center">
-            <img src="/forbeslogo.jpg" alt="Forbes" className="h-6 sm:h-8 object-contain opacity-50 hover:opacity-80 transition-opacity" />
-            <img src="/CNNlogo.png" alt="CNN" className="h-6 sm:h-8 object-contain opacity-50 hover:opacity-80 transition-opacity" />
-            <img src="/freshplazalogo.png" alt="Fresh Plaza" className="h-8 sm:h-10 object-contain opacity-50 hover:opacity-80 transition-opacity" />
-            <img src="/impactalpha.png" alt="ImpactAlpha" className="h-5 sm:h-7 object-contain opacity-50 hover:opacity-80 transition-opacity" />
-            <img src="/El_Financiero_Logo.svg.png" alt="El Financiero" className="h-6 sm:h-8 object-contain opacity-50 hover:opacity-80 transition-opacity" />
-            <img src="/inforural.png" alt="Inforural" className="w-16 sm:w-20 object-contain opacity-50 hover:opacity-80 transition-opacity" />
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-6 sm:gap-8 items-center justify-items-center">
+            <img src="/forbeslogo.jpg" alt="Forbes" className="h-5 sm:h-7 object-contain opacity-60 hover:opacity-90 transition-opacity brightness-0 invert" />
+            <img src="/CNNlogo.png" alt="CNN" className="h-5 sm:h-7 object-contain opacity-60 hover:opacity-90 transition-opacity brightness-0 invert" />
+            <img src="/freshplazalogo.png" alt="Fresh Plaza" className="h-7 sm:h-9 object-contain opacity-60 hover:opacity-90 transition-opacity brightness-0 invert" />
+            <img src="/impactalpha.png" alt="ImpactAlpha" className="h-4 sm:h-6 object-contain opacity-60 hover:opacity-90 transition-opacity brightness-0 invert" />
+            <img src="/El_Financiero_Logo.svg.png" alt="El Financiero" className="h-5 sm:h-7 object-contain opacity-60 hover:opacity-90 transition-opacity" />
+            <img src="/inforural.png" alt="Inforural" className="h-5 sm:h-7 object-contain opacity-60 hover:opacity-90 transition-opacity brightness-0 invert" />
           </div>
         </div>
       </section>
 
       {/* ───── MEMBERS OF ───── */}
-      <section className="bg-white py-10 sm:py-14 px-6">
+      <section className="bg-[#0F1D32] py-10 sm:py-14 px-6">
         <div className="max-w-3xl mx-auto">
-          <p className="text-center text-[9px] uppercase tracking-[0.3em] text-gray-400 font-medium mb-6">
+          <p className="text-center text-[9px] uppercase tracking-[0.3em] text-white/30 font-medium mb-8">
             {t('home.members.title')}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-14">
-            <img src="/logo-swiss-sustinable-finance.png" alt="Swiss Sustainable Finance" className="h-10 sm:h-14 object-contain opacity-50 hover:opacity-80 transition-opacity" />
-            <div className="hidden sm:block w-px h-10 bg-gray-200" />
-            <img src="/logo-AIIMX-GSGnational-partner-1024x418.png" alt="Alianza por la Inversión de Impacto México" className="h-10 sm:h-14 object-contain opacity-50 hover:opacity-80 transition-opacity" />
+            <img src="/logo-swiss-sustinable-finance.png" alt="Swiss Sustainable Finance" className="h-10 sm:h-14 object-contain opacity-60 hover:opacity-90 transition-opacity brightness-0 invert" />
+            <div className="hidden sm:block w-px h-10 bg-white/15" />
+            <img src="/logo-AIIMX-GSGnational-partner-1024x418.png" alt="Alianza por la Inversión de Impacto México" className="h-10 sm:h-14 object-contain opacity-60 hover:opacity-90 transition-opacity brightness-0 invert" />
           </div>
         </div>
       </section>

@@ -212,7 +212,7 @@ export default function Profile() {
         <h2 className="text-lg font-semibold text-[#0B1628] mb-5">{labels.billing}</h2>
 
         <div className="space-y-4">
-          {/* Credit Card */}
+          {/* Credit Card (Stripe) */}
           <div className="flex items-center justify-between p-4 rounded-lg border border-gray-100 bg-gray-50/50">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-[#0B1628] rounded-lg flex items-center justify-center">
@@ -221,13 +221,17 @@ export default function Profile() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-[#0B1628]">{labels.cardSaved}</p>
-                <p className="text-xs text-gray-400">{labels.noCard}</p>
+                <p className="text-sm font-medium text-[#0B1628]">
+                  {lang === 'es' ? 'Tarjeta de Crédito / Débito' : lang === 'fr' ? 'Carte de Crédit / Débit' : 'Credit / Debit Card'}
+                </p>
+                <p className="text-xs text-gray-400">
+                  {lang === 'es' ? 'Visa, Mastercard, Amex — via Stripe' : lang === 'fr' ? 'Visa, Mastercard, Amex — via Stripe' : 'Visa, Mastercard, Amex — via Stripe'}
+                </p>
               </div>
             </div>
-            <button className="text-xs text-gray-400 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-not-allowed">
-              {labels.comingSoon}
-            </button>
+            <span className="text-xs text-green-600 font-medium">
+              {lang === 'es' ? 'Disponible' : lang === 'fr' ? 'Disponible' : 'Available'}
+            </span>
           </div>
 
           {/* PayPal */}
@@ -237,13 +241,15 @@ export default function Profile() {
                 <span className="text-white text-xs font-bold">PP</span>
               </div>
               <div>
-                <p className="text-sm font-medium text-[#0B1628]">{labels.paypal}</p>
-                <p className="text-xs text-gray-400">{labels.noPaypal}</p>
+                <p className="text-sm font-medium text-[#0B1628]">PayPal</p>
+                <p className="text-xs text-gray-400">
+                  {lang === 'es' ? 'Pagar con tu cuenta PayPal' : lang === 'fr' ? 'Payer avec votre compte PayPal' : 'Pay with your PayPal account'}
+                </p>
               </div>
             </div>
-            <button className="text-xs text-gray-400 border border-gray-200 px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors cursor-not-allowed">
-              {labels.comingSoon}
-            </button>
+            <span className="text-xs text-green-600 font-medium">
+              {lang === 'es' ? 'Disponible' : lang === 'fr' ? 'Disponible' : 'Available'}
+            </span>
           </div>
 
           {/* Bank Transfer */}
@@ -260,17 +266,39 @@ export default function Profile() {
               </div>
             </div>
             <span className="text-xs text-green-600 font-medium">
-              {lang === 'es' ? 'Activo' : lang === 'fr' ? 'Actif' : 'Active'}
+              {lang === 'es' ? 'Disponible' : lang === 'fr' ? 'Disponible' : 'Available'}
+            </span>
+          </div>
+
+          {/* Platform Credits */}
+          <div className="flex items-center justify-between p-4 rounded-lg border border-gray-100 bg-gray-50/50">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center">
+                <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-[#0B1628]">
+                  {lang === 'es' ? 'Créditos de Plataforma' : lang === 'fr' ? 'Crédits Plateforme' : 'Platform Credits'}
+                </p>
+                <p className="text-xs text-gray-400">
+                  {lang === 'es' ? 'Pagar con tu saldo de billetera' : lang === 'fr' ? 'Payer avec votre solde portefeuille' : 'Pay with your wallet balance'}
+                </p>
+              </div>
+            </div>
+            <span className="text-xs text-green-600 font-medium">
+              {lang === 'es' ? 'Disponible' : lang === 'fr' ? 'Disponible' : 'Available'}
             </span>
           </div>
         </div>
 
         <p className="mt-4 text-xs text-gray-400 leading-relaxed">
           {lang === 'es'
-            ? 'Los métodos de pago guardados estarán disponibles próximamente. Por ahora, puedes seleccionar tu método de pago al momento de realizar tu pedido.'
+            ? 'Todos los métodos de pago se seleccionan al momento del checkout. La tarjeta y PayPal requieren configurar claves Stripe/PayPal en Railway.'
             : lang === 'fr'
-            ? 'Les méthodes de paiement enregistrées seront bientôt disponibles. Pour le moment, vous pouvez sélectionner votre méthode de paiement lors de la commande.'
-            : 'Saved payment methods coming soon. For now, you can select your payment method at checkout.'}
+            ? 'Toutes les méthodes de paiement sont sélectionnées lors du checkout. La carte et PayPal nécessitent la configuration des clés Stripe/PayPal dans Railway.'
+            : 'All payment methods are selected at checkout. Card and PayPal require Stripe/PayPal API keys configured in Railway environment variables.'}
         </p>
       </section>
     </div>
