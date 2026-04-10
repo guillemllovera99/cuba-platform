@@ -140,57 +140,25 @@ export default function Home() {
   const [featured, setFeatured] = useState<any[]>([])
 
   useEffect(() => {
-    // Fetch all products, then pick the 8 featured:
-    // 5 energy/solar/portable, 2 coffee, 1 pantry bundle
-    api.getProducts().then(data => {
-      const all = Array.isArray(data) ? data : data.products || data.items || []
-      const picked: any[] = []
-      const seen = new Set<string>()
-
-      const pick = (p: any) => { if (!seen.has(p.id)) { seen.add(p.id); picked.push(p) } }
-
-      // Energy/Solar (5)
-      const energy = all.filter((p: any) =>
-        (p.category || '').toLowerCase().includes('solar') ||
-        (p.category || '').toLowerCase().includes('energy') ||
-        (p.name || '').toLowerCase().includes('solar') ||
-        (p.name || '').toLowerCase().includes('generador') ||
-        (p.name || '').toLowerCase().includes('portable')
-      )
-      energy.slice(0, 5).forEach(pick)
-
-      // Coffee (2)
-      const coffee = all.filter((p: any) =>
-        (p.name || '').toLowerCase().includes('cafe') ||
-        (p.name || '').toLowerCase().includes('café') ||
-        (p.name || '').toLowerCase().includes('coffee') ||
-        (p.name || '').toLowerCase().includes('turquino') ||
-        (p.name || '').toLowerCase().includes('espresso') ||
-        (p.category || '').toLowerCase().includes('coffee') ||
-        (p.category || '').toLowerCase().includes('cafe')
-      )
-      coffee.slice(0, 2).forEach(pick)
-
-      // Pantry bundle (1)
-      const bundles = all.filter((p: any) =>
-        (p.name || '').toLowerCase().includes('pantry') ||
-        (p.name || '').toLowerCase().includes('despensa') ||
-        (p.name || '').toLowerCase().includes('bundle') ||
-        (p.name || '').toLowerCase().includes('paquete completo')
-      )
-      bundles.slice(0, 1).forEach(pick)
-
-      // If we don't have 8, fill with more energy/solar
-      if (picked.length < 8) {
-        energy.slice(5).forEach((p: any) => { if (picked.length < 8) pick(p) })
+    // Use the featured products API (admin-selectable)
+    api.getFeaturedProducts().then((data: any) => {
+      const arr = Array.isArray(data) ? data : data.products || data.items || []
+      if (arr.length > 0) {
+        setFeatured(arr.slice(0, 8))
+      } else {
+        // Fallback: fetch all and pick first 8
+        api.getProducts().then((all: any) => {
+          const list = Array.isArray(all) ? all : all.products || all.items || []
+          setFeatured(list.slice(0, 8))
+        }).catch(() => {})
       }
-      // Still short? fill from all products
-      if (picked.length < 8) {
-        all.forEach((p: any) => { if (picked.length < 8) pick(p) })
-      }
-
-      setFeatured(picked.slice(0, 8))
-    }).catch(() => {})
+    }).catch(() => {
+      // Fallback on error
+      api.getProducts().then((all: any) => {
+        const list = Array.isArray(all) ? all : all.products || all.items || []
+        setFeatured(list.slice(0, 8))
+      }).catch(() => {})
+    })
   }, [])
 
   return (
@@ -198,8 +166,8 @@ export default function Home() {
       {/* ───── HERO — compact, Caribbean coastline ───── */}
       <section className="relative h-[50vh] min-h-[360px] max-h-[500px] flex items-center justify-center overflow-hidden">
         <img
-          src="/kenrick-baksh-7F334ZFrp7w-unsplash.jpg"
-          alt="Caribbean coastline"
+          src="/field.png"
+          alt="Caribbean agriculture"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0B1628]/60 via-[#0B1628]/40 to-[#0B1628]/70" />
@@ -213,10 +181,10 @@ export default function Home() {
           </h1>
           <p className="text-white/65 text-sm sm:text-base leading-relaxed max-w-lg mx-auto mb-8">
             {lang === 'es'
-              ? 'Reserve con un 20% de dep\u00F3sito y reciba productos esenciales, agricultura y energ\u00EDa solar en el Caribe.'
+              ? 'Compre productos esenciales, agricultura y energía solar y recíbalos directamente en Cuba.'
               : lang === 'fr'
-              ? 'R\u00E9servez avec un acompte de 20% et recevez produits essentiels, agriculture et \u00E9nergie solaire dans les Cara\u00EFbes.'
-              : 'Reserve with a 20% deposit and get essential goods, agriculture, and solar energy delivered across the Caribbean.'}
+              ? 'Achetez des produits essentiels, agriculture et énergie solaire livrés directement à Cuba.'
+              : 'Purchase essential goods, agriculture, and solar energy delivered directly to Cuba.'}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -355,12 +323,12 @@ export default function Home() {
             {t('home.featured.title')}
           </p>
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-6 sm:gap-10 items-center justify-items-center">
-            <img src="/Forbes.png" alt="Forbes" className="h-7 sm:h-8 object-contain opacity-60 hover:opacity-100 transition-opacity" />
-            <img src="/cnn.png" alt="CNN" className="h-7 sm:h-8 object-contain opacity-60 hover:opacity-100 transition-opacity" />
-            <img src="/freshplaza.png" alt="Fresh Plaza" className="h-8 sm:h-9 object-contain opacity-60 hover:opacity-100 transition-opacity" />
-            <img src="/impactalpha.png" alt="ImpactAlpha" className="h-5 sm:h-6 object-contain opacity-60 hover:opacity-100 transition-opacity" />
-            <img src="/El_Financiero_Logo.svg.png" alt="El Financiero" className="h-5 sm:h-6 object-contain rounded opacity-80 hover:opacity-100 transition-opacity" />
-            <img src="/inforural.png" alt="Inforural" className="h-7 sm:h-8 object-contain opacity-60 hover:opacity-100 transition-opacity" />
+            <img src="/Forbes.png" alt="Forbes" className="h-6 sm:h-7 w-auto max-w-[100px] object-contain opacity-60 hover:opacity-100 transition-opacity" />
+            <img src="/cnn.png" alt="CNN" className="h-6 sm:h-7 w-auto max-w-[100px] object-contain opacity-60 hover:opacity-100 transition-opacity" />
+            <img src="/freshplaza.png" alt="Fresh Plaza" className="h-6 sm:h-7 w-auto max-w-[100px] object-contain opacity-60 hover:opacity-100 transition-opacity" />
+            <img src="/impactalpha.png" alt="ImpactAlpha" className="h-6 sm:h-7 w-auto max-w-[100px] object-contain opacity-60 hover:opacity-100 transition-opacity" />
+            <img src="/El_Financiero_Logo.svg.png" alt="El Financiero" className="h-6 sm:h-7 w-auto max-w-[100px] object-contain rounded opacity-80 hover:opacity-100 transition-opacity" />
+            <img src="/inforural.png" alt="Inforural" className="h-6 sm:h-7 w-auto max-w-[100px] object-contain opacity-60 hover:opacity-100 transition-opacity" />
           </div>
         </div>
       </section>
@@ -372,9 +340,9 @@ export default function Home() {
             {t('home.members.title')}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-8 sm:gap-14">
-            <img src="/logo-swiss-sustinable-finance.png" alt="Swiss Sustainable Finance" className="h-10 sm:h-14 object-contain opacity-70 hover:opacity-100 transition-opacity" />
+            <img src="/logo-swiss-sustinable-finance.png" alt="Swiss Sustainable Finance" className="h-10 sm:h-12 w-auto max-w-[180px] object-contain opacity-70 hover:opacity-100 transition-opacity" />
             <div className="hidden sm:block w-px h-10 bg-gray-200" />
-            <img src="/logo-AIIMX-GSGnational-partner-1024x418.png" alt="Alianza por la Inversión de Impacto México" className="h-10 sm:h-14 object-contain opacity-70 hover:opacity-100 transition-opacity" />
+            <img src="/logo-AIIMX-GSGnational-partner-1024x418.png" alt="Alianza por la Inversión de Impacto México" className="h-10 sm:h-12 w-auto max-w-[180px] object-contain opacity-70 hover:opacity-100 transition-opacity" />
           </div>
         </div>
       </section>

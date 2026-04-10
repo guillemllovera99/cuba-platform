@@ -51,6 +51,17 @@ async def list_categories(db: AsyncSession = Depends(get_db)):
     return sorted([row[0] for row in result.all()])
 
 
+@router.get("/featured", response_model=list[ProductOut])
+async def list_featured_products(db: AsyncSession = Depends(get_db)):
+    result = await db.execute(
+        select(Product)
+        .where(Product.is_featured == True)
+        .where(Product.is_active == True)
+        .order_by(Product.name)
+    )
+    return [ProductOut.model_validate(p, from_attributes=True) for p in result.scalars().all()]
+
+
 # ── Admin ───────────────────────────────────────────────────────
 
 @router.post("/admin/products", response_model=ProductOut)
@@ -105,3 +116,20 @@ async def deactivate_product(
     product.is_active = False
     await db.commit()
     return {"ok": True}
+
+
+@router.put("/admin/products/{product_id}/featured", response_model=ProductOut)
+async def toggle_featured_product(
+    product_id: str,
+    req: dict,
+    admin: dict = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(select(Product).where(Product.id == product_id))
+    product = result.scalar_one_or_none()
+    if not product:
+        raise HTTPException(404, "Product not found")
+    product.is_featured = req.get("featured", False)
+    await db.commit()
+    await db.refresh(product)
+    return ProductOut.model_validate(product, from_attributes=True)

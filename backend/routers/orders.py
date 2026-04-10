@@ -110,16 +110,16 @@ async def checkout(
         ))
         product.stock_quantity -= item.quantity
 
-    # Calculate 20% deposit and 80% balance
-    deposit = round(subtotal * 0.20, 2)
-    balance = round(subtotal - deposit, 2)
+    # Calculate 100% upfront payment
+    deposit = round(subtotal * 1.0, 2)
+    balance = 0.0
 
     if PAYMENTS_ENABLED:
-        # Real payment mode: order stays pending_deposit until Stripe/PayPal confirms 20%
+        # Real payment mode: order stays pending_payment until Stripe/PayPal confirms 100%
         order = Order(
             order_code=order_code,
             client_user_id=user["sub"],
-            status="pending_deposit",
+            status="pending_payment",
             recipient_name=req.recipient_name,
             recipient_phone=req.recipient_phone,
             recipient_city=req.recipient_city,
@@ -132,11 +132,11 @@ async def checkout(
             notes=req.notes,
         )
     else:
-        # Mock mode: auto-confirm deposit payment (demo/dev behavior)
+        # Mock mode: auto-confirm full payment (demo/dev behavior)
         order = Order(
             order_code=order_code,
             client_user_id=user["sub"],
-            status="deposit_paid",
+            status="paid",
             recipient_name=req.recipient_name,
             recipient_phone=req.recipient_phone,
             recipient_city=req.recipient_city,
@@ -163,7 +163,7 @@ async def checkout(
     await db.refresh(order, attribute_names=["items"])
 
     mode = "MOCK" if not PAYMENTS_ENABLED else "PENDING"
-    print(f"ORDER [{mode}]: {order.order_code} — {len(reserved)} items, ${subtotal:.2f} (deposit: ${deposit:.2f})")
+    print(f"ORDER [{mode}]: {order.order_code} — {len(reserved)} items, ${subtotal:.2f} (full payment: ${deposit:.2f})")
 
     return _order_to_out(order)
 
@@ -212,3 +212,15 @@ async def get_order(
     if user["role"] != "admin" and order.client_user_id != user["sub"]:
         raise HTTPException(403, "Not authorized")
     return _order_to_out(order)
+
+
+@router.get("/refund-policy", response_model=dict)
+async def get_refund_policy():
+    return {
+        "policy": "100_upfront",
+        "refund_rules": [
+            {"condition": "cancel_7plus_days_before_shipment", "refund_percent": 50},
+            {"condition": "cancel_less_7_days_before_shipment", "refund_percent": 0},
+            {"condition": "company_unable_to_fulfill", "refund_percent": 90}
+        ]
+    }

@@ -49,7 +49,12 @@ export const api = {
   getProduct: (id: string) => apiFetch(`/api/v1/catalog/products/${id}`),
   getCategories: () => apiFetch('/api/v1/catalog/categories'),
 
+  // featured products
+  getFeaturedProducts: () => apiFetch('/api/v1/catalog/featured'),
+
   // admin catalog
+  adminSetFeatured: (productId: string, featured: boolean) =>
+    apiFetch(`/api/v1/catalog/admin/products/${productId}/featured`, { method: 'PUT', body: JSON.stringify({ featured }) }),
   createProduct: (data: any) => apiFetch('/api/v1/catalog/admin/products', { method: 'POST', body: JSON.stringify(data) }),
   updateProduct: (id: string, data: any) => apiFetch(`/api/v1/catalog/admin/products/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteProduct: (id: string) => apiFetch(`/api/v1/catalog/admin/products/${id}`, { method: 'DELETE' }),

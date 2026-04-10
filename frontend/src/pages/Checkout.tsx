@@ -4,7 +4,7 @@ import { useCart, useAuth } from '../store'
 import { api } from '../api'
 import { useI18n, translate } from '../i18n'
 
-type PaymentMethod = 'stripe' | 'paypal' | 'bank_transfer' | 'wallet' | 'mock'
+type PaymentMethod = 'stripe' | 'paypal' | 'bank_transfer'
 
 type PickupPoint = {
   id: string
@@ -48,10 +48,6 @@ export default function Checkout() {
   const [bankTransferInfo, setBankTransferInfo] = useState<BankTransferInfo | null>(null)
   const [bankTransferOrderCode, setBankTransferOrderCode] = useState('')
 
-  // Wallet state
-  const [walletBalance, setWalletBalance] = useState<number | null>(null)
-  const [walletLoading, setWalletLoading] = useState(false)
-
   useEffect(() => {
     api.paymentConfig().then(cfg => {
       setPaymentConfig(cfg)
@@ -71,13 +67,6 @@ export default function Checkout() {
       setPickupPoints(flat)
     }).catch(() => {
       setPickupPoints([])
-    })
-
-    // Fetch wallet balance
-    api.walletMe().then((w: any) => {
-      setWalletBalance((w.balance || 0) - (w.reserved || 0))
-    }).catch(() => {
-      setWalletBalance(0)
     })
   }, [])
 
@@ -148,25 +137,12 @@ export default function Checkout() {
     setForm(f => ({ ...f, [field]: e.target.value }))
 
   const subtotal = total()
-  const depositAmount = Math.round(subtotal * 0.20 * 100) / 100
-  const balanceAmount = Math.round((subtotal - depositAmount) * 100) / 100
-
-  const walletSufficient = walletBalance !== null && walletBalance >= depositAmount
+  const paymentAmount = subtotal
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.recipient_name || !form.recipient_phone || !form.recipient_city) {
       setError(t('checkout.fillRequired')); return
-    }
-
-    // Check wallet balance before proceeding
-    if (paymentMethod === 'wallet' && !walletSufficient) {
-      setError(
-        lang === 'es' ? 'Saldo insuficiente. Recarga tu billetera primero.'
-        : lang === 'fr' ? 'Solde insuffisant. Rechargez votre portefeuille.'
-        : 'Insufficient credits. Please top up your wallet first.'
-      )
-      return
     }
 
     setLoading(true)
@@ -179,29 +155,14 @@ export default function Checkout() {
         ...form,
       })
 
-      // Step 2: If already deposit_paid (mock mode), go to confirmation
-      if (order.status === 'deposit_paid' || order.status === 'paid') {
+      // Step 2: If already paid (mock mode), go to confirmation
+      if (order.status === 'paid') {
         clearCart()
         navigate(`/order/${order.id}/confirmed`)
         return
       }
 
-      // Step 3: Handle wallet payment
-      if (paymentMethod === 'wallet') {
-        try {
-          const depositAmt = order.deposit_amount || depositAmount
-          await api.walletReserve(depositAmt, order.id)
-          await api.walletSpend(depositAmt, order.id)
-          clearCart()
-          navigate(`/order/${order.id}/confirmed`)
-        } catch (walletErr: any) {
-          setError(walletErr.message || 'Insufficient wallet credits')
-        }
-        setLoading(false)
-        return
-      }
-
-      // Step 4: Handle bank transfer
+      // Step 3: Handle bank transfer
       if (paymentMethod === 'bank_transfer') {
         const bankInfo = await api.bankTransferInitiate(order.id)
         clearCart()
@@ -210,7 +171,7 @@ export default function Checkout() {
         return
       }
 
-      // Step 5: Redirect to payment provider for deposit
+      // Step 4: Redirect to payment provider for full payment
       if (paymentMethod === 'stripe') {
         const session = await api.stripeCreateSession(order.id)
         clearCart()
@@ -257,9 +218,6 @@ export default function Checkout() {
 
   // Payment method context messages
   const getPaymentNotice = () => {
-    if (paymentMethod === 'wallet') {
-      return null // Handled separately
-    }
     if (paymentMethod === 'bank_transfer') {
       return (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-4">
@@ -281,19 +239,14 @@ export default function Checkout() {
   // Button label
   const getButtonLabel = () => {
     if (loading) return t('checkout.processing')
-    if (paymentMethod === 'wallet') {
-      return lang === 'es' ? `Pagar con Créditos — $${depositAmount.toFixed(2)} USD`
-        : lang === 'fr' ? `Payer avec Crédits — $${depositAmount.toFixed(2)} USD`
-        : `Pay with Credits — $${depositAmount.toFixed(2)} USD`
-    }
-    return `${t('checkout.payDeposit')} — $${depositAmount.toFixed(2)} USD`
+    return `${t('checkout.payDeposit')} — $${paymentAmount.toFixed(2)} USD`
   }
 
   return (
     <div className="max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold text-[#0B1628] mb-6">{t('checkout.title')}</h1>
 
-      {/* Order Summary with Deposit Breakdown */}
+      {/* Order Summary */}
       <div className="bg-white border border-gray-200 rounded-lg p-4 sm:p-6 mb-4 sm:mb-6">
         <h2 className="font-semibold text-[#0B1628] mb-3">{t('checkout.summary')}</h2>
         {items.map(i => (
@@ -302,23 +255,15 @@ export default function Checkout() {
             <span className="font-medium">${(i.price_usd * i.quantity).toFixed(2)}</span>
           </div>
         ))}
-        <div className="border-t mt-3 pt-3 space-y-2">
-          <div className="flex justify-between text-sm text-gray-600">
-            <span>{t('checkout.subtotal')}</span>
+        <div className="border-t mt-3 pt-3">
+          <div className="flex justify-between text-sm font-medium text-[#0B1628]">
+            <span>{t('checkout.total')}</span>
             <span>${subtotal.toFixed(2)} USD</span>
-          </div>
-          <div className="flex justify-between text-sm font-medium text-green-700 bg-green-50 px-2 py-1.5 rounded">
-            <span>{t('checkout.depositNow')} (20%)</span>
-            <span>${depositAmount.toFixed(2)} USD</span>
-          </div>
-          <div className="flex justify-between text-sm text-gray-400">
-            <span>{t('checkout.balanceLater')} (80%)</span>
-            <span>${balanceAmount.toFixed(2)} USD</span>
           </div>
         </div>
       </div>
 
-      {/* Deposit Info Banner */}
+      {/* Refund Policy Info Banner */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4 sm:mb-6">
         <div className="flex gap-3">
           <div className="shrink-0 mt-0.5">
@@ -427,92 +372,16 @@ export default function Checkout() {
                 <span className="text-sm font-medium text-gray-800">{t('checkout.bankTransfer')}</span>
               </div>
             </label>
-
-            {/* Platform Credits */}
-            <label className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${paymentMethod === 'wallet' ? 'border-[#0B1628] bg-[#0B1628]/5' : 'border-gray-200 hover:border-gray-300'}`}>
-              <input type="radio" name="payment" checked={paymentMethod === 'wallet'}
-                onChange={() => setPaymentMethod('wallet')} className="accent-[#0B1628]" />
-              <div className="flex items-center gap-2 flex-1">
-                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                <span className="text-sm font-medium text-gray-800">
-                  {lang === 'es' ? 'Créditos de Plataforma' : lang === 'fr' ? 'Crédits Plateforme' : 'Platform Credits'}
-                </span>
-                {walletBalance !== null && (
-                  <span className="ml-auto text-xs font-medium text-gray-500">
-                    {lang === 'es' ? 'Saldo' : lang === 'fr' ? 'Solde' : 'Balance'}: ${walletBalance.toFixed(2)}
-                  </span>
-                )}
-              </div>
-            </label>
           </div>
         </div>
 
-        {/* Wallet-specific info panel */}
-        {paymentMethod === 'wallet' && (
-          <div className={`mt-4 rounded-lg p-4 border ${walletSufficient ? 'bg-green-50 border-green-200' : 'bg-amber-50 border-amber-200'}`}>
-            <div className="flex items-start gap-3">
-              <div className="shrink-0 mt-0.5">
-                {walletSufficient ? (
-                  <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                ) : (
-                  <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4.832c-.77-.833-2.694-.833-3.464 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
-                  </svg>
-                )}
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between mb-1">
-                  <span className={`text-sm font-medium ${walletSufficient ? 'text-green-800' : 'text-amber-800'}`}>
-                    {lang === 'es' ? 'Tu saldo disponible' : lang === 'fr' ? 'Votre solde disponible' : 'Your available balance'}
-                  </span>
-                  <span className={`text-base font-bold ${walletSufficient ? 'text-green-700' : 'text-amber-700'}`}>
-                    ${(walletBalance || 0).toFixed(2)}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-gray-500">
-                    {lang === 'es' ? 'Depósito requerido (20%)' : lang === 'fr' ? 'Acompte requis (20%)' : 'Deposit required (20%)'}
-                  </span>
-                  <span className="text-sm font-medium text-gray-700">- ${depositAmount.toFixed(2)}</span>
-                </div>
-                {walletSufficient ? (
-                  <div className="flex items-center justify-between border-t border-green-200 pt-2">
-                    <span className="text-xs text-green-600">
-                      {lang === 'es' ? 'Saldo después del pago' : lang === 'fr' ? 'Solde après paiement' : 'Balance after payment'}
-                    </span>
-                    <span className="text-sm font-medium text-green-700">
-                      ${((walletBalance || 0) - depositAmount).toFixed(2)}
-                    </span>
-                  </div>
-                ) : (
-                  <div className="border-t border-amber-200 pt-2">
-                    <p className="text-xs text-amber-700 mb-2">
-                      {lang === 'es'
-                        ? `Necesitas $${(depositAmount - (walletBalance || 0)).toFixed(2)} más. Recarga tu billetera.`
-                        : lang === 'fr'
-                        ? `Vous avez besoin de $${(depositAmount - (walletBalance || 0)).toFixed(2)} de plus.`
-                        : `You need $${(depositAmount - (walletBalance || 0)).toFixed(2)} more. Top up your wallet.`}
-                    </p>
-                    <Link to="/wallet" className="inline-block text-xs font-medium text-amber-800 underline hover:text-amber-900">
-                      {lang === 'es' ? 'Ir a Mi Billetera' : lang === 'fr' ? 'Aller au Portefeuille' : 'Go to My Wallet'} &rarr;
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
 
         {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
 
         {/* Context-specific payment notice (not for wallet) */}
         {getPaymentNotice()}
 
-        <button type="submit" disabled={loading || (paymentMethod === 'wallet' && !walletSufficient)}
+        <button type="submit" disabled={loading}
           className="w-full mt-6 bg-green-600 text-white py-3.5 rounded-lg hover:bg-green-700 font-semibold disabled:bg-gray-400 transition-colors min-h-[48px] text-base">
           {getButtonLabel()}
         </button>

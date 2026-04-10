@@ -89,9 +89,6 @@ function Navbar() {
           {isLoggedIn() ? (
             <div className="flex items-center gap-4">
               <Link to="/orders" className="text-base text-gray-600 hover:text-[#0B1628] transition-colors font-medium">{t('nav.orders')}</Link>
-              <Link to="/wallet" className="text-base text-gray-600 hover:text-[#0B1628] transition-colors font-medium">
-                {lang === 'es' ? 'Billetera' : lang === 'fr' ? 'Portefeuille' : 'Wallet'}
-              </Link>
               <Link to="/profile" className="text-base text-gray-600 hover:text-[#0B1628] transition-colors font-medium">
                 {lang === 'es' ? 'Perfil' : lang === 'fr' ? 'Profil' : 'Profile'}
               </Link>
@@ -130,9 +127,6 @@ function Navbar() {
           {isLoggedIn() ? (
             <>
               <Link to="/orders" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">{t('nav.orders')}</Link>
-              <Link to="/wallet" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">
-                {lang === 'es' ? 'Billetera' : lang === 'fr' ? 'Portefeuille' : 'Wallet'}
-              </Link>
               <Link to="/corporate" onClick={() => setMobileOpen(false)} className="block text-base text-gray-700 hover:text-[#0B1628] font-medium">
                 {lang === 'es' ? 'Corporativo' : lang === 'fr' ? 'Entreprise' : 'Corporate'}
               </Link>

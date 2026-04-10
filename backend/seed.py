@@ -45,6 +45,7 @@ PRODUCTS = [
         "price_usd": 6.50,
         "stock_quantity": 200,
         "image_url": "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&h=400&fit=crop&auto=format&q=80",
+        "is_featured": True,
     },
     {
         "sku": "GC-RIC-002",
@@ -167,6 +168,7 @@ PRODUCTS = [
         "price_usd": 3.25,
         "stock_quantity": 250,
         "image_url": "https://images.unsplash.com/photo-1570388873891-8fad79ab5b3d?w=600&h=400&fit=crop&auto=format&q=80",
+        "is_featured": True,
     },
     {
         "sku": "BL-BLK-002",
@@ -225,6 +227,7 @@ PRODUCTS = [
         "price_usd": 5.25,
         "stock_quantity": 180,
         "image_url": "https://images.unsplash.com/photo-1683295549596-00f7547bf6a8?w=600&h=400&fit=crop&auto=format&q=80",
+        "is_featured": True,
     },
     {
         "sku": "CN-TUN-002",
@@ -418,6 +421,7 @@ PRODUCTS = [
         "price_usd": 6.50,
         "stock_quantity": 120,
         "image_url": "https://images.unsplash.com/photo-1565273975703-c096791fd3ad?w=600&h=400&fit=crop&auto=format&q=80",
+        "is_featured": True,
     },
     {
         "sku": "CB-CUB-002",
@@ -515,6 +519,7 @@ PRODUCTS = [
         "price_usd": 8.50,
         "stock_quantity": 100,
         "image_url": "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?w=600&h=400&fit=crop&auto=format&q=80",
+        "is_featured": True,
     },
     {
         "sku": "DM-PWM-002",
@@ -542,6 +547,7 @@ PRODUCTS = [
         "price_usd": 3.50,
         "stock_quantity": 150,
         "image_url": "https://images.unsplash.com/photo-1618426703715-2815f841b680?w=600&h=400&fit=crop&auto=format&q=80",
+        "is_featured": True,
     },
     {
         "sku": "DM-CON-002",
@@ -560,6 +566,7 @@ PRODUCTS = [
         "price_usd": 2.50,
         "stock_quantity": 130,
         "image_url": "https://images.unsplash.com/photo-1716483758486-47c7ec801677?w=600&h=400&fit=crop&auto=format&q=80",
+        "is_featured": True,
     },
     {
         "sku": "DM-CRM-001",
@@ -815,6 +822,7 @@ PRODUCTS = [
         "price_usd": 25.00,
         "stock_quantity": 60,
         "image_url": "https://images.unsplash.com/photo-1650866155994-3bd730b5daf9?w=600&h=400&fit=crop&auto=format&q=80",
+        "is_featured": True,
     },
     {
         "sku": "SE-PWB-002",
@@ -860,6 +868,7 @@ PRODUCTS = [
         "price_usd": 180.00,
         "stock_quantity": 20,
         "image_url": "https://images.unsplash.com/photo-1652326321057-d3f833c9fa7d?w=600&h=400&fit=crop&auto=format&q=80",
+        "is_featured": True,
     },
 
     # ═══════════════════════════════════════════════════════════════

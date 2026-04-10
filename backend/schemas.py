@@ -71,6 +71,7 @@ class ProductOut(BaseModel):
     stock_quantity: int
     image_url: Optional[str]
     is_active: bool
+    is_featured: bool = False
     is_preorder: bool = False
     preorder_deadline: Optional[str] = None
     estimated_ship_date: Optional[str] = None

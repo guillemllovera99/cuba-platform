@@ -57,6 +57,7 @@ class Product(Base):
     stock_quantity: Mapped[int] = mapped_column(Integer, default=0)
     image_url: Mapped[str] = mapped_column(String(1000), nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
+    is_featured: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     # Preorder fields (Phase 4)
     is_preorder: Mapped[bool] = mapped_column(Boolean, default=False, server_default="false")
     preorder_deadline: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=True)
